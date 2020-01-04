@@ -3,7 +3,7 @@ layout:     post
 title:      Creating-custom-dataset-for-YOLOv3-from-VOC2007
 subtitle: 自定义目标检测VOC数据集
 date:       2020-01-03
-author:     OUC\_LiuX
+author:     OUC_LiuX
 header-img: img/wallpic02.jpg
 catalog: true
 tags:
