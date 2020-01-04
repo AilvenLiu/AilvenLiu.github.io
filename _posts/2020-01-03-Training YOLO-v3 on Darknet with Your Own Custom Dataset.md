@@ -3,7 +3,7 @@ layout:     post
 title:      Training YOLO-v3 on Darknet with Your Own Custom Dataset
 subtitle:   训练自有数据集
 date:       2020-01-03
-author:     OUC\_LiuX
+author:     OUC_LiuX
 header-img: img/wallpic02.jpg
 catalog: true
 tags:
