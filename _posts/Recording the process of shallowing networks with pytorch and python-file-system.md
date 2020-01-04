@@ -1,7 +1,7 @@
 ---
 layout:     post
 title:      Recording the process of shallowing networks with pytorch and python-file-system
-subtitle: MSN技术的实验准备  
+# subtitle:   
 date:       2020-01-02
 author:     OUC_LiuX
 header-img: img/wallpic02.jpg
