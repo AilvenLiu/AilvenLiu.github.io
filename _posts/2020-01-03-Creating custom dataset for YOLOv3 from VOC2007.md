@@ -7,7 +7,7 @@ author:     OUC_LiuX
 header-img: img/wallpic02.jpg
 catalog: true
 tags:
-    - objectDetection
+    - object-Detection
 ---
 
 # Preface 
