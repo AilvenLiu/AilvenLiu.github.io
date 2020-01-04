@@ -3,8 +3,8 @@ layout:     post
 title:      Installing OpenCV for Ubuntu1604/1804 without ROOT
 subtitle:   如何安装源码opencv
 date:       2020-01-02
-author:     OUC\_LiuX
-header-img: img/wallpic\_02.jpg
+author:     OUC_LiuX
+header-img: img/wallpic_02.jpg
 catalog: true
 tags:
     - work-space
