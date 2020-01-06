@@ -1,10 +1,10 @@
 ---
 layout:     post
-title:      Basic Usage of IBM Qiskit for Quantum Programming in python(01)
-subtitle:   Getting Start
+title:      Starting To Code Quantum Programme with IBM Qiskit(Basis)
+subtitle:   Series Articles of Quantum Coding in Python -- 01
 date:       2020-01-05
 author:     OUC_LiuX
-header-img: img/IBM-Q-01.jpg
+header-img: img/quantum_IBM.png
 catalog: true
 tags:
     - Quantum Researching
@@ -53,28 +53,29 @@ circ = QuantumCircuit(QuantumRegister(3))
 
 After creation, gate("operation") can be addded to manipuate registers. Considering the below operation:
 
-$$|\psi\rangle = \left(\|000\rangle+\|111\rangle\right)/\sqrt{2}. $$  
+$$|\psi\rangle = \frac{|000\rangle+|111\rangle}{\sqrt{2}}. $$  
 Its circuit diagram is illustrated below:
 
-![GHZ](http://github.com/OUCliuxiang/OUCliuxiang.github.io/blob/master/img/quantum_GHZ.png)
+![GHZ](../img/quantum_GHZ.png)
 
 This is a quantum quantum circuit that makes a three qubit [GHZ](https://en.wikipedia.org/wiki/Greenberger%E2%80%93Horne%E2%80%93Zeilinger_state) state.  We'd know by default that each qubits in register is intilized to 
 $\|0\rangle$.  
 To make such GHZ state, we apply the following gates:  
-1. A Hadamard gate H on qubit 0, which puts it into the superposition state
-$$ \left(\|0\rangle + \|1\rangle\right)/\sqrt{2}. $$
-2. A controlled-Not operation 
-$\left(C_X\right)$ 
-between qubit 0 and qubit 1.
-1. A controlled-Not operation between qubit 0 and qubit 2.
+1. A Hadamard gate H on qubit 0, which puts it into the superposition state $\frac{|0\rangle + |1\rangle}{\sqrt{2}}$.
+2. A controlled-Not operation $\left(C_X\right)$ between qubit 0 and qubit 1.
+3. A controlled-Not operation between qubit 0 and qubit 2.
 
-On an ideal quantum computer, the state produced by running this circuit would be the GHZ state above.   
+On an ideal quantum computer, the state produced by running this circuit would be the GHZ state above.  
 In IBM Qiskit operations can be added to circuit one by one, as shown below.
 
-~~~python 
+~~~python
 circ.h(0)   
 # add a H gate on qubit 0(this is index), putting it in superposition  
 circ.cx(0, 1)   
 # add a CX(C-NOT) gate on control qubit 0 and target qubit 1, putting  
-# the qubits in Bell state.
+# the qubits in Bell state. CAUTION: 'BELL' will be explain below
+circ.cx(0, 2)
+# add a CX(C-NOT) gate on control qubit 0 and target qubit 2, putting
+# the qubits in GHZ state.
 ~~~
+
