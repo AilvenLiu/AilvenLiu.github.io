@@ -10,7 +10,7 @@ tags:
     - objectDetection
 ---
 # Preface
-Recently, our SRDP (Student Researching and Development Project) occurs some problems about how to track multi objectives in one kind and count them. We then want to try the deep sort network based on YOLO (You Only Look Once) v3 network, however, although YOLO may be tested and deployed on pytorch or other DeepLearning framework, it only support darknet to train.
+Recently, our SRDP (Student Researching and Development Project) occurs some problems about how to track multi objectives in one kind and count them. We then try the deep sort network based on YOLO-v3(You Only Look Once) network, however, although YOLO may be tested and deployed on pytorch or other DeepLearning framework, it only support darknet to train.
 # Preparation
 1. OpenCV. May this [blog](https://blog.csdn.net/OUC_liuxiang/article/details/89476697)  is helpful for you.
 2. Custom data for VOC2007. May this [blog]() is helpful for you
@@ -20,10 +20,10 @@ Recently, our SRDP (Student Researching and Development Project) occurs some pro
 ## clone the whole project
 > git clone https://github.com/pjreddie/darknet
 ## modify the configure file
-> vim Makefile
-> GPU=1
-> CUDNN=1
-> OPENCV=1
+> vim Makefile  
+> GPU=1  
+> CUDNN=1  
+> OPENCV=1  
 > NVCC=/usr/local/cuda-8.0/bin/nvcc
 
 Notifying the `NVCC` item, `cuda-8.0` or `cuda-9.0` or `10.0` should be set according your actual state.
@@ -36,23 +36,21 @@ Just one commend
 
 # Modifying
 ## cfg/voc.data
->classes= 1
-train  = /home/liuxiang/darknet/scripts/train.txt
-valid  = /home/liuxiang/darknet/scripts/2007_test.txt
-names = /home/liuxiang/darknet/data/voc.names
-backup = /home/liuxiang/darknet/results/ 
+> classes= 1  
+> train  = /home/liuxiang/darknet/scripts/train.txt  
+> valid  = /home/liuxiang/darknet/scripts/2007_test.txt  
+> names = /home/liuxiang/darknet/data/voc.names  
+> backup = /home/liuxiang/darknet/results/ 
 
 
-backup is the path that where the weight store.
+backup is path where the weight store.
 ## data/voc.name
 One row
 >holothurian
 
-if you have more than one objects to detect, modify it is okay.
+if you have more than one objects to detect, modifying it is okay.
 ## cfg/yolov3-voc.cfg
-Annotate Testing and its relevant configure rows. 
-apply Training, and its relevant rows.
-`batches = 64` is not  suggest to change, but `subdivisions` can be changed. If your machine's GPU memory is limited, enlarge it may help you to train. If contrary, reduce it. the picture feed into network each time is $\dfrac{batches}{subdivisions}$
+Annotate Testing and its relevant configure rows. Apply Training and its relevant rows. `batches = 64` is not suggest to change, changing `subdivisions` is allowed. If your GPU memory is limited, enlarge it may help you to train. If contrary, reduce it. the picture feed into network each time is $\dfrac{batches}{subdivisions}$
 
 ### YOLO layers
 Separately at row **608, 692, 776**, change the classes item in YOLO layers as yours, **1** in ours. And Accordingly the filters of convolutional layers before YOLO should also be changed to `filters = (classes + 5) * 3`
