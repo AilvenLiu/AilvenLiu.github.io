@@ -35,12 +35,26 @@ $$\alpha_1|0...0\rangle + \alpha_2|0...1\rangle + \cdots + \alpha_{2^N}|1...1\ra
 ### **Representing it in vector**
 Consider that the qubit basis $\alpha|0\rangle + \beta|1\rangle$, so that $|0\rangle = 1\cdot|0\rangle + 0\cdot|1\rangle$ and $|1\rangle = 0\cdot|0\rangle + 1\cdot|1\rangle$. Consider again the represation of two-qubits state $\alpha_1|00\rangle+\alpha_2|01\rangle+\alpha_3|10\rangle+\alpha_4|11\rangle$, then accordingly for $|00\rangle$: $\left(\alpha_1 = 1; \alpha_{others} = 0\right)$. We finally draw the conclusion that: <br>
 $|0\rangle$ is represented in vector as 
-$\left[\begin{matrix}1\\0\end{matrix}\right]$, $|1\rangle$ is $\left[\begin{matrix}0\\1\end{matrix}\right]$, 
+$\left[
+    \begin{matrix}
+    1 \\ 
+    0
+    \end{matrix}
+    \right]
+$, 
+$|1\rangle$ is 
+$\left[
+    \begin{matrix}
+    0 \\ 
+    1
+    \end{matrix}
+    \right]
+$, 
 $|00\rangle, |01\rangle, |10\rangle, |11\rangle$ are seperately 
 $
 \left[
     \begin{matrix}
-    1\\ 0\\ 0\\0 
+    1\\ 0\\ 0\\ 0 
     \end{matrix}
 \right],
 \left[
@@ -50,12 +64,12 @@ $
 \right],
 \left[
     \begin{matrix}
-    0\\ 0\\ 1\\0 
+    0\\ 0\\ 1\\ 0 
     \end{matrix}
 \right],
 \left[
     \begin{matrix}
-    0\\ 0\\ 0\\1 
+    0\\ 0\\ 0\\ 1 
     \end{matrix}
 \right]
 $
@@ -63,7 +77,7 @@ $
 ## Operators to manipulating qubits
 The form of manipulation that receive a value (state) and then return a new value (state) is called "operator", when its target data are qubits, Representing with 'U'.
 Based upon the dispersed time, a procedure on qubits string is shown below:<br>
-$$S_1\stackrel{U_1}{\rarr}S_2\stackrel{U_2}{\rarr} \cdots \stackrel{U_k}{\rarr}S_{k+1}$$
+$$ S_1\stackrel{U_1}{\rarr} S_2 \stackrel{U_2}{\rarr} \cdots \stackrel{U_k}{\rarr} S_{k+1} $$
 Nature allows us within three limition to achieve operators on a independant physical system:
 - **Linear**  
   That means, for each component of new quantum state $S_{n+1}$, it can be written as a linear superposition of all old quantum state S' components. For the example of a qubits string comprised of 2 qubit, considering the two states below:  
@@ -122,7 +136,7 @@ The last form above can be written simple as:
 $(\alpha_a|0\rangle+\alpha_b|1\rangle)\bigotimes(\alpha_1|00...0\rangle + \alpha_2|00...1\rangle+\cdots+\alpha_{2^N}|11...1\rangle)$ 
 
 ## Dirac notation (bra-ket symbol)
-Split Hilbert space into two parts, the both space are dual. 'ket' $|\rang$ denotes state, whereas its conjugate vector is denoted by 'bra' $\langle|$. $\langle|\rangle$ is inner product; $|\rangle\langle|$ is outer product. State vector may be represented as matrix:
+Split Hilbert space into two parts, the both space are dual. 'ket' $| \rang$ denotes state, whereas its conjugate vector is denoted by 'bra' $\langle|$. $\langle|\rangle$ is inner product; $|\rangle\langle|$ is outer product. State vector may be represented as matrix:
 $$
 |\psi\rangle =  
 \left(
@@ -179,7 +193,7 @@ $$
 From [wiki: Bell_State](https://en.wikipedia.org/wiki/Bell_state).
 ## Abstract
 
-**Bell State** is comprised of two qubits that represent the simplest examples of Quantum Entanglement. Bell State is a form of entangled and normalized basis vector. Normalization implies the overall probility of particles in state is 1: $\langle\Psi|\Psi\rangle = 1$ Entanglement is a bisis-independent result of superposition. Due to the superposition, measurement of the qubits will collapse it into one of its basis states with a given probility. Because the Entanglement, measurement of one qubit will assign one of two possible values to the others instinctly, where the value assigned depends on which Bell state the two qubits are in. Bell state can be generalized to represent spectific quantum states of multi-qubit system, such as the [GHZ state](https://en.wikipedia.org/wiki/Greenberger%E2%80%93Horne%E2%80%93Zeilinger_state) for 3 sub-systems.
+**Bell State** is comprised of two qubits that represent the simplest examples of Quantum Entanglement. Bell State is a form of entangled and normalized basis vector. Normalization implies the overall probility of particles in state is 1: $\langle \Psi |\Psi \rangle = 1$ Entanglement is a bisis-independent result of superposition. Due to the superposition, measurement of the qubits will collapse it into one of its basis states with a given probility. Because the Entanglement, measurement of one qubit will assign one of two possible values to the others instinctly, where the value assigned depends on which Bell state the two qubits are in. Bell state can be generalized to represent spectific quantum states of multi-qubit system, such as the [GHZ state](https://en.wikipedia.org/wiki/Greenberger%E2%80%93Horne%E2%80%93Zeilinger_state) for 3 sub-systems.
 
 ## Bell State
 The Bell States are four specific maximally entangaled quantum states of two qubits. They are in a superposition of 0 and, i.e., a linear combination of the two states. Their entanglements means the following:<br>
@@ -204,8 +218,9 @@ H(|01\rangle) & = \dfrac{|0\rangle+|1\rangle}{\sqrt{2}}|1\rangle = |+\rangle|1\r
 H(|10\rangle) & = \dfrac{|0\rangle-|1\rangle}{\sqrt{2}}|0\rangle = |-\rangle|0\rangle ...............\it3 \\
 H(|11\rangle) & = \dfrac{|0\rangle-|1\rangle}{\sqrt{2}}|1\rangle = |-\rangle|1\rangle ...............\it4 \\
 \end{aligned}
-$$
-Then after operation of CNOT gate: <br>
+$$  
+
+Then after operation of CNOT gate: <br>  
 $$
 \begin{aligned}
 CX(\it1) &= \dfrac{|00\rangle+|11\rangle}{\sqrt{2}} =\Phi^+....................\it1 \\
@@ -213,7 +228,7 @@ CX(\it2) &= \dfrac{|01\rangle+|10\rangle}{\sqrt{2}} =\Psi^+....................\
 CX(\it3) &= \dfrac{|00\rangle-|11\rangle}{\sqrt{2}} =\Phi^-....................\it3 \\
 CX(\it4) &= \dfrac{|01\rangle-|10\rangle}{\sqrt{2}} =\Psi^-....................\it4 \\
 \end{aligned}
-$$
-Concluding the rule as the following formulation:<br>
-$$\beta(|x, y)\rangle = \left(\dfrac{|0,y\rangle+(-1)^x|1, Y\rangle}{\sqrt{2}}\right)$$
+$$  
+Concluding the rule as the following formulation:<br>  
+$$\beta(|x, y)\rangle = \left(\dfrac{|0,y\rangle+(-1)^x|1, Y\rangle}{\sqrt{2}}\right)$$  
 where $Y$ is the negation of $y$. 
