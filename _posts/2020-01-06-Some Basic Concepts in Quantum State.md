@@ -82,12 +82,13 @@ Nature allows us within three limition to achieve operators on a independant phy
 - **Linear**  
   That means, for each component of new quantum state $S_{n+1}$, it can be written as a linear superposition of all old quantum state S' components. For the example of a qubits string comprised of 2 qubit, considering the two states below:  
   $$S_t = \alpha_{t,1}|00\rangle + \alpha_{t,2}|01\rangle+ \alpha_{t,3}|10\rangle + \alpha_{t,4}|11\rangle$$
-  $$S_{t+1} = \alpha_{t+1,1}|00\rangle + \alpha_{t+1,2}|01\rangle+ \alpha_{t+1,3}|10\rangle + \alpha_{t+1,4}|11\rangle$$
+  $$S_{t+1} = \alpha_{t+1,1}|00\rangle + \alpha_{t+1,2}|01\rangle+ \alpha_{t+1,3}|10\rangle + \alpha_{t+1,4}|11\rangle$$  
   At the time of __t+1__, its components are correlated with these from time **t** as the following relative:<br>
   $$\alpha_{t+1, 1} = \beta_1\alpha_{t, 1} + \beta_2\alpha_{t,2} + \beta_3\alpha_{t,3} + \beta_4\alpha_{t, 4}$$ 
   $$\alpha_{t+1, 2} = \gamma_1\alpha_{t,1}+ \gamma_2\alpha_{t,2}+ \gamma_3\alpha_{t,3}+ \gamma_4\alpha_{t, 4}$$
   $$\alpha_{t+1, 3} = \delta_1\alpha_{t,1}+ \delta_2\alpha_{t,2}+ \delta_3\alpha_{t,3}+ \delta_4\alpha_{t, 4}$$
-  $$\alpha_{t+1，4} = \epsilon_1\alpha_{t,1} + \epsilon_2\alpha_{t, 2} + \epsilon_3\alpha_{t, 3} + \epsilon_4\alpha_{t,4}$$
+  $$\alpha_{t+1，4} = \epsilon_1\alpha_{t,1} + \epsilon_2\alpha_{t, 2} + \epsilon_3\alpha_{t, 3} + \epsilon_4\alpha_{t,4}$$  
+
   The linear relative can also be represented in a more simple matrix form:<br>
   $$
   \left[\begin{matrix}
@@ -194,7 +195,7 @@ From [wiki: Bell_State](https://en.wikipedia.org/wiki/Bell_state).
 ## Abstract
 
 **Bell State** is comprised of two qubits that represent the simplest examples of quantum entanglement. Bell State is a form of entangled and normalized basis vector. Normalization implies the overall probility of particles in state is 1: 
-$\langle \Psi | \Psi \rangle = 1$. Entanglement is a bisis-independent result of superposition. Due to the superposition, measurement of the qubits will collapse it into one of its basis states with a given probility. Because the Entanglement, measurement of one qubit will assign one of two possible values to the others instinctly, where the value assigned depends on which Bell state the two qubits are in. Bell state can be generalized to represent spectific quantum states of multi-qubit system, such as the [GHZ state](https://en.wikipedia.org/wiki/Greenberger%E2%80%93Horne%E2%80%93Zeilinger_state) for 3 sub-systems.
+${\langle \Psi | \Psi \rangle = 1}$. Entanglement is a bisis-independent result of superposition. Due to the superposition, measurement of the qubits will collapse it into one of its basis states with a given probility. Because the Entanglement, measurement of one qubit will assign one of two possible values to the others instinctly, where the value assigned depends on which Bell state the two qubits are in. Bell state can be generalized to represent spectific quantum states of multi-qubit system, such as the [GHZ state](https://en.wikipedia.org/wiki/Greenberger%E2%80%93Horne%E2%80%93Zeilinger_state) for 3 sub-systems.
 
 ## Bell State
 The Bell States are four specific maximally entangaled quantum states of two qubits. They are in a superposition of 0 and, i.e., a linear combination of the two states. Their entanglements means the following:<br>
