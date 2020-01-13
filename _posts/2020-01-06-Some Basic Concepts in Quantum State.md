@@ -77,7 +77,7 @@ $
 ## Operators to manipulating qubits
 The form of manipulation that receive a value (state) and then return a new value (state) is called "operator", when its target data are qubits, Representing with 'U'.
 Based upon the dispersed time, a procedure on qubits string is shown below:<br>
-$$ S_1\stackrel{U_1}{\rarr} S_2 \stackrel{U_2}{\rarr} \cdots \stackrel{U_k}{\rarr} S_{k+1} $$
+$$ S_1\stackrel{U_1}{\rightarrow} S_2 \stackrel{U_2}{\rightarrow} \cdots \stackrel{U_k}{\rightarrow} S_{k+1} $$
 Nature allows us within three limition to achieve operators on a independant physical system:
 - **Linear**  
   That means, for each component of new quantum state $S_{n+1}$, it can be written as a linear superposition of all old quantum state S' components. For the example of a qubits string comprised of 2 qubit, considering the two states below:  
@@ -136,7 +136,7 @@ The last form above can be written simple as:
 $(\alpha_a|0\rangle+\alpha_b|1\rangle)\bigotimes(\alpha_1|00...0\rangle + \alpha_2|00...1\rangle+\cdots+\alpha_{2^N}|11...1\rangle)$ 
 
 ## Dirac notation (bra-ket symbol)
-Split Hilbert space into two parts, the both space are dual. 'ket' $| \rang$ denotes state, whereas its conjugate vector is denoted by 'bra' $\langle|$. $\langle|\rangle$ is inner product; $|\rangle\langle|$ is outer product. State vector may be represented as matrix:
+Split Hilbert space into two parts, the both space are dual. 'ket' $| \rangle$ denotes state, whereas its conjugate vector is denoted by 'bra' $\langle|$. $\langle|\rangle$ is inner product; $|\rangle\langle|$ is outer product. State vector may be represented as matrix:
 $$
 |\psi\rangle =  
 \left(
@@ -193,7 +193,8 @@ $$
 From [wiki: Bell_State](https://en.wikipedia.org/wiki/Bell_state).
 ## Abstract
 
-**Bell State** is comprised of two qubits that represent the simplest examples of Quantum Entanglement. Bell State is a form of entangled and normalized basis vector. Normalization implies the overall probility of particles in state is 1: $\langle \Psi |\Psi \rangle = 1$ Entanglement is a bisis-independent result of superposition. Due to the superposition, measurement of the qubits will collapse it into one of its basis states with a given probility. Because the Entanglement, measurement of one qubit will assign one of two possible values to the others instinctly, where the value assigned depends on which Bell state the two qubits are in. Bell state can be generalized to represent spectific quantum states of multi-qubit system, such as the [GHZ state](https://en.wikipedia.org/wiki/Greenberger%E2%80%93Horne%E2%80%93Zeilinger_state) for 3 sub-systems.
+**Bell State** is comprised of two qubits that represent the simplest examples of quantum entanglement. Bell State is a form of entangled and normalized basis vector. Normalization implies the overall probility of particles in state is 1: 
+$\langle \Psi | \Psi \rangle = 1$. Entanglement is a bisis-independent result of superposition. Due to the superposition, measurement of the qubits will collapse it into one of its basis states with a given probility. Because the Entanglement, measurement of one qubit will assign one of two possible values to the others instinctly, where the value assigned depends on which Bell state the two qubits are in. Bell state can be generalized to represent spectific quantum states of multi-qubit system, such as the [GHZ state](https://en.wikipedia.org/wiki/Greenberger%E2%80%93Horne%E2%80%93Zeilinger_state) for 3 sub-systems.
 
 ## Bell State
 The Bell States are four specific maximally entangaled quantum states of two qubits. They are in a superposition of 0 and, i.e., a linear combination of the two states. Their entanglements means the following:<br>
