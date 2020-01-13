@@ -31,6 +31,35 @@ A binary bit is normally presented as 0 or 1, wheares a quantum bit (quibt) can 
 ## Represent a qubit string?
 For binary (or ternary, quaternary, ..., decimal...anyway, for all traditional system), representing N bit string needs very N bit space in memory. It does **not** work in quantum system, the latter requires $2^N$ plurals to represent:<br>
 $$\alpha_1|0...0\rangle + \alpha_2|0...1\rangle + \cdots + \alpha_{2^N}|1...1\rangle$$ 
+
+### **Representing it in vector**
+Consider that the qubit basis $\alpha|0\rangle + \beta|1\rangle$, so that $|0\rangle = 1\cdot|0\rangle + 0\cdot|1\rangle$ and $|1\rangle = 0\cdot|0\rangle + 1\cdot|1\rangle$. Consider again the represation of two-qubits state $\alpha_1|00\rangle+\alpha_2|01\rangle+\alpha_3|10\rangle+\alpha_4|11\rangle$, then accordingly for $|00\rangle$: $\left(\alpha_1 = 1; \alpha_{others} = 0\right)$. We finally draw the conclusion that: <br>
+$|0\rangle$ is represented in vector as 
+$\left[\begin{matrix}1\\0\end{matrix}\right]$, $|1\rangle$ is $\left[\begin{matrix}0\\1\end{matrix}\right]$, 
+$|00\rangle, |01\rangle, |10\rangle, |11\rangle$ are seperately 
+$
+\left[
+    \begin{matrix}
+    1\\ 0\\ 0\\0 
+    \end{matrix}
+\right],
+\left[
+    \begin{matrix}
+    0\\ 1\\ 0\\ 0 
+    \end{matrix}
+\right],
+\left[
+    \begin{matrix}
+    0\\ 0\\ 1\\0 
+    \end{matrix}
+\right],
+\left[
+    \begin{matrix}
+    0\\ 0\\ 0\\1 
+    \end{matrix}
+\right]
+$
+
 ## Operators to manipulating qubits
 The form of manipulation that receive a value (state) and then return a new value (state) is called "operator", when its target data are qubits, Representing with 'U'.
 Based upon the dispersed time, a procedure on qubits string is shown below:<br>
@@ -92,8 +121,59 @@ $$
 The last form above can be written simple as: 
 $(\alpha_a|0\rangle+\alpha_b|1\rangle)\bigotimes(\alpha_1|00...0\rangle + \alpha_2|00...1\rangle+\cdots+\alpha_{2^N}|11...1\rangle)$ 
 
+## Dirac notation (bra-ket symbol)
+Split Hilbert space into two parts, the both space are dual. 'ket' $|\rang$ denotes state, whereas its conjugate vector is denoted by 'bra' $\langle|$. $\langle|\rangle$ is inner product; $|\rangle\langle|$ is outer product. State vector may be represented as matrix:
+$$
+|\psi\rangle =  
+\left(
+\begin{matrix}
+\psi_1 \\\psi_2\\\vdots\\\psi_N
+\end{matrix}
+\right)
+$$
 ## Hadamard gate
+Hadamard gate maps the m-qubits states with $|0\rangle$ or $|1\rangle$ to a superposition of all $2^m$ orthogonal states in $|0\rangle$ and $|0\rangle
+$ with equal weight. $|0\rangle$ and $|1\rangle$ as we known are computational basis. The states $\dfrac{|0\rangle+|1\rangle}{\sqrt{2}}$ and $\dfrac{|0\rangle-|1\rangle}{\sqrt{2}}$ are known as $|+\rangle$ and $|-\rangle$ respectively, together constitute the polar basis in quantum computing.<br>
+### Hadamard gate operations  
+$$
+H(|0\rangle) = \dfrac{|0\rangle+|1\rangle}{\sqrt{2}} = :|+\rangle \\
+H(|1\rangle) = \dfrac{|0\rangle-|1\rangle}{\sqrt{2}} = :|-\rangle \\
+H(\dfrac{|0\rangle+|1\rangle}{\sqrt{2}}) = \dfrac{1}{\sqrt{2}}H(|0\rangle)+\dfrac{1}{\sqrt{2}}H(|1\rangle)=|0\rangle \\
+H(\dfrac{|0\rangle-|1\rangle}{\sqrt{2}}) = \dfrac{1}{\sqrt{2}}H(|0\rangle)-\dfrac{1}{\sqrt{2}}H(|1\rangle)=|1\rangle
+$$
+### Hadamard in matrix
+Since we've known the qubit state can be represented as vector, for the convenience of calculation, the Hadamard oughts to has a matrix representation. Actually it is:<br>
+$$
+{\begin{aligned}H_{0}=&+1\\H_{1}={\frac {1}{\sqrt {2}}}&{\begin{pmatrix}{\begin{array}{rr}1&1\\1&-1\end{array}}\end{pmatrix}}\end{aligned}}
+$$
+Reconsidering generally, i.e. the relationship between $H_n$ and $H_{n+1}$, ought to be the following:<br>
+$$
+H_{n+1} = \dfrac{1}{\sqrt{2}}
+\left(
+\begin{matrix}
+H_n & H_n \\ H_n & -H_n 
+\end{matrix}    
+\right)
+$$
 
+# Controlled NOT gate 
+Knowing that the Hadamard gate and C-NOT gate are essential components in the construction of a gate-based quantum computer.<br>
+## Operation
+The CNOT gate operates on a quantum register consisting of 2 qubits. It flips the second qubit (target qubit) only if the first qubit (control qubit) is $|1\rangle$.<br>
+More generally, the inputs are allowed to be a linear superposition of 
+$\{|0\rangle, |1\rangle\}$, hence a CNOT gate transforms the quantum state: 
+$a|00\rangle + b|01\rangle + c|10\rangle + d|11\rangle$
+into $a|00\rangle + b|01\rangle + c|11\rangle + d|10\rangle$. <br>
+For the convenience of calculation, like the Hadamard gate, CNOT has also a matrix form as below:<br>
+$$
+CNOT = 
+\begin{pmatrix}
+ 1 & 0 & 0 & 0 \\
+ 0 & 1 & 0 & 0 \\
+ 0 & 0 & 0 & 1 \\
+ 0 & 0 & 1 & 0 \\
+\end{pmatrix}
+$$
 
 # Bell State 
 From [wiki: Bell_State](https://en.wikipedia.org/wiki/Bell_state).
@@ -114,3 +194,26 @@ $|\Psi^+\rangle=(|0\rangle_A\bigotimes|1\rangle_B)+(|1\rangle_A\bigotimes|0\rang
 $|\Psi^-\rangle=(|0\rangle_A\bigotimes|1\rangle_B)-(|1\rangle_A\bigotimes|0\rangle_B)$  
 
 ## Create Bell State  
+the simplest takes a computational basis as the input, containing a Hadamard gate and a CNOT gate. The Hadamard gate (working on single qubit of the two-qubits basis) transforms $|00\rangle(|0\rangle_A\bigotimes|0\rangle_B)$ into $\dfrac{(|0\rangle+|1\rangle)|0\rangle}{\sqrt{2}}$, i.e., $H_1(|00\rangle) = H_1(|0\rangle)\bigotimes|0\rangle$. Considering the properity of CNOT gate, it then transforms the second qubit according to $|0\rangle or |1\rangle$ of the first qubit into 
+$\dfrac{|00\rangle+|11\rangle}{\sqrt{2}} = |\Phi^+\rangle$. <br>
+As the rule shown above, what results of four Bell State's special states can be listed below, which consists of two-qubits after they passing Hadamard and CNOT gates below: <br>
+$$
+\begin{aligned}
+H(|00\rangle) & = \dfrac{|0\rangle+|1\rangle}{\sqrt{2}}|0\rangle = |+\rangle|0\rangle ...............\it1 \\
+H(|01\rangle) & = \dfrac{|0\rangle+|1\rangle}{\sqrt{2}}|1\rangle = |+\rangle|1\rangle ...............\it2 \\ 
+H(|10\rangle) & = \dfrac{|0\rangle-|1\rangle}{\sqrt{2}}|0\rangle = |-\rangle|0\rangle ...............\it3 \\
+H(|11\rangle) & = \dfrac{|0\rangle-|1\rangle}{\sqrt{2}}|1\rangle = |-\rangle|1\rangle ...............\it4 \\
+\end{aligned}
+$$
+Then after operation of CNOT gate: <br>
+$$
+\begin{aligned}
+CX(\it1) &= \dfrac{|00\rangle+|11\rangle}{\sqrt{2}} =\Phi^+....................\it1 \\
+CX(\it2) &= \dfrac{|01\rangle+|10\rangle}{\sqrt{2}} =\Psi^+....................\it2 \\
+CX(\it3) &= \dfrac{|00\rangle-|11\rangle}{\sqrt{2}} =\Phi^-....................\it3 \\
+CX(\it4) &= \dfrac{|01\rangle-|10\rangle}{\sqrt{2}} =\Psi^-....................\it4 \\
+\end{aligned}
+$$
+Concluding the rule as the following formulation:<br>
+$$\beta(|x, y)\rangle = \left(\dfrac{|0,y\rangle+(-1)^x|1, Y\rangle}{\sqrt{2}}\right)$$
+where $Y$ is the negation of $y$. 
