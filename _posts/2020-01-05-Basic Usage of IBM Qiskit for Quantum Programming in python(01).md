@@ -61,7 +61,7 @@ Its circuit diagram is illustrated below:
 This is a quantum quantum circuit that makes a three qubit [GHZ](https://en.wikipedia.org/wiki/Greenberger%E2%80%93Horne%E2%80%93Zeilinger_state) state.  We'd know by default that each qubits in register is intilized to 
 $\|0\rangle$.  
 To make such GHZ state, we apply the following gates:  
-1. A Hadamard gate H on qubit 0, which puts it into the superposition state $\frac{|0\rangle + |1\rangle}{\sqrt{2}}$.
+1. A Hadamard gate H on qubit 0, which puts it into the superposition state ${\frac{|0\rangle + |1\rangle}{\sqrt{2}}}$.
 2. A controlled-Not operation $\left(C_X\right)$ between qubit 0 and qubit 1.
 3. A controlled-Not operation between qubit 0 and qubit 2.
 
@@ -70,12 +70,12 @@ In IBM Qiskit operations can be added to circuit one by one, as shown below.
 
 ~~~python
 circ.h(0)   
-# add a H gate on qubit 0(this is index), putting it in superposition  
+# add a H gate on qubit 0(this is index), putting it in superposition    
 circ.cx(0, 1)   
-# add a CX(C-NOT) gate on control qubit 0 and target qubit 1, putting  
-# the qubits in Bell state. CAUTION: 'BELL' will be explain below
-circ.cx(0, 2)
-# add a CX(C-NOT) gate on control qubit 0 and target qubit 2, putting
-# the qubits in GHZ state.
+# add a CX(C-NOT) gate on control qubit 0 and target qubit 1, putting    
+# the qubits in Bell state. CAUTION: 'BELL' will be explain below   
+circ.cx(0, 2)  
+# add a CX(C-NOT) gate on control qubit 0 and target qubit 2, putting  
+# the qubits in GHZ state.  
 ~~~
 
