@@ -46,12 +46,12 @@ import matplotlib.image as mpimg
 ## Build a basic quantum circuit  
 Here we create a basic quantum circuit comprised of three qubits.
 ```python
-circ = QuantumCircuit(QuantumRegister(3),ClassicalRegister(3)) 
-# apply and alloc three quantum bits as register  
-# parameters of QuantumCircuit():  
-# QuantumRegister(int ), ClassicalRegister(int )  
-# or (int, (int))  
-# the only integer parameter stands for the qubit(s)  
+circ = QuantumCircuit(QuantumRegister(3),ClassicalRegister(3))  
+# apply and alloc three quantum bits as register     
+# parameters of QuantumCircuit():     
+# QuantumRegister(int ), ClassicalRegister(int )     
+# or (int, (int))     
+# the only integer parameter stands for the qubit(s)    
 ```  
 
 After creation, gate("operation") can be addded to manipuate registers. Considering the below operation:
@@ -61,12 +61,15 @@ $$
 $$  
 Its circuit diagram is illustrated below:
 
-![GHZ](../img/quantum_GHZ.png)
+![GHZ](https://github.com/OUCliuxiang/OUCliuxiang.github.io/tree/master/img/quantum_GHZ.png)
 
 This is a quantum quantum circuit that makes a three qubit [GHZ](https://en.wikipedia.org/wiki/Greenberger%E2%80%93Horne%E2%80%93Zeilinger_state) state.  We'd know by default that each qubits in register is intilized to 
 $\|0\rangle$.  
 To make such GHZ state, we apply the following gates:  
-1. A Hadamard gate H on qubit 0, which puts it into the superposition state ${\frac{|0\rangle + |1\rangle}{\sqrt{2}}}$.
+1. A Hadamard gate H on qubit 0, which puts it into the superposition state 
+   $$
+   {\frac{|0\rangle + |1\rangle}{\sqrt{2}}}
+   $$ 
 2. A controlled-Not operation $\left(C_X\right)$ between qubit 0 and qubit 1.
 3. A controlled-Not operation between qubit 0 and qubit 2.
 
@@ -75,15 +78,23 @@ In IBM Qiskit operations can be added to circuit one by one, as shown below.
 
 ~~~python
 circ.h(0)   
-# add a H gate on qubit 0(this is index), putting it in superposition    
+# add a H gate on qubit 0(this is index), putting it in superposition   
+ 
 circ.cx(0, 1)   
 # add a CX(C-NOT) gate on control qubit 0 and target qubit 1, putting    
+
 # the qubits in Bell state. CAUTION: 'BELL' will be explain below   
+
 circ.cx(0, 2)  
 # add a CX(C-NOT) gate on control qubit 0 and target qubit 2, putting   
+
 # the qubits in GHZ state.  
+
 circ.barrier(range(3)) # add barrier between qubits operations and measures   
-circ.measure(range(3), range(3)) # measure separately the qubuts into classical bits.  
+
+circ.measure(range(3), range(3)) 
+# measure separately the qubuts into classical bits.   
+
 ~~~   
 Then the complete quantum circuit consisted of quantum and classical registers can be simulated by simulators from Aer backend or real quantum computer po\roviders or cloud simulators. Setting backend, establishing job and excutting it, getting result from the above job, is one of the whole simple procedure to run a quantum circuit: <br>  
 ```python
@@ -112,8 +123,8 @@ circ_1.draw(output='mpl')
 circ_2.draw(output='mpl')
 ```  
 Then the circ 1 & 2 are sequencely displayed as: 
-![circ_1](../img/qiskit_circ_1.png)  
-![circ_2](../img/qiskit_circ_2.png)  
+![circ_1]([../img](https://github.com/OUCliuxiang/OUCliuxiang.github.io/tree/master/img)/qiskit_circ_1.png)  
+![circ_2]([../img](https://github.com/OUCliuxiang/OUCliuxiang.github.io/tree/master/img)/qiskit_circ_2.png)  
 Watching carefully the label 'q' and 'q+number'.<br>  
 
 ```python
@@ -129,8 +140,8 @@ circ_3.draw(output='mpl')
 circ_4.draw(output='mpl')  
 ```  
 The measure circuits meas_3 and meas_4 are illustrated sequencely below, noticing the labels 'c' and 'c+number':   
-![meas_3](../img/qiskit_meas_3.png)   
-![meas_4](../img/qiskit_meas_4.png)  
+![meas_3](https://github.com/OUCliuxiang/OUCliuxiang.github.io/tree/master/img/qiskit_meas_3.png)   
+![meas_4](https://github.com/OUCliuxiang/OUCliuxiang.github.io/tree/master/img/qiskit_meas_4.png)  
 
 ```python
 qc_13 = circ_1 + meas_3 # the order is irreversibel  
@@ -144,10 +155,10 @@ qc_23.draw(output='mpl')
 qc_24.draw(output='mpl')
 ```  
 Figures after circuits addition are illustrated in code sequence as follow:<br>  
-![qc_13](../img/qiskit_qc_13.png)  
-![qc_14](../img/qiskit_qc_14.png)  
-![qc_23](../img/qiskit_qc_23.png)  
-![qc_24](../img/qiskit_qc_24.png)  
+![qc_13]([../img](https://github.com/OUCliuxiang/OUCliuxiang.github.io/tree/master/img)/qiskit_qc_13.png)  
+![qc_14]([../img](https://github.com/OUCliuxiang/OUCliuxiang.github.io/tree/master/img)/qiskit_qc_14.png)  
+![qc_23]([../img](https://github.com/OUCliuxiang/OUCliuxiang.github.io/tree/master/img)/qiskit_qc_23.png)  
+![qc_24]([../img](https://github.com/OUCliuxiang/OUCliuxiang.github.io/tree/master/img)/qiskit_qc_24.png)  
 It can be learn obveriously from the above four figures that quantum circuit merges with measure circuit only when bits/qubits in registers are not appointed.  <br>  
 
 And finally, to build a complete cicuit with both quantum register and classical register, the following form is always recommended: <br>  
