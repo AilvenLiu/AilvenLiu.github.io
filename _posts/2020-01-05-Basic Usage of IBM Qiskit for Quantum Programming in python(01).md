@@ -123,7 +123,7 @@ circ_1.draw(output='mpl')
 circ_2.draw(output='mpl')
 ```  
 Then the circ 1 & 2 are sequencely displayed as: 
-![circ_1]({{"img/apple-touch-icon.png"}})  
+![circ_1]({{"https://github.com/OUCliuxiang/OUCliuxiang.github.io/tree/master/img/apple-touch-icon.png"}})  
 ![circ_2](https://github.com/OUCliuxiang/OUCliuxiang.github.io/tree/master/img/qiskit_circ_2.png)  
 Watching carefully the label 'q' and 'q+number'.<br>  
 
