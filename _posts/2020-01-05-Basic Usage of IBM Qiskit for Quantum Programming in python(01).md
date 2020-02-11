@@ -48,9 +48,13 @@ Here we create a basic quantum circuit comprised of three qubits.
 ```python
 circ = QuantumCircuit(QuantumRegister(3),ClassicalRegister(3))  
 # apply and alloc three quantum bits as register     
+
 # parameters of QuantumCircuit():     
+
 # QuantumRegister(int ), ClassicalRegister(int )     
-# or (int, (int))     
+
+# or (int, (int))   
+
 # the only integer parameter stands for the qubit(s)    
 ```  
 
@@ -123,9 +127,8 @@ circ_1.draw(output='mpl')
 circ_2.draw(output='mpl')
 ```  
 Then the circ 1 & 2 are sequencely displayed as:   
-<center class="half">
 <img src="https://raw.githubusercontent.com/OUCliuxiang/OUCliuxiang.github.io/master/img/qiskit_circ_1.png" alt="circ_1" width="200"/><img src="https://raw.githubusercontent.com/OUCliuxiang/OUCliuxiang.github.io/master/img/qiskit_circ_2.png" alt="circ_2" width="200"/>  
-</center>
+
 Watching carefully the label 'q' and 'q+number'.<br>  
 
 ```python
