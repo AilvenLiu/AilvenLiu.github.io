@@ -123,8 +123,8 @@ circ_1.draw(output='mpl')
 circ_2.draw(output='mpl')
 ```  
 Then the circ 1 & 2 are sequencely displayed as: 
-![circ_1](https://raw.githubusercontent.com/OUCliuxiang/OUCliuxiang.github.io/master/img/qiskit_circ_1.png){:width=200px}
-![circ_2](https://raw.githubusercontent.com/OUCliuxiang/OUCliuxiang.github.io/master/img/qiskit_circ_2.png){:width=200px}  
+![circ_1](https://raw.githubusercontent.com/OUCliuxiang/OUCliuxiang.github.io/master/img/qiskit_circ_1.png){:width="200px"}
+![circ_2](https://raw.githubusercontent.com/OUCliuxiang/OUCliuxiang.github.io/master/img/qiskit_circ_2.png){:width="200px"}  
 Watching carefully the label 'q' and 'q+number'.<br>  
 
 ```python
