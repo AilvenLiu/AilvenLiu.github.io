@@ -123,7 +123,9 @@ circ_1.draw(output='mpl')
 circ_2.draw(output='mpl')
 ```  
 Then the circ 1 & 2 are sequencely displayed as:   
-<img src="https://raw.githubusercontent.com/OUCliuxiang/OUCliuxiang.github.io/master/img/qiskit_circ_1.png" alt="circ_1" width="200px"> <img src="https://raw.githubusercontent.com/OUCliuxiang/OUCliuxiang.github.io/master/img/qiskit_circ_2.png" alt="circ_2" width="200px">  
+<center class="half">
+<img src="https://raw.githubusercontent.com/OUCliuxiang/OUCliuxiang.github.io/master/img/qiskit_circ_1.png" alt="circ_1" width="200px"/><img src="https://raw.githubusercontent.com/OUCliuxiang/OUCliuxiang.github.io/master/img/qiskit_circ_2.png" alt="circ_2" width="200px"/>  
+</center>
 Watching carefully the label 'q' and 'q+number'.<br>  
 
 ```python
