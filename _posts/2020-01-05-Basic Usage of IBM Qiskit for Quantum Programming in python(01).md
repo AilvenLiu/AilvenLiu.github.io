@@ -64,8 +64,7 @@ $$
 |\psi\rangle = \frac{|000\rangle+|111\rangle}{\sqrt{2}}.
 $$  
 Its circuit diagram is illustrated below:
-
-![GHZ](https://github.com/OUCliuxiang/OUCliuxiang.github.io/tree/master/img/quantum_GHZ.png)
+<img src="https://raw.githubusercontent.com/OUCliuxiang/OUCliuxiang.github.io/master/img/quantum_GHZ.png" alt="GHZ" width="200"/>  
 
 This is a quantum quantum circuit that makes a three qubit [GHZ](https://en.wikipedia.org/wiki/Greenberger%E2%80%93Horne%E2%80%93Zeilinger_state) state.  We'd know by default that each qubits in register is intilized to 
 $\|0\rangle$.  
@@ -100,17 +99,121 @@ circ.measure(range(3), range(3))
 # measure separately the qubuts into classical bits.   
 
 ~~~   
+Conceptions such as CNOT, H gate are introduced in the next [blog](./2020-01-06-Some%20Basic%20Concepts%20in%20Quantum%20State.md)
+.   
+
 Then the complete quantum circuit consisted of quantum and classical registers can be simulated by simulators from Aer backend or real quantum computer po\roviders or cloud simulators. Setting backend, establishing job and excutting it, getting result from the above job, is one of the whole simple procedure to run a quantum circuit: <br>  
+
 ```python
 backend_qasm = Aer.get_backend('qasm_simulator')  
-job_qasm = execute(circ, backend_qasm, shots=1000)  
+job_qasm = execute(circ, backend_qasm, shots=1024)  
 # where the shots is iterations the circuit runs, default as 1024  
+
 result_qasm = job_qasm.result() 
+counts_qasm = result_qasm.get_counts()
+```  
+
+Result returns us a series of pinpoint and full massages, though we always pay more attention into the valuables, such as the counts of occurences of each possible states:<br>  
+*print(result_qasm)*: <br>
+Result(backend_name='qasm_simulator', backend_version='0.3.4', date=datetime.datetime(2020, 2, 11, 19, 53, 13, 358520), header=Obj(backend_name='qasm_simulator', backend_version='0.3.4'), job_id='05a7baa1-776c-4419-88fe-45ea0abfdfac', metadata={'max_memory_mb': 1960, 'omp_enabled': True, 'parallel_experiments': 1, 'time_taken': 0.0175806}, qobj_id='1805039d-c31f-4abf-bdee-883f62acd161', results=[ExperimentResult(data=ExperimentResultData(counts=Obj **(0x0=501, 0x7=523)** ), header=Obj(clbit_labels=[['c0', 0], ['c0', 1], ['c0', 2]], creg_sizes=[['c0', 3]], memory_slots=3, n_qubits=3, name='circuit1', qreg_sizes=[['q0', 3]], qubit_labels=[['q0', 0], ['q0', 1], ['q0', 2]]), meas_level=<MeasLevel.CLASSIFIED: 2>, metadata={'measure_sampling': True, 'method': 'stabilizer', 'parallel_shots': 1, 'parallel_state_update': 2}, seed_simulator=2847754088, shots=1024, status='DONE', success=True, time_taken=0.0142088)], status='COMPLETED', success=True, time_taken=0.06500053405761719) <br>
+*print(counts_qasm)*:<br>
+**{'000': 501, '111': 523}**  <br>
+
+***Applying and use real quantum computer via IBMQ*** <br>
+It's so exciting that IBM provides real quantum computation resource and cloud simulator to users, which require only a IBM account. Copy personal API Token from [IBM-Q-Account page](https://quantum-computing.ibm.com/account) and  `IBMQ.save_account('API TOKEN')` to save the TOKEN into this computer. `IBMQ.load_account()` (without parameters) to load it after saving or `IBMQ.enable_account('API TOKEN')` to enable the Token this time to use IBM quantum resource. <br>
+Let we see the quantum providers we can use: <br>
+```python 
+IBMQ.load_account()
+# IBMQ.enable('API TOKEN')   
+
+provider = IBMQ.get_provider(group='open')
+provider.backends()
+```  
+It returns us: <br>
+[<IBMQSimulator('ibmq_qasm_simulator') from IBMQ(hub='ibm-q', group='open', project='main')>,  
+ <IBMQBackend('ibmqx2') from IBMQ(hub='ibm-q', group='open', project='main')>,  
+ <IBMQBackend('ibmq_16_melbourne') from IBMQ(hub='ibm-q', group='open', project='main')>,  
+ <IBMQBackend('ibmq_vigo') from IBMQ(hub='ibm-q', group='open', project='main')>,  
+ <IBMQBackend('ibmq_ourense') from IBMQ(hub='ibm-q', group='open', project='main')>,  
+ <IBMQBackend('ibmq_london') from IBMQ(hub='ibm-q', group='open', project='main')>,  
+ <IBMQBackend('ibmq_burlington') from IBMQ(hub='ibm-q', group='open', project='main')>,  
+ <IBMQBackend('ibmq_essex') from IBMQ(hub='ibm-q', group='open', project='main')>,  
+ <IBMQBackend('ibmq_armonk') from IBMQ(hub='ibm-q', group='open', project='main')>]  
+ <br>
+
+Sent our jobs into remote quantum computers or cloud simulators and minotor their states with *job_monitor* (from `qiskit.tools.monitor`:<br>
+```python 
+backend_qasm_real = provider.get_backend('ibmq_qasm_simulator')
+job_qasm_real = execute(qc, backend=backend_qasm_real)
+# job_qasm_real_id = job_qasm_real.job_id()  
+
+job_monitor(job_qasm_real)
+
+backend_essex = provider.get_backend('ibmq_essex')
+job_essex = execute(qc, backend=backend_essex)
+# job_essex_id = job_essex.job_id()  
+
+job_monitor(job_essex)
+
+backend_ourense = provider.get_backend('ibmq_ourense')
+job_ourense = execute(qc, backend=backend_ourense)
+# job_ourense_id = job_ourense.job_id()  
+
+job_monitor(job_ourense)
+
+backend_burlington = provider.get_backend('ibmq_burlington')
+job_burlington = execute(qc, backend=backend_burlington)
+# job_burlington_id = job_burlington.job_id()  
+
+job_monitor(job_burlington)
 ```
-Conceptions such as CNOT, H gate are introduced in the next [blog](./2020-01-06-Some%20Basic%20Concepts%20in%20Quantum%20State.md)
-. 
-  
-#### Different between QuantumCircuit(QuantumRegister(a), ClassicalRegister(b)) and QuantumCircuit(a,b)  
+Job monitors will print real-time status involving   
+*Job Status: job is being validated*   
+*Job Status: job is actively running*   
+*Job Status: job is queued(13)*   
+Wait for a while or a long time, who know.
+*Job Status: job has successfully run*   
+
+Get results and counts to plot histograms to observe the calculational difference with `plot_histogram()`, which returns object typed in **Figure**. Save figure via `Figure.savefig("/path/filename.png")`: 
+```python 
+result_qasm_real = job_qasm_real.result()
+counts_qasm_real = result_qasm_real.get_counts(qc)
+
+result_x2 = job_x2.result()
+counts_x2 = result_x2.get_counts(qc)
+
+result_melbourne = job_melbourne.result()
+counts_melbourne= result_melbourne.get_counts(qc)
+
+result_burlington = job_burlington.result()
+counts_burlington = result_burlington.get_counts(qc)
+
+qiskit_histogram_01 = plot_histogram([counts_qasm_real, counts_x2, counts_melbourne, counts_burlington], \
+               legend=['qasm_real_Q', 'X2_Q', 'Ourense_Q', 'Melbourne_Q'])
+
+qiskit_histogram_01.savefig("qiskit_histogram_01.png")  
+```  
+<img src="https://raw.githubusercontent.com/OUCliuxiang/OUCliuxiang.github.io/master/img/qiskit_histogram_01.png" alt="qiskit_histogram_01" width="300"/>  
+
+It is same as all random calculational process that each time of running is different, so that recording a job id to retrieve the sepecific result is satisfied for a requirement of reproduction: <br>
+
+```python
+job_id_qasm = job_qasm.job_id()
+job_monitor(job_qasm)
+result_qasm = job_qasm.result()
+counts_qasm = result_qasm.get_counts(qc)
+plot_histogram(counts_qasm) 
+```
+
+
+```python
+retrieve_job_qasm_1 = backend_qasm_Q.retrieve_job(job_id_qasm)
+retrieve_result_job_qasm = retrieve_job_qasm_1.result()
+retrieve_counts_job_qasm = retrieve_result_job_qasm.get_counts()
+plot_histogram(retrieve_counts_job_qasm)
+```
+
+## Different between QuantumCircuit(QuantumRegister(a), ClassicalRegister(b)) and QuantumCircuit(a,b)  
 In fact, the both forms can build a quantum circuit within registers consisted seperately of 'a' qubits and 'b' classical bits. The former which declears registers catecory and set the sepecific bits into registers, in which all bits are unique. Wheares the later, which puts just bits/qubits into registers, is not care about which specific bit/qubit it is in specific pisition. As the consequence, bits/qubits appointed circuits cannot be fused as one when the quantum circuit and measure circuit are established sequencely. Bits/qubits unappointed cicuits are able to be mearged. The Following examples illustrate the difference concretely: <br>  
 ```python
 circ_1 = QuantumCircuit(QuantumRegister(3))
@@ -143,9 +246,8 @@ meas_4.measure(range(3), range(3))
 circ_3.draw(output='mpl')  
 circ_4.draw(output='mpl')  
 ```  
-The measure circuits meas_3 and meas_4 are illustrated sequencely below, noticing the labels 'c' and 'c+number':   
-![meas_3](https://github.com/OUCliuxiang/OUCliuxiang.github.io/tree/master/img/qiskit_meas_3.png)   
-![meas_4](https://github.com/OUCliuxiang/OUCliuxiang.github.io/tree/master/img/qiskit_meas_4.png)  
+The measure circuits meas_3 and meas_4 are illustrated sequencely below, noticing the labels 'c' and 'c+number':  
+<img src="https://raw.githubusercontent.com/OUCliuxiang/OUCliuxiang.github.io/master/img/qiskit_meas_3.png" alt="meas_3" width="200"/><img src="https://raw.githubusercontent.com/OUCliuxiang/OUCliuxiang.github.io/master/img/qiskit_meas_4.png" alt="meas_4" width="200"/> 
 
 ```python
 qc_13 = circ_1 + meas_3 # the order is irreversibel  
@@ -159,10 +261,8 @@ qc_23.draw(output='mpl')
 qc_24.draw(output='mpl')
 ```  
 Figures after circuits addition are illustrated in code sequence as follow:<br>  
-![qc_13]([../img](https://github.com/OUCliuxiang/OUCliuxiang.github.io/tree/master/img)/qiskit_qc_13.png)  
-![qc_14]([../img](https://github.com/OUCliuxiang/OUCliuxiang.github.io/tree/master/img)/qiskit_qc_14.png)  
-![qc_23]([../img](https://github.com/OUCliuxiang/OUCliuxiang.github.io/tree/master/img)/qiskit_qc_23.png)  
-![qc_24]([../img](https://github.com/OUCliuxiang/OUCliuxiang.github.io/tree/master/img)/qiskit_qc_24.png)  
+<img src="https://raw.githubusercontent.com/OUCliuxiang/OUCliuxiang.github.io/master/img/qiskit_qc_13.png" alt="qc_13" width="200"/><img src="https://raw.githubusercontent.com/OUCliuxiang/OUCliuxiang.github.io/master/img/qiskit_qc_14.png" alt="qc_14" width="200"/><img src="https://raw.githubusercontent.com/OUCliuxiang/OUCliuxiang.github.io/master/img/qiskit_qc_23.png" alt="qc_23" width="200"/><img src="https://raw.githubusercontent.com/OUCliuxiang/OUCliuxiang.github.io/master/img/qiskit_qc_24.png" alt="qc_24" width="200"/>  
+
 It can be learn obveriously from the above four figures that quantum circuit merges with measure circuit only when bits/qubits in registers are not appointed.  <br>  
 
 And finally, to build a complete cicuit with both quantum register and classical register, the following form is always recommended: <br>  
