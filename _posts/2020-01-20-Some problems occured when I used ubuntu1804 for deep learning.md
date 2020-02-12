@@ -130,3 +130,53 @@ Then just run:
 (conda envs) $ pip install jupyter notebook --user # if permission limitted
 ```      
 Jupyter will work and ipython is also installed.
+
+## About the IBMQ Account  
+### Functions from IBMQ  
+* `enable_account(TOKEN)`: Enable your account in the current session. <br>
+* `save_account(TOKEN)`: Save account to disk for future use.
+* `load_account()`: Load account using stored credential
+* `disable_account()`: Disable account in the current session.
+* `stored_accoount()`: List the accounts stored to disk.
+* `activate_account()`: List the account currently in the session .
+* `delete_account()`: Delete the saved accounts from disk.
+    
+### The provider and backends  
+Get provider and list backends via  
+```python 
+provider = IBMQ.get_provider(**kwargs)  
+# parameters can be (hub="ibm-q", group="open", ..), it's inessential 
+
+provider.backends() # to list  
+
+```
+
+We have the following devices/simulator to use:   
+* 'ibmq_qasm_simulator'  
+    *cloud simulator*, 32 qubits  
+* 'ibmqx2'
+    *real device*,  5 qubits  
+* 'ibmq_16_melbourne'
+    *real device*, 15 qubits  
+* 'ibmq_vigo'
+    *real device*,  5 qubits  
+* 'ibmq_ourense'
+    *real device*,  5 qubits  
+* 'ibmq_london'
+    *real device*,  5 qubits  
+* 'ibmq_burlington'
+    *real device*,  5 qubits  
+* 'ibmq_essex'
+    *real device*,  5 qubits  
+
+`configuration()` returns a backend's definite configure, such as available basic gates, max_experiments, max_shots, qubits number, and many so on.  `status()` returns us the most valuable information that how many jobs in line (item *pending_jobs*).   
+ 
+### The least busy 5 qibits device  
+```python 
+from qiskit.providers.ibmq import least_busy
+small_devices = provider.backends( filters = lambda x: \
+    x.configuration().n_qubits == 5 and \
+    not x.configuration().simulator)
+least_busy(small_devices)
+```
+
