@@ -114,9 +114,9 @@ counts_qasm = result_qasm.get_counts()
 ```  
 
 Result returns us a series of pinpoint and full massages, though we always pay more attention into the valuables, such as the counts of occurences of each possible states:<br>  
-*print(result_qasm)*: <br>
-Result(backend_name='qasm_simulator', backend_version='0.3.4', date=datetime.datetime(2020, 2, 11, 19, 53, 13, 358520), header=Obj(backend_name='qasm_simulator', backend_version='0.3.4'), job_id='05a7baa1-776c-4419-88fe-45ea0abfdfac', metadata={'max_memory_mb': 1960, 'omp_enabled': True, 'parallel_experiments': 1, 'time_taken': 0.0175806}, qobj_id='1805039d-c31f-4abf-bdee-883f62acd161', results=[ExperimentResult(data=ExperimentResultData(counts=Obj **(0x0=501, 0x7=523)** ), header=Obj(clbit_labels=[['c0', 0], ['c0', 1], ['c0', 2]], creg_sizes=[['c0', 3]], memory_slots=3, n_qubits=3, name='circuit1', qreg_sizes=[['q0', 3]], qubit_labels=[['q0', 0], ['q0', 1], ['q0', 2]]), meas_level=<MeasLevel.CLASSIFIED: 2>, metadata={'measure_sampling': True, 'method': 'stabilizer', 'parallel_shots': 1, 'parallel_state_update': 2}, seed_simulator=2847754088, shots=1024, status='DONE', success=True, time_taken=0.0142088)], status='COMPLETED', success=True, time_taken=0.06500053405761719) <br>
-*print(counts_qasm)*:<br>
+\* *print(result_qasm)*: <br>
+Result(backend_n ...... **(0x0=501, 0x7=523)**, header=....) <br>
+\* *print(counts_qasm)*:<br>
 **{'000': 501, '111': 523}**  <br>
 
 ***Applying and use real quantum computer via IBMQ*** <br>
@@ -171,7 +171,7 @@ Job monitors will print real-time status involving
 *Job Status: job is being validated*   
 *Job Status: job is actively running*   
 *Job Status: job is queued(13)*   
-Wait for a while or a long time, who know.
+Wait for a while or a long time, who know.<br>
 *Job Status: job has successfully run*   
 
 Get results and counts to plot histograms to observe the calculational difference with `plot_histogram()`, which returns object typed in **Figure**. Save figure via `Figure.savefig("/path/filename.png")`: 
