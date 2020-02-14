@@ -134,7 +134,23 @@ $$
 (\alpha_1\alpha_n|\dot011...1\rangle+\alpha_b\alpha_{2^N}|\dot111...1\rangle)
 $$
 The last form above can be written simple as: 
-$(\alpha_a|0\rangle+\alpha_b|1\rangle)\bigotimes(\alpha_1|00...0\rangle + \alpha_2|00...1\rangle+\cdots+\alpha_{2^N}|11...1\rangle)$ 
+$(\alpha_a|0\rangle+\alpha_b|1\rangle)\otimes(\alpha_1|00...0\rangle + \alpha_2|00...1\rangle+\cdots+\alpha_{2^N}|11...1\rangle)$ 
+
+### Kronecker product (tensor product) 
+$$
+A = \begin{pmatrix} a & b \\ c & d \\ e & f\end{pmatrix},\,\,\,\,
+B = \begin{pmatrix} w & x \\ y & z \end{pmatrix} 
+\\
+A\otimes B = \begin{pmatrix} aB & bB \\ cB & dB \\ eB & fB\end{pmatrix} =
+\begin{pmatrix}
+aw & ax &  & bw & bx \\
+ay & az &  & by & bz \\\\
+cw & cx &  & dw & dx \\
+cy & cz &  & dy & dz \\\\
+ew & ex &  & fw & fx \\
+ey & ez &  & fy & fz
+\end{pmatrix}
+$$
 
 ## Dirac notation (bra-ket symbol)
 Split Hilbert space into two parts, the both space are dual. 'ket' $| \rangle$ denotes state, whereas its conjugate vector is denoted by 'bra' $\langle|$. $\langle|\rangle$ is inner product; $|\rangle\langle|$ is outer product. State vector may be represented as matrix:
