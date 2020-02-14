@@ -42,14 +42,16 @@ $$
     \end{pmatrix}, \,\,\,\,
 \alpha, \beta, \gamma, \eta \in \mathcal{C}.
 $$     
-Then a doubel-qubits state such as $|10\rangle$ are represented as $\begin{pmatrix}0\\0\\1\\0\end{pmatrix}$  <br>
+Then a doubel-qubits state such as $|10\rangle$ are represented as   
+$$
+\begin{pmatrix}0\\0\\1\\0\end{pmatrix}
+$$   
 
-Based on the aboves we define some commonly used states as follow: <br>  
-
+Based on the aboves we define some commonly used states as follow:   
 $$
 |0\rangle=\begin{pmatrix} 1\\ 0\end{pmatrix}, \,\,\,\,
 |1\rangle=\begin{pmatrix} 0\\ 1\end{pmatrix}, \\
-$$  
+$$    
 
 $$
 |+\rangle=\frac{1}{\sqrt{2}}\left(|0\rangle+|1\rangle\right)=\frac{1}{\sqrt{2}}\begin{pmatrix} 1\\ 1\end{pmatrix}, \\
@@ -106,8 +108,9 @@ S|+\rangle = |\circlearrowright\rangle, \,\,\,\,
 S|\circlearrowright\rangle = |-\rangle, \\
 S|-\rangle = |\circlearrowleft\rangle, \,\,\,\,
 S|\circlearrowleft\rangle = |+\rangle.
-\end{matrix}
+\end{matrix} \\
 $$  
+and
 $$
 S^\dagger = \begin{pmatrix}1&0\\0&-i\end{pmatrix}:\,\,\,\,
 \begin{matrix}
@@ -160,7 +163,10 @@ $$
 This is a operation running in a pauly sphere. Based on $U_3$, $U_1$ and $U_2$ can be defined as:<br>
 $$
 U_1(\lambda) = U_3(0, 0, \lambda) = 
-\begin{pmatrix}1&0\\0&e^{i\lambda}\end{pmatrix} \\
+\begin{pmatrix}1&0\\0&e^{i\lambda}\end{pmatrix} 
+$$
+and
+$$
 U_2(\phi, \lambda) = U_3(\pi/2, \phi, \lambda) = 
 \frac{1}{\sqrt{2}}\begin{pmatrix}1&-e^{i\lambda} \\ e^{i\phi}&e^{i\lambda+i\phi}\end{pmatrix}
 $$
