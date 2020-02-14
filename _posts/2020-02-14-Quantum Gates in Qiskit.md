@@ -26,41 +26,43 @@ tags:
 
 
 ## Basic States  
-A basic qubit $\alpha|0\rangle+\beta|1\rangle$ which satisfied $|\alpha|^2+|\beta|^2=1$ can be represented as vector:
+A basic qubit $\alpha|0\rangle+\beta|1\rangle$ which satisfied $|\alpha|^2+|\beta|^2=1, |a+bi|=\sqrt{a^2+b^2}$ can be represented as vector:
 $$
 \alpha|0\rangle+\beta|1\rangle = 
     \begin{pmatrix}
         \alpha \\ \beta
     \end{pmatrix}, \,\,\,\,
-\alpha, \beta \in \mathcal{C}, \\
-| a + bi| = \sqrt{a^2 + b^2}
+\alpha, \beta \in \mathcal{C}
 $$     
 A quantum state consisted of two qubits $\alpha|00\rangle+\beta|01\rangle+\gamma|10\rangle+\eta|11\rangle$ which satisified $|\alpha|^2+|\beta|^2+|\gamma|^2+|\eta|^2=1$ can be represented as vector: 
 $$
-\alpha|00\rangle+\beta|01\rangle+\gamma|10\rangle+\eta|11\rangle$ = 
+\alpha|00\rangle+\beta|01\rangle+\gamma|10\rangle+\eta|11\rangle = 
     \begin{pmatrix}
         \alpha \\ \beta \\ \gamma \\ \eta
     \end{pmatrix}, \,\,\,\,
 \alpha, \beta, \gamma, \eta \in \mathcal{C}.
 $$     
-Then a doubel-qubits state such as $|10\rangle$ are represented as $\begin{pmatrix}0\\0\\1\\0\end{pmatrix}.$  <br>
+Then a doubel-qubits state such as $|10\rangle$ are represented as $\begin{pmatrix}0\\0\\1\\0\end{pmatrix}$  <br>
 
 Based on the aboves we define some commonly used states as follow: <br>  
 
 $$
 |0\rangle=\begin{pmatrix} 1\\ 0\end{pmatrix}, \,\,\,\,
 |1\rangle=\begin{pmatrix} 0\\ 1\end{pmatrix}, \\
-$$
+$$  
+
 $$
 |+\rangle=\frac{1}{\sqrt{2}}\left(|0\rangle+|1\rangle\right)=\frac{1}{\sqrt{2}}\begin{pmatrix} 1\\ 1\end{pmatrix}, \\
-$$
+$$  
+
 $$
 |-\rangle=\frac{1}{\sqrt{2}}\left(|0\rangle-|1\rangle\right)=\frac{1}{\sqrt{2}}\begin{pmatrix} 1\\ -1\end{pmatrix}, \\
-$$
+$$  
+
 $$
 |\circlearrowright\rangle=\frac{1}{\sqrt{2}}\begin{pmatrix}1\\i\end{pmatrix}, \,\,\,\,
 |\circlearrowleft\rangle=\frac{1}{\sqrt{2}}\begin{pmatrix}1\\-i\end{pmatrix}.
-$$  
+$$   
 
 ## The Pauli Operator  
 The simplest quantum gates are the Paulis: $X$(NOT), $Y$ and $Z$(Phease Flip). Their action is to perform a half rotation of the Bloch sphere around the x, y and z axes.   
@@ -68,21 +70,23 @@ $$
 X = \begin{pmatrix}0&1\\1&0\end{pmatrix},\,\,\,\, 
 \begin{matrix}
 X|0\rangle=|1\rangle, \\ X|1\rangle=|0\rangle,
-\end{matrix}
-$$
+\end{matrix}\\  
+$$  
+
 $$
 Y = \begin{pmatrix}0&-i\\i&0\end{pmatrix},\,\,\,\,
 \begin{matrix}
 Y|\circlearrowright\rangle=\,\,\,\,|\circlearrowright\rangle, 
 \\ Y|\circlearrowleft\rangle=-|\circlearrowleft\rangle,
-\end{matrix}
-$$
+\end{matrix}\\
+$$  
+
 $$
 Z = \begin{pmatrix}1&0\\0&-1\end{pmatrix},\,\,\,\,
 \begin{matrix}
 Z|+\rangle=|-\rangle, \\
 Z|-\rangle=|+\rangle. 
-\end{matrix}
+\end{matrix}\\
 $$
 
 ## Hadamard and S   
@@ -103,7 +107,7 @@ S|\circlearrowright\rangle = |-\rangle, \\
 S|-\rangle = |\circlearrowleft\rangle, \,\,\,\,
 S|\circlearrowleft\rangle = |+\rangle.
 \end{matrix}
-$$
+$$  
 $$
 S^\dagger = \begin{pmatrix}1&0\\0&-i\end{pmatrix}:\,\,\,\,
 \begin{matrix}
@@ -131,7 +135,17 @@ qc.rz(theta, 0) # theta z rotation on qubit 0
 
 ```
 
-Considering the $Z=Z\dagger=\begin{pmatrix}1&0\\0&-1\end{pmatrix}, (-1 = e^{i\pi = e^{-i\pi}})$ and $S=\sqrt{Z}=\begin{pmatrix}1&0\\0&i\end{pmatrix}$, $S\dagger=\sqrt{Z}\dagger=\begin{pmatrix}1&0\\0&-i\end{pmatrix}$, two possible square roots of $S$, named $T$:
+Considering the 
+$$
+Z=Z\dagger=\begin{pmatrix}1&0\\0&-1\end{pmatrix}, 
+(-1 = e^{i\pi} = e^{-i\pi})
+$$   
+and   
+$$ 
+S=\sqrt{Z}=\begin{pmatrix}1&0\\0&i\end{pmatrix},\,\,\,\, 
+S\dagger=\sqrt{Z}\dagger=\begin{pmatrix}1&0\\0&-i\end{pmatrix},
+$$
+two possible square roots of $S$, named $T$:  
 $$
 T = \begin{pmatrix} 1&0 \\\\ 0&e^{i\pi/4}\end{pmatrix}, \, \, \, \, T^\dagger = \begin{pmatrix} 1&0 \\\\ 0&e^{-i\pi/4} \end{pmatrix}.
 $$  
