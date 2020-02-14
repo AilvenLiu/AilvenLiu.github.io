@@ -22,14 +22,14 @@ tags:
     </script>
 </head>
 
-> During writing my first passage of the series, I am hardly to understand its code and tutorial text, due to some concepts are unacquinted to me. Thus I start this passage to record these quantum concepts and try to explain them.   
-> All explaination are from wiki&zhihu originally.
+> During writing my first passage of the series, I am hardly to understand its code and tutorial, as most of concepts are unacquinted to me. Thus I learn the basic quantum concepts before studying quantum computation. This passage is written to record these concepts and explain them.   
+> The source knowledge are from wiki&zhihu originally.
 
 # Qubit (*"量子位"* in Chinese)
 From [Zhihu](https://zhuanlan.zhihu.com/p/22407308).<br>
 A binary bit is normally presented as 0 or 1, wheares a quantum bit (quibt) can be either 0/1 or their superposition: **$\alpha_1|0\rangle + \alpha_2|1\rangle$**, where $\alpha_1$ and $\alpha_2$ are different plurals.<br>
 ## Represent a qubit string?
-For binary (or ternary, quaternary, ..., decimal...anyway, for all traditional system), representing N bit string needs very N bit space in memory. It does **not** work in quantum system, the latter requires $2^N$ plurals to represent:<br>
+For binary (or ternary, quaternary, decimal...) machines,representing an string consisted of N bits requires N bits space in memory. It is different in quantum system: the latter requires $2^N$ plurals to represent: <br>  
 $$\alpha_1|0...0\rangle + \alpha_2|0...1\rangle + \cdots + \alpha_{2^N}|1...1\rangle$$ 
 
 ### **Representing it in vector**
