@@ -160,7 +160,7 @@ two possible square roots of $S$, named $T$:
 $$
 T = \begin{pmatrix} 1&0 \\\\ 0&e^{i\pi/4}\end{pmatrix}, \, \, \, \, T^\dagger = \begin{pmatrix} 1&0 \\\\ 0&e^{-i\pi/4} \end{pmatrix}.
 $$   
-All single-qubit operations are compiled down to gates known as $U_1, U2$ , and $U_3$ before running real IBM quantum hardware. For that reason, they are sometimes called *physical gate*.<br>
+All single-qubit operations are compiled down to gates known as $U_1, U2$ , and $U_3$ before running real IBM quantum hardware. For that reason, they are sometimes called *physical gate*.  
 $$
 U_3(\theta, \phi, \lambda) = 
 \begin{pmatrix}
@@ -174,10 +174,7 @@ This is a operation running in a pauly sphere. Based on $U_3$, $U_1$ and $U_2$ c
 $$
 U_1(\lambda) = U_3(0, 0, \lambda) = 
 \begin{pmatrix}1&0\\0&e^{i\lambda}\end{pmatrix} 
-$$
-and    
-
-$$
+\\
 U_2(\phi, \lambda) = U_3(\pi/2, \phi, \lambda) = 
 \frac{1}{\sqrt{2}}\begin{pmatrix}1&-e^{i\lambda} \\ e^{i\phi}&e^{i\lambda+i\phi}\end{pmatrix}
 $$
@@ -185,17 +182,7 @@ $$
 
 ## Multiple gates   
 * **C-NOT** 
-changes the target qubit (the second) only when the controled qubit (the first) is $|1\rangle$. A 2-qubits state is composed from two qubits:   
-$$
-|0\rangle\otimes|1\rangle=
-\begin{pmatrix}1\\0\end{pmatrix}
-\otimes
-\begin{pmatrix}0\\1\end{pmatrix} = 
-\begin{pmatrix}1\times0\\1\times1\\0\times0\\0\times1
-\end{pmatrix} = 
-\begin{pmatrix}0\\1\\0\\0
-\end{pmatrix}
-$$   
+changes the target qubit (the second) only when the controled qubit (the first) is $|1\rangle$:  
 
 $$
 CNOT = \begin{pmatrix}
@@ -207,9 +194,20 @@ CNOT|01\rangle = |01\rangle \\
 CNOT|10\rangle = |11\rangle \\
 CNOT|11\rangle = |10\rangle 
 \end{matrix}
-$$   
+$$  
 
-$\,\,\,\,\,\,\,\,\,\,\,\,\,\,$   
+A 2-qubits state is composed from two qubits:   
+
+$$
+|0\rangle\otimes|1\rangle=
+\begin{pmatrix}1\\0\end{pmatrix}
+\otimes
+\begin{pmatrix}0\\1\end{pmatrix} = 
+\begin{pmatrix}1\times0\\1\times1\\0\times0\\0\times1
+\end{pmatrix} = 
+\begin{pmatrix}0\\1\\0\\0
+\end{pmatrix}
+$$   
 
 That $X$ (NOT) can be controlled, so do $Y$ and $Z$.
 
