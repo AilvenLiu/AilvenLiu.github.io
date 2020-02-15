@@ -26,7 +26,8 @@ tags:
 
 
 ## Basic States  
-A basic qubit $\alpha|0\rangle+\beta|1\rangle$ which satisfied $|\alpha|^2+|\beta|^2=1, |a+bi|=\sqrt{a^2+b^2}$ can be represented as vector:
+A basic qubit $\alpha|0\rangle+\beta|1\rangle$ which satisfied $|\alpha|^2+|\beta|^2=1, |a+bi|=\sqrt{a^2+b^2}$ can be represented as vector:    
+
 $$
 \alpha|0\rangle+\beta|1\rangle = 
     \begin{pmatrix}
@@ -34,6 +35,7 @@ $$
     \end{pmatrix}, \,\,\,\,
 \alpha, \beta \in \mathcal{C}
 $$     
+
 A quantum state consisted of two qubits $\alpha|00\rangle+\beta|01\rangle+\gamma|10\rangle+\eta|11\rangle$ which satisified $|\alpha|^2+|\beta|^2+|\gamma|^2+|\eta|^2=1$ can be represented as vector: 
 $$
 \alpha|00\rangle+\beta|01\rangle+\gamma|10\rangle+\eta|11\rangle = 
@@ -42,12 +44,11 @@ $$
     \end{pmatrix}, \,\,\,\,
 \alpha, \beta, \gamma, \eta \in \mathcal{C}.
 $$     
-Then a doubel-qubits state such as $|10\rangle$ are represented as   
-$$
-\begin{pmatrix}0\\0\\1\\0\end{pmatrix}
-$$   
-
+Then a doubel-qubits state such as $|10\rangle$ are represented as
+$$\begin{pmatrix}0\\0\\1\\0\end{pmatrix}$$   
+  
 Based on the aboves we define some commonly used states as follow:   
+
 $$
 |0\rangle=\begin{pmatrix} 1\\ 0\end{pmatrix}, \,\,\,\,
 |1\rangle=\begin{pmatrix} 0\\ 1\end{pmatrix}, \\
@@ -68,6 +69,7 @@ $$
 
 ## The Pauli Operator  
 The simplest quantum gates are the Paulis: $X$(NOT), $Y$ and $Z$(Phease Flip). Their action is to perform a half rotation of the Bloch sphere around the x, y and z axes.   
+
 $$
 X = \begin{pmatrix}0&1\\1&0\end{pmatrix},\,\,\,\, 
 \begin{matrix}
@@ -92,7 +94,8 @@ Z|-\rangle=|+\rangle.
 $$
 
 ## Hadamard and S   
-Hadamard is also a half rotation of Bloch sphere. The difference is that it rotates around a axis located halfway between x and z. This gives it the effect of rotating states that pointing along the z axis to those pointing along x. Vice versa.<br>
+Hadamard is also a half rotation of Bloch sphere. The difference is that it rotates around a axis located halfway between x and z. This gives it the effect of rotating states that pointing along the z axis to those pointing along x. Vice versa.   
+
 $$
 H = \frac{1}{\sqrt{2}}\begin{pmatrix}1&1\\1&-1\end{pmatrix}, 
 \begin{matrix}
@@ -100,7 +103,8 @@ H|0\rangle=|+\rangle,&H|+\rangle=|0\rangle, \\
 H|1\rangle=|-\rangle,&H|-\rangle=|1\rangle.
 \end{matrix}
 $$  
-$S$ and $S^\dagger$ gates are quanter turns of the Bloch sphere around the z axis, and so can be regard as two possible square roots of $Z$ gate ($\sqrt{Z}$): <br>
+$S$ and $S^\dagger$ gates are quanter turns of the Bloch sphere around the z axis, and so can be regard as two possible square roots of $Z$ gate ($\sqrt{Z}$):    
+
 $$
 S = \begin{pmatrix}1&0\\0&i\end{pmatrix}:\,\,\,\,
 \begin{matrix}
@@ -109,8 +113,9 @@ S|\circlearrowright\rangle = |-\rangle, \\
 S|-\rangle = |\circlearrowleft\rangle, \,\,\,\,
 S|\circlearrowleft\rangle = |+\rangle.
 \end{matrix} \\
-$$  
-and
+$$
+and    
+
 $$
 S^\dagger = \begin{pmatrix}1&0\\0&-i\end{pmatrix}:\,\,\,\,
 \begin{matrix}
@@ -142,16 +147,19 @@ Considering the
 $$
 Z=Z\dagger=\begin{pmatrix}1&0\\0&-1\end{pmatrix}, 
 (-1 = e^{i\pi} = e^{-i\pi})
-$$   
+$$
 and   
+
 $$ 
 S=\sqrt{Z}=\begin{pmatrix}1&0\\0&i\end{pmatrix},\,\,\,\, 
 S\dagger=\sqrt{Z}\dagger=\begin{pmatrix}1&0\\0&-i\end{pmatrix},
-$$
-two possible square roots of $S$, named $T$:  
+$$   
+
+two possible square roots of $S$, named $T$:   
+
 $$
 T = \begin{pmatrix} 1&0 \\\\ 0&e^{i\pi/4}\end{pmatrix}, \, \, \, \, T^\dagger = \begin{pmatrix} 1&0 \\\\ 0&e^{-i\pi/4} \end{pmatrix}.
-$$  
+$$   
 All single-qubit operations are compiled down to gates known as $U_1, U2$ , and $U_3$ before running real IBM quantum hardware. For that reason, they are sometimes called *physical gate*.<br>
 $$
 U_3(\theta, \phi, \lambda) = 
@@ -159,13 +167,16 @@ U_3(\theta, \phi, \lambda) =
     cos\frac{\theta}{2} & -e^{i\lambda}sin\frac{\theta}{2} \\\\
     e^{i\phi}sin\frac{\theta}{2} & e^{i\lambda+i\phi}cos\frac{\theta}{2}
 \end{pmatrix}
-$$
-This is a operation running in a pauly sphere. Based on $U_3$, $U_1$ and $U_2$ can be defined as:<br>
+$$   
+
+This is a operation running in a pauly sphere. Based on $U_3$, $U_1$ and $U_2$ can be defined as:   
+
 $$
 U_1(\lambda) = U_3(0, 0, \lambda) = 
 \begin{pmatrix}1&0\\0&e^{i\lambda}\end{pmatrix} 
 $$
-and
+and    
+
 $$
 U_2(\phi, \lambda) = U_3(\pi/2, \phi, \lambda) = 
 \frac{1}{\sqrt{2}}\begin{pmatrix}1&-e^{i\lambda} \\ e^{i\phi}&e^{i\lambda+i\phi}\end{pmatrix}
@@ -184,7 +195,8 @@ $$
 \end{pmatrix} = 
 \begin{pmatrix}0\\1\\0\\0
 \end{pmatrix}
-$$
+$$   
+
 $$
 CNOT = \begin{pmatrix}
 1 & 0 & 0 & 0 \\ 0 & 1 & 0 & 0 \\ 0 & 0 & 0 & 1 \\ 0 & 0 & 1 & 0 
@@ -195,12 +207,15 @@ CNOT|01\rangle = |01\rangle \\
 CNOT|10\rangle = |11\rangle \\
 CNOT|11\rangle = |10\rangle 
 \end{matrix}
-$$
-$\,\,\,\,\,\,\,\,\,\,\,\,\,\,$
+$$   
+
+$\,\,\,\,\,\,\,\,\,\,\,\,\,\,$   
+
 That $X$ (NOT) can be controlled, so do $Y$ and $Z$.
 
 * **Toffoli**  
-Being akin to CNOT, but Toffoli controlled on two qubits with another one qubit as target, which receives three qubits. Toffoli flips the last qubit only when the formers are $|11\rangle$, so that it can be represented as following matrix form:
+Being akin to CNOT, but Toffoli controlled on two qubits with another one qubit as target, which receives three qubits. Toffoli flips the last qubit only when the formers are $|11\rangle$, so that it can be represented as following matrix form:   
+
 $$
 Toffoli = \begin{pmatrix}
 1 &0 &0 &0 &0 &0 &0 &0 \\
@@ -225,7 +240,8 @@ Toffoli|111\rangle = |110\rangle.
 $$
 
 * **SWAP**
-As the the name means, SWAP gate swap two the qubits controlled by SWAP. 
+As the the name means, SWAP gate swap two the qubits controlled by SWAP.    
+
 $$
 SWAP = \begin{pmatrix}
 1 &0 &0 &0 \\ 0 &0 &1 &0 \\ 0 &1 &0 &0 \\ 0 &0 &0 &1
