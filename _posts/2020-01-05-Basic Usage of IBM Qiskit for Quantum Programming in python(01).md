@@ -1,13 +1,13 @@
 ---
 layout:     post
-title:      Starting To Code Quantum Programme with IBM Qiskit(Basis)
-subtitle:   Series Articles of Quantum Coding in Python -- 01
+title:      Series Articles of Quantum Coding in Python -- 01
+subtitle:   Starting To Code Quantum Programme with IBM Qiskit(Basis)
 date:       2020-01-05
 author:     OUC_LiuX
 header-img: img/quantum_IBM.jpeg
 catalog: true
 tags:
-    - Quantum Researching
+    - Quantum Researching, Qiskit, Quamtum Computation
 ---
 
 <head>

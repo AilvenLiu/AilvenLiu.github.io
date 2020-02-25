@@ -1,13 +1,13 @@
 ---
 layout:     post
-title:      Some Basic Concepts in Quantum State
-subtitle:   Series Articles of Quantum Coding in Python -- 02
+title:      Series Articles of Quantum Coding in Python -- 02
+subtitle:   Some Basic Concepts in Quantum State
 date:       2020-01-05
 author:     OUC_LiuX
 header-img: img/quantum_IBM.png
 catalog: true
 tags:
-    - Quantum Researching
+    - Quantum Researching, Quantum Concepts, Quantum Computation, Qiskit
 ---
 
 <head>

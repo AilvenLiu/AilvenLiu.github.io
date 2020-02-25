@@ -1,13 +1,13 @@
 ---
 layout:     post
-title:      Ubuntu16.04LTS下teamviewer14反馈商业用途的解决办法
-subtitle:   修改MAC地址
+title:      Series Articles of Ubuntu OS usage -- 01
+subtitle:   Ubuntu16.04LTS下teamviewer14反馈商业用途的解决办法
 date:       2020-01-03
 author:     OUC\_LiuX
 header-img: img/wallpic02.jpg
 catalog: true
 tags:
-    - work-space
+    - work-space, teamviewer
 ---
 # 整体流程
 1. 卸载当前teamviewer

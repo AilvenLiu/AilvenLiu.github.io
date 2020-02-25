@@ -1,13 +1,13 @@
 ---
 layout:     post
-title:      Problems occured when using ubuntu1804LTS for deep learning
-subtitle:   Series Articles of Ubuntu OS usage -- 01
+title:      Series Articles of Ubuntu OS usage -- 02
+subtitle:   OS kernel & NVIDIA-SMI/CUDA, Jupyter & Anaconda, LaTeX & TexStudio
 date:       2020-01-05
 author:     OUC_LiuX
 header-img: img/wallpic02.jpg
 catalog: true
 tags:
-    - Ubuntu OS, Anaconda, Jupyter
+    - Ubuntu OS, Anaconda, Jupyter, LaTeX, work-space
 ---
 
 <head>
