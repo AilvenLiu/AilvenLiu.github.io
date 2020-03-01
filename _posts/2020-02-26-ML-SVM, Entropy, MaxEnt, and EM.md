@@ -179,16 +179,15 @@ $$
 $$   
 Its lagrange dual problem is: <br>
 $$
-\mathop{max}\limits_{\alpha}
+\begin{aligned}
+& \mathop{max}\limits_{\alpha}\,\,\,\,
 \sum_{i=1}^m\alpha_i-\frac12\sum_{i=1}^m\sum_{j=1}^m
-\alpha_i \alpha_j y_i y_j \phi(x_i)^T \phi(x_j)
-\tag{2.3}
-$$    
-$$
-s.t.\,\,\,\,\sum_{i=0}^m\alpha_i y_i\,=\,0,\,\,\,\,
+\alpha_i \alpha_j y_i y_j \phi(x_i)^T \phi(x_j) \\
+& s.t.\,\,\,\,\sum_{i=0}^m\alpha_i y_i\,=\,0,\,\,\,\,
 \alpha_i\geq0,\,\,\,\,i=1,2,\cdots,m.
-$$  
-
+\end{aligned}
+\tag{2.3}
+$$   
 Solving eq.($1.3$) involves the calculation of $\phi(x_i)^T\phi(x_j)$, which is the inner product after mapping sample $x_i$ and $x_j$ into higher dimisional feature space. It's difficult to compute $\phi(x_i)^T\phi(x_j)$ as the feature space's dimision may be very high, even infinite. To avoid this problem, constructing a function $\kappa$ as: <br>  
 $$
 \kappa(x_i,x_j)=<\phi(x_i), \phi(x_j)>=\phi(x_i)^T\phi(x_j)
@@ -196,14 +195,14 @@ $$
 $$    
 I.e., the inner product of $x_i$ and $x_j$ in their feature space is equal to the calculated result of function $\kappa$ in original space. After having such a function, the calculation of inner product in high or even inifinate dimision feature space. The dual problem described by eq.($2.3$) is then re-writen as:  
 $$
-\mathop{max}\limits_{\alpha}
+\begin{aligned}
+& \mathop{max}\limits_{\alpha}\,\,\,\,
 \sum_{i=1}^m\alpha_i-\frac12\sum_{i=1}^m\sum_{j=1}^m
-\alpha_i \alpha_j y_i y_j \kappa(x_i, x_j)
-\tag{2.5}
-$$    
-$$
+\alpha_i \alpha_j y_i y_j \kappa(x_i, x_j)  \\
 s.t.\,\,\,\,\sum_{i=0}^m\alpha_i y_i\,=\,0,\,\,\,\,
 \alpha_i\geq0,\,\,\,\,i=1,2,\cdots,m.
+\end{aligned}
+\tag{2.5}
 $$   
 
 Be akin to eq.($1.10$), the solution of eq.($2.5$) is:<br>  
