@@ -188,6 +188,7 @@ $$
 s.t.\,\,\,\,\sum_{i=0}^m\alpha_i y_i\,=\,0,\,\,\,\,
 \alpha_i\geq0,\,\,\,\,i=1,2,\cdots,m.
 $$  
+
 Solving eq.($1.3$) involves the calculation of $\phi(x_i)^T\phi(x_j)$, which is the inner product after mapping sample $x_i$ and $x_j$ into higher dimisional feature space. It's difficult to compute $\phi(x_i)^T\phi(x_j)$ as the feature space's dimision may be very high, even infinite. To avoid this problem, constructing a function $\kappa$ as: <br>  
 $$
 \kappa(x_i,x_j)=<\phi(x_i), \phi(x_j)>=\phi(x_i)^T\phi(x_j)
@@ -204,6 +205,7 @@ $$
 s.t.\,\,\,\,\sum_{i=0}^m\alpha_i y_i\,=\,0,\,\,\,\,
 \alpha_i\geq0,\,\,\,\,i=1,2,\cdots,m.
 $$   
+
 Be akin to eq.($1.10$), the solution of eq.($2.5$) is:<br>  
 
 $$
