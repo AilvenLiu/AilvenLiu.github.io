@@ -199,7 +199,7 @@ $$
 & \mathop{max}\limits_{\alpha}\,\,\,\,
 \sum_{i=1}^m\alpha_i-\frac12\sum_{i=1}^m\sum_{j=1}^m
 \alpha_i \alpha_j y_i y_j \kappa(x_i, x_j)  \\
-s.t.\,\,\,\,\sum_{i=0}^m\alpha_i y_i\,=\,0,\,\,\,\,
+& s.t.\,\,\,\,\sum_{i=0}^m\alpha_i y_i\,=\,0,\,\,\,\,
 \alpha_i\geq0,\,\,\,\,i=1,2,\cdots,m.
 \end{aligned}
 \tag{2.5}
