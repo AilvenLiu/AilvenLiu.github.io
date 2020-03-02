@@ -25,13 +25,13 @@ tags:
 > Translated from *Machine Learning -- Chi-H. Zhou*.   
 
 ## O, Support Vectors  
-Given training simple set $D = {(x_1, y_1), (x_2, y_2),\cdots,(x_m, y_m)}, y_i\in{-1, +1}$, and the basic thought of classification learning is that, finding out a hyperplane in sample space based on the training set $D$, to split the disparate samples. The problem is, as fig-1 illustrating, which is the most suitable one during so many hyperplanes being able to split these samples.   
+Given training simple set $D = \{(x_1, y_1), (x_2, y_2),\cdots,(x_m, y_m)\}, \,\,y_i\in\{-1, +1\}$, and the basic thought of classification learning is that, finding out a hyperplane in sample space based on the training set $D$, to split the disparate samples. The problem is, as fig-1 illustrating, which is the most suitable one during so many hyperplanes being able to split these samples.   
 <img src="https://raw.githubusercontent.com/OUCliuxiang/OUCliuxiang.github.io/master/img/ml-svm-01.png" alt="fig-01" width="280"/>  
 
 Splited hyperplane can be discribed by the linear equation $\it{w^Tx+b} = 0$ in samples space. Where $\it{w}=(w_1, w_2, \cdots,w_d)^T$ is normal vector, which determines the direction of hyperplane; $\it{b}$ is bias item, determining the distance between hyperplane and origin. Hyperplane now can be donated as $(\it{w}, b)$, meanwhile the distance between hyperplane $(\it{w}, b)$ and any points $x$ in samples space can be written as: <br>  
 
 $$
-r = \frac{|w^Tx + b|}{||w||}.  \tag{0.1}
+r = \frac{|w^Tx + b|}{\parallel w\parallel}.  \tag{0.1}
 $$  
 
 Assuming hyperplane $(\it{w}, b)$ classifies training samples correctly, i.e., for all $(x_i, y_i)\in D$, $w^Tx_i+b>0$ when $y_i = +1$ wheraes $w^Tx_i+b<0$ when $y_i = -1$, let: <br>  
@@ -46,7 +46,7 @@ w^Tx_i+b\leq 1, & y_i=-1.
 \tag{0.2}
 $$  
 
-Then as illustrated in fig-02, these sample points closest to the hyperplane hold the equal sign in the above equation, and they are called *Support Vector*. Distance sum between two opposite support vectors and hyperplane is $\gamma=\frac{2}{||w||}$, and it is also called *margin*.  <br>
+Then as illustrated in fig-02, these sample points closest to the hyperplane hold the equal sign in the above equation, and they are called *Support Vector*. Distance sum between two opposite support vectors and hyperplane is $\gamma=\frac{2}{\parallelw\parallel}$, and it is also called *margin*.  <br>
 <img src="https://raw.githubusercontent.com/OUCliuxiang/OUCliuxiang.github.io/master/img/ml-svm-02.png" alt="fig-02" width="280"/>  
 
 ## (I) Solutions of Linear Hyperplane  
@@ -54,16 +54,16 @@ Then as illustrated in fig-02, these sample points closest to the hyperplane hol
 The primary target is finding the hyperplane with *maximum margin*, in other words, finding parameters $w$ and $b$ satisfying the constraint of $(0.2)$ maximizing $\gamma$. I.e.:<br>   
 $$
 \begin{aligned}
-&\mathop{max}\limits_{w,b}\,\,\,\, \frac{2}{||w||} \\
+&\mathop{max}\limits_{w,b}\,\,\,\, \frac{2}{\parallel w\parallel} \\
 &s.t.\,\,\,\,\,\,\,\, y_i(w^Tx_i+b)\geq 1, i = 1,2,\cdots,m.
 \end{aligned}
 \tag{1.1}
 $$     
    
-To maximize the margin, maximizing $||w||^{-1}$ is the only requirement, and is equal to minimize $||w||^w$. So that the above formula $(1.1)$ can be re-writen as   <br>  
+To maximize the margin, maximizing $\parallel w\parallel^{-1}$ is the only requirement, and is equal to minimize $\parallel w\parallel^w$. So that the above formula $(1.1)$ can be re-writen as   <br>  
 $$
 \begin{aligned}
-&\mathop{min}\limits_{w,b}\,\,\,\, \frac12||w||^2 \\
+&\mathop{min}\limits_{w,b}\,\,\,\, \frac12\parallel w\parallel^2 \\
 &s.t.\,\,\,\,\,\,\,\, y_i(w^Tx_i+b)\geq 1, i = 1,2,\cdots,m.
 \end{aligned}
 \tag{1.2}
@@ -107,7 +107,7 @@ $$
 Using Lagrange Multiplier for formula $(1.2)$ will establish its *dual problem*. In particular, add lagrange multiplier $\alpha_i\geq 0$ to each constraint condition in eq.$(1.2)$, then the lagrange function of this problem is writen as: <br>  
 
 $$
-\mathcal L(w,b,\alpha) = \frac12||w||^2+\sum^m_{i=1}\alpha_i(1-(y_i(w_Tx_i+b))), \tag{1.4}
+\mathcal L(w,b,\alpha) = \frac12\parallel w\parallel^2+\sum^m_{i=1}\alpha_i(1-(y_i(w_Tx_i+b))), \tag{1.4}
 $$  
 in which, $\alpha=(\alpha_1, \alpha_2, \cdots, \alpha_m)$. Then let the partial derivative $\frac{\partial \mathcal L}{\partial w} = 0$ and $\frac{\partial \mathcal L}{\partial b} = 0$, the reults are: <br>      
    
@@ -172,7 +172,7 @@ $$f(x)=w^T\phi(x)+b, \tag{2.1}$$
 in which, $w$ and $b$ are parameters. Be akin to eq.$(1.2)$ we have: <br>
 $$
 \begin{aligned}
-&\mathop{min}\limits_{w,b}\,\,\,\,\frac12||w||^2 \\
+&\mathop{min}\limits_{w,b}\,\,\,\,\frac12\parallel w\parallel^2 \\
 &s.t.\,\,\,\,\,\,\,\,\,y_i(w^T\phi(x_i)+b)\geq 1, i = 1,2,\cdots,m.
 \end{aligned}
 \tag{2.2}
@@ -221,7 +221,7 @@ What need to be pointed out is that, the most suitable form of kernel function i
 
 |name|expression|parameters|
 |:----|:----|:----|
-|Linear kernel|$\kappa(x_i,x_j)=x_i^Tx_j$||
+|Linear kernel|$\kappa(x_i,x_j)=x_i^Tx_j$\parallel
 |Lolynomial kernel|$\kappa(x_i,x_j)=(x_i^Tx_j)^d$|$d\geq1$, the degree of polynomial|
 |Gauss kernel|$\kappa(x_i,x_j)=exp(-\frac{\|x_i-x_j\|^2}{2\sigma^2})$|$\sigma>0$, the width of gauss kernel|
 |Laplace kernel|$\kappa(x_i,x_j)=exp(-\frac{\|x_i-x_j\|}{\sigma})$|$\sigma>0$, the width of laplace kernel|
@@ -251,7 +251,7 @@ $$
 
 And of caurse, at the meantime of maximizing margin, the samples which do not meet constraint are obliged to be as few as possible. Hence the optimizational target is written as:  
 $$
-\mathop{min}\limits_{w,b}\frac12 |w|^2 + C\sum_{i=1}^m l_{0/1}(y_i(w^Tx_i+b)-1), \tag{3.2}  
+\mathop{min}\limits_{w,b}\frac12 \parallel w\parallel^2 + C\sum_{i=1}^m l_{0/1}(y_i(w^Tx_i+b)-1), \tag{3.2}  
 $$   
 
 in which $C>0$ is a constant, $l_{0/1}$ is $0/1 \,\,loss \,\,function$:  
@@ -270,11 +270,76 @@ The current problem is, $\ell l_{0/1}$ is not convex or concave, and discontinuo
 other functions called *surrogate loss* is a common method. The surrogate loss functions have more ideal mathematic properties, such as they are usually convex and continuous, and the upper bound of $\ell l_{0/1}$. There are three commonly used surrogate loss shown in fig-05:   
 <img src="https://raw.githubusercontent.com/OUCliuxiang/OUCliuxiang.github.io/master/img/ml-svm-05.png" alt="fig-04" width="280"/>    
 
-1. hinge loss: $\ell l_{hinge}(z) = max(0, 1-z); \tag{3.4}$   
-2. exponential loss: $\ell l_{exp}(z) = e^{-z}; \tag{3.5}$  
-3. logistic loss: $\ell l_{log}(z) = log(1+e^{-z}); \tag{3.6}$  
+1. hinge loss: 
+   $$\ell l_{hinge}(z) = max(0, 1-z); \tag{3.4}$$   
+2. exponential loss: 
+   $$\ell l_{exp}(z) = e^{-z}; \tag{3.5}$$  
+3. logistic loss: 
+   $$\ell l_{log}(z) = log(1+e^{-z}); \tag{3.6}$$    
 
-To be continued...
+Considering the *hinge loss*, eq.($3.2$) is changed as:  
+$$
+\mathop{min}\limits_{w,b}\frac12 \parallel w\parallel^2 + 
+C\sum_{i=1}^m max(0,\,\,1-y_i(w^Tx_i+b)).  \tag{3.7}
+$$  
+After introducing *slack variable* $\xi_i \geq 0$, the eq.($3.7$) can be rewritten as：  
+$$
+\begin{aligned}
+&\mathop{min}\limits_{w,b}\frac12 \parallel w\parallel^2 + 
+C\sum_{i=1}^m \xi_i \\
+&s.t.\,\,\,\,y_i(w^Tx_i+b) \geq 1-\xi_i, \,\,\,\,\xi_i\geq 0, \,\,i=1,2,\cdots,m.  
+\end{aligned}
+\tag{3.8}
+$$    
+
+Each sample has a corresponding slack variables which is used to represent the degree of sample mismatching constraint eq.($3.2$). The current problem is still a quadratic problemming problem akin to eq.($1.4$). Constracting eq.($3.8$)'s Lagrange function as:  
+$$
+\begin{aligned}
+\mathcal L(w, b, \alpha, \xi, \mu) = &\frac12 \parallel w\parallel^2 + C\sum_{i=1}^m\xi_i \\
+&+\sum_{i=1}^m\alpha_i(1-\xi_i-y_i(w^Tx_i+b)) - \sum_{i=1}^m\mu_i\xi_i, 
+\end{aligned}  
+\tag{3.9}
+$$   
+in which, $\alpha_i\geq0, \mu_i\geq0$ are lagrange multipliers.   
+Let the partial derivatives of $w, b,$ and $\xi$ to zero:   
+$$
+\begin{aligned}
+\frac{\partial \mathcal L}{\partial w} &= 0 \Longrightarrow w &= \sum_{i=1}^m\alpha_i y_i x_i, \\  
+\frac{\partial \mathcal L}{\partial b} &= 0 \Longrightarrow b &= \sum_{i=1}^m\alpha_i y_i, \\   
+\frac{\partial \mathcal L}{\partial \xi} &= 0 \Longrightarrow 0 & C - \alpha_i - \mu_i.   
+\end{aligned}
+\tag{3.10}  
+$$   
+Substiute eq.($3.10$) into eq.($3.9$), and then we get the dual problem of eq.($3.8$) as:   
+$$
+\begin{aligned}
+& \mathop{max}\limits_{\alpha} \sum_{i=1}^m\alpha_i - \frac12 \sum_{i=1}^m\sum_{j=1}^m \alpha_i\alpha_j y_i y_j x_i^T x_j \\
+& s.t.\,\,\,\,\sum_{i=1}^m\alpha_i y_i = 0, \,\,\,\,0\leq\alpha_i\leq C, i=1,2,\cdots,m.  
+\end{aligned}  
+\tag{3.11}
+$$  
+Comparing the dual problem eq.(3.11) with it conunterpart under hard margin (eq.($1.9$)), the only distinction is the different of constraints bewteen dual variables: The former is $0\leq\alpha_i\leq C$ whereas the latter is $0\leq\alpha_i$.Thus the solving of eq.($3.11$) is similar to hard margin.   
+The KKT conditions applicable to soft margin is written as:  
+$$
+\left\{
+\begin{aligned}
+& \alpha_i\geq0, \,\,\,\, \mu_i\geq0, \\
+& 1-\xi_i-y_if(x_i) \leq 0, \\
+& \alpha_i(1-\xi_i-y_if(x_i)) = 0, \\
+& \xi_i\geq0 \,\,\,\, \mu_i\xi_i=0.  
+\end{aligned}  
+\right.  
+\tag{3.12}  
+$$    
+
+Then for arbitrary training sample $(\bm{x_i}, y_i)$, there are always $\alpha_i=0$ or $1 - \xi_i - y_if(x_i) = 0$. If $\alpha_i=0$, this sample does not affect $f(x_i)$ at all; if $\alpha_i>0$, $y_if(x_i) = 1 - \xi_i$ is must true, i.e. this sample is support vector. Knowing from the third formula of eq.($3.10$), when $\alpha_i<C\longrightarrow\mu_i>0\longrightarrow\xi_i=0$, i.e. this sample is just loacted at the boundary of maximal margin; whereas if $\alpha_i=C\longrightarrow\mu_i=0$, under this circumstanc: if $\xi_i \leq1$, this sample locates inside the maximal margin, or $\xi_i >1$, this sample is classified incorrectly. The soft margin SVM is still only related with support vectors.    
+Soft margin SVM described by eq.($3.2$) can be generalized as:  
+$$
+\mathop{min}\limits_{f} \Omega(f) + C\sum_{i=1}^m\ell l(f(x_i), y_i),   
+\tag{3.13}
+$$    
+in which, $\Omega(f)$ is *structural risk*, used to describe some properities of model $f$, and the second item $\sum_{i=1}^m\ell l(f(x_i), y_i)$ is called *expirical risk*, used to describe the fitting degree between model and training data; $C$ is used to compromise between the both. Eq.($3.13$) in another aspect is a normalizational problem, in which $\Omega(f)$ is normalizational item, $C$ is normalizational constant. $L_P$ norm is the commonly used norm item: $L_2$ norm $\parallel w\parallel_2$ tends to make the components of $w$ as balanced as possible, in other words, make the number of non-zero components as density as possible; $L_0$ norm $\parallel w\parallel_0$ and $L_1$ norm $\parallel w\parallel_1$ tend to make the components of $w$ as sparse as possible, in other words, make the number of non-zero components as few as possible. 
+ 
 
  
 ### SMO and Quadratic Programma  
