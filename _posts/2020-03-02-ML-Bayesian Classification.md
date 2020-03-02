@@ -53,7 +53,7 @@ R(c|x) = 1-P(x|x),   \tag{1.5}
 $$   
 Therefore the Bayesia optimal classifier which minimizes the classification error ratio is:   
 $$
-h*(x) = \mathop{argmax}\limits_{c\in \mathcal{Y}} P(c|x), \tag{1.6}
+h^*(x) = \mathop{argmax}\limits_{c\in \mathcal{Y}} P(c|x), \tag{1.6}
 $$     
 i.e. to select category label maximizing the posterior probability $P(c|x)$ for each smaple $x$.  
 The precondition of using Bayesia descriminative principle to minimizing decision risk is get the posterior probability $P(c|x)$. It's difficult to obtain directly in particular. Consider from this view, what machine learning need to do is estimate posterior probability $P(c|x)$ based on limited training smaples as preciously as precise as possible. In general, there are two strategies: given $x$ and predict $c$ by directly modeling for $P(c|x)$, which is *discriminatinve models*; or, model joint probability $P(x, c)$ firstly and then the posterior probability $P(c|x)$ is obtained, which is *generative models*. It's obveriously, models such as "Decision Tree", "BP networks", "SVM" and so on can be categorized as descriminative models. For generative models, we must consider:  
