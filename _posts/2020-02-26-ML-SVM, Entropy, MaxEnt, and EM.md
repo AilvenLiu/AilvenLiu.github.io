@@ -1,13 +1,13 @@
 ---
 layout:     post
 title:      Series Articles of Machine Learning -- 02
-subtitle:   SVM and SMO
+subtitle:   Support Vector Machine
 date:       2020-02-26
 author:     OUC_LiuX
 header-img: img/wallpic02.jpg
 catalog: true
 tags:
-    - Machine Learning, SVM, SMO, Data Maining
+    - Machine Learning, SVM, Classification
 ---
 
 <head>
