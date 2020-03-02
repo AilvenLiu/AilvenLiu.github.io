@@ -292,7 +292,7 @@ C\sum_{i=1}^m \xi_i \\
 \tag{3.8}
 $$    
 
-Each sample has a corresponding slack variables which is used to represent the degree of sample mismatching constraint eq.($3.2$). The current problem is still a quadratic problemming problem akin to eq.($1.4$). Constracting eq.($3.8$)'s Lagrange function as:  
+Each sample has a corresponding slack variables which is used to represent the degree of sample mismatching constraint eq.($3.2$). The current problem is still a quadratic problemming problem akin to eq.($1.4$). Constructing eq.($3.8$)'s Lagrange function as:  
 $$
 \begin{aligned}
 \mathcal L(w, b, \alpha, \xi, \mu) = &\frac12 \parallel w\parallel^2 + C\sum_{i=1}^m\xi_i \\
@@ -304,9 +304,9 @@ in which, $\alpha_i\geq0, \mu_i\geq0$ are lagrange multipliers.
 Let the partial derivatives of $w, b,$ and $\xi$ to zero:   
 $$
 \begin{aligned}
-\frac{\partial \mathcal L}{\partial w} &= 0 \Longrightarrow w &= \sum_{i=1}^m\alpha_i y_i x_i, \\  
-\frac{\partial \mathcal L}{\partial b} &= 0 \Longrightarrow b &= \sum_{i=1}^m\alpha_i y_i, \\   
-\frac{\partial \mathcal L}{\partial \xi} &= 0 \Longrightarrow 0 & C - \alpha_i - \mu_i.   
+& \frac{\partial \mathcal L}{\partial w} = 0 \Longrightarrow w = \sum_{i=1}^m\alpha_i y_i x_i, \\  
+& \frac{\partial \mathcal L}{\partial b} = 0 \Longrightarrow b = \sum_{i=1}^m\alpha_i y_i, \\   
+&\frac{\partial \mathcal L}{\partial \xi} = 0 \Longrightarrow 0 = C - \alpha_i - \mu_i.   
 \end{aligned}
 \tag{3.10}  
 $$   
