@@ -32,13 +32,14 @@ R(c_i|x) = \sum_{j=1}^N\lambda_{ij}P(c_i|x).  \tag{1.1}
 $$  
 The target now is finding a descriminative principle: $h:\mathcal{X}\rightarrow\mathcal{Y}$ to minimizing the overall risk:  
 $$
-R(h) = \bm{E_x}[\,R\,(\,h(\,x)|\,x)].    \tag{1.2}
+R(h) = E_x[\,R\,(\,h(\,x)|\,x)].    \tag{1.2}
 $$    
 Obveriously for each sample $x$, if $h$ is able to minimize the conditional rist $R( h(x) | x)$, the overall risk $R( h)$ is also minimized. The *Bayesian decision rule* then is drawn as: in order to minimize the overall risk, simply select the category label on each sample that minimizes the *conditinoal risk*, that is:   
 $$
 h^*(x) = \mathop{argmin}\limits_{c\in\mathcal Y} R(c|x),  \tag{1.3}   
 $$   
-now, $h^*$ is called *Bayesian optimal classifier*, and the corresponding overall risk $R(h^*)$ is called *Bayesia risk*. $1-R(h^*)$ represents the best performance the classifier can reach, or the theoretical limit of model accurancy produced by machine learning. More particularly, if the target is minimizing error ratio of classification, the misclassified loss $\lambda_{ij}$ can be written as:  
+now, $h^\*$ is called *Bayesian optimal classifier*, and the corresponding overall risk $R(h^\*)$ is called *Bayesia risk*. 
+$1-R(h^\*)$ represents the best performance the classifier can reach, or the theoretical limit of model accurancy produced by machine learning. More particularly, if the target is minimizing error ratio of classification, the misclassified loss $\lambda_{ij}$ can be written as:  
 $$
 \lambda_{ij} = \left\{
 \begin{aligned}
