@@ -108,10 +108,12 @@ $$
 p(x_i|c) = \frac{1}{\sqrt{2\Pi}\sigma_{c,i}}exp(-\frac{(x_i-\mu_{c,i}^2}{2\sigma_{c,i}^2}).  
 $$     
 
-We use the *watermelon dataset 3.0* ( from table 3.0, page.84, *Machine Learning -- Chi-H. Chou*) to train a naive Bayes classifier, and classifies the sample "test.01":  
+We use the *watermelon dataset 3.0* ( from table 3.0, page.84, *Machine Learning -- Chi-H. Chou*) to train a naive Bayes classifier, and classifies the sample "test.01": 
+$$ 
 |色泽|根蒂|敲声|纹理|脐部|触感|密度|含糖率|好瓜|
 |----|----|----|----|----|----|----|----|----|
 |青绿|蜷缩|浊响|清晰|凹陷|硬滑|0.697|0.460|？|   
+$$   
 
 Firstly to estimate the class-prior probability $P(c)$:   
 $$
@@ -120,9 +122,9 @@ $$
 &P(好瓜=否) = \frac{9}{17} \approx 0.529.
 \end{aligned}
 $$   
-And then estimate each attribute's conditional probability $P(x_i|c)$:   
+Estimate each attribute's conditional probability $P(x_i|c)$:   
 $$
-\begin{aligned}
+\begin{aligned}  
 & P_{青绿|是}=P(色泽=青绿|好瓜=是)=\frac{3}{8}=0.375, \\
 & P_{青绿|否}=\frac{3}{9}\approx 0.333, \\
 & P_{蜷缩|是}=\frac{5}{8} = 0.625, \\
@@ -138,9 +140,9 @@ $$
 & P_{密度:0.697|是} = p(密度=0.697|好瓜=是) = \frac{1}{\sqrt{2\pi}\cdot0.129}exp\left\( -\frac{(0.697-0.574)^2}{2\cdot0.129^2}\right\) \approx 1.959, \\
 & P_{密度:0.697|否} = \frac{1}{\sqrt{2\pi}\cdot0.195} exp\left\( -\frac{(0.697-0.496)^2}{2\cdot0.195^2}\right\) \approx 1.203, \\
 & P_{含糖:0.460|是} = \frac{1}{\sqrt{2\pi}\cdot0.101} exp\left\( -\frac{(0.460-0.279)^2}{2\cdot0.101^2}\right\) \approx 0.788, \\
-& P_{含糖:0.460|否} = \frac{1}{\sqrt{2\pi}\cdot0.108} exp\left\( -\frac{(0.460-0.154)^2}{2\cdot0.108^2}\right\) \approx 0.066, \\
+& P_{含糖:0.460|否} = \frac{1}{\sqrt{2\pi}\cdot0.108} exp\left\( -\frac{(0.460-0.154)^2}{2\cdot0.108^2}\right\) \approx 0.066,  
 \end{aligned}
-$$   
+$$     
 And then:   
 $$
 \begin{aligned}    
