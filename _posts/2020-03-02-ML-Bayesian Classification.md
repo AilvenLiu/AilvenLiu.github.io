@@ -98,14 +98,14 @@ which is the expression of *naive Bayes classifier*. The training process of nai
 Let $D_c$ represents the set of class $c$ in training set, and when there are abundant independent and identical sampels, the class-prior probability can be easily estimated:  
 $$
 \begin{aligned}
-& P(c)     &= \frac{|D_c|}{|D|}, \\
-& P(x_i|c) &= \frac{|D_{x_i,c}|}{|D_c|},       
+& P(c)     &=& \frac{|D_c|}{|D|}, \\
+& P(x_i|c) &=& \frac{|D_{x_i,c}|}{|D_c|},       
 \end{aligned} \tag{3.3}
 $$    
 in which, $\|D_{x_i,c}\|= \frac{\|D_{x_i,c}\|}{\|D_c\|}$ represents the set consituted by samples whose value is $x_i$ in the $i^{th}$ attribute among $D_c$.    
 For continuous attribute, $\|D_{x_i,c}\|$ is calculated by probability density function. Assume $p(x_i|c)~\mathcal{N}(\mu_{c,i}, \sigma_{c,i}^2)$, in which $\mu_{c,i}, \sigma_{c,i}^2$ are separately the mean and varience of the $i_{th}$ attribute in class $c$:   
 $$
-p(x_i|c) = \frac{1}{\sqrt{2\Pi}\sigma_{c,i}}exp(-\frac{(x_i-\mu_{c,i}^2}{2\sigma_{c,i}^2}).  
+p(x_i|c) = \frac{1}{\sqrt{2\pi}\sigma_{c,i}}exp(-\frac{(x_i-\mu_{c,i}^2}{2\sigma_{c,i}^2}).  
 $$     
 
 We use the *watermelon dataset 3.0* ( from table 3.0, page.84, *Machine Learning -- Chi-H. Chou*) to train a naive Bayes classifier, and classifies the sample "test.01": <br>  
@@ -116,17 +116,17 @@ We use the *watermelon dataset 3.0* ( from table 3.0, page.84, *Machine Learning
 <br>
 
 Firstly to estimate the class-prior probability $P(c)$:   
+
 $$
 \begin{aligned}
 &P(好瓜=是) = \frac{8}{17} \approx 0.471, \\
 &P(好瓜=否) = \frac{9}{17} \approx 0.529.
 \end{aligned}
 $$   
-Calculate each attribute's conditional probability $P(x_i|c)$:   
-
+Calculate each attribute's conditional probability $P(x_i|c)$:<br>  
 $$
-\begin{aligned}  
-& P_{青绿|是}=P(色泽=青绿|好瓜=是)=\frac{3}{8}=0.375, \\
+\begin{aligned}   
+& P_{青绿|是}=P(色泽=青绿|好瓜=是)=\frac{3}{8}=0.375 \\
 & P_{青绿|否}=\frac{3}{9}\approx 0.333, \\
 & P_{蜷缩|是}=\frac{5}{8} = 0.625, \\
 & P_{蜷缩|否}=\frac{3}{9}\approx 0.333, \\
@@ -138,11 +138,16 @@ $$
 & P_{凹陷|否}=\frac{2}{9}\approx 0.222, \\
 & P_{硬滑|是}=\frac{6}{8} = 0.750, \\
 & P_{硬滑|否}=\frac{6}{9}\approx 0.667, \\
-& P_{密度:0.697|是} = p(密度=0.697|好瓜=是) = \frac{1}{\sqrt{2\pi}\cdot0.129}exp\left\( -\frac{(0.697-0.574)^2}{2\cdot0.129^2}\right\) \approx 1.959, \\
-& P_{密度:0.697|否} = \frac{1}{\sqrt{2\pi}\cdot0.195} exp\left\( -\frac{(0.697-0.496)^2}{2\cdot0.195^2}\right\) \approx 1.203, \\
-& P_{含糖:0.460|是} = \frac{1}{\sqrt{2\pi}\cdot0.101} exp\left\( -\frac{(0.460-0.279)^2}{2\cdot0.101^2}\right\) \approx 0.788, \\
-& P_{含糖:0.460|否} = \frac{1}{\sqrt{2\pi}\cdot0.108} exp\left\( -\frac{(0.460-0.154)^2}{2\cdot0.108^2}\right\) \approx 0.066,  
-\end{aligned}
+\end{aligned}   
+$$   
+$$
+\begin{aligned}   
+P_{密度:0.697|是} &= p(密度=0.697|好瓜=是) \\
+&= \frac{1}{\sqrt{2\pi}\cdot0.129}exp\left( -\frac{(0.697-0.574)^2}{2\cdot0.129^2}\right) &\approx 1.959, \\
+P_{密度:0.697|否} &= \frac{1}{\sqrt{2\pi}\cdot0.195} exp\left( -\frac{(0.697-0.496)^2}{2\cdot0.195^2}\right) &\approx 1.203, \\
+P_{含糖:0.460|是} &= \frac{1}{\sqrt{2\pi}\cdot0.101} exp\left( -\frac{(0.460-0.279)^2}{2\cdot0.101^2}\right) &\approx 0.788, \\
+P_{含糖:0.460|否} &= \frac{1}{\sqrt{2\pi}\cdot0.108} exp\left( -\frac{(0.460-0.154)^2}{2\cdot0.108^2}\right) &\approx 0.066, 
+\end{aligned}   
 $$     
 
 And then:   
