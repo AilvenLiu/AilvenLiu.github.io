@@ -108,12 +108,8 @@ $$
 p(x_i|c) = \frac{1}{\sqrt{2\pi}\sigma_{c,i}}exp(-\frac{(x_i-\mu_{c,i}^2}{2\sigma_{c,i}^2}).  
 $$     
 
-We use the *watermelon dataset 3.0* ( from table 3.0, page.84, *Machine Learning -- Chi-H. Chou*) to train a naive Bayes classifier, and classifies the sample "test.01": <br>  
-
-|色泽|根蒂|敲声|纹理|脐部|触感|密度|含糖率|好瓜|
-|:---|:---|:---|:---|:---|:---|:---|:---|:---|
-|青绿|蜷缩|浊响|清晰|凹陷|硬滑|0.697|0.460|？|   
-<br>
+We use the *watermelon dataset 3.0* ( from table 3.0, page.84, *Machine Learning -- Chi-H. Chou*) to train a naive Bayes classifier, and classifies the sample "test.01": 
+<img src="https://raw.githubusercontent.com/OUCliuxiang/OUCliuxiang.github.io/master/img/ml-bayes-01.png" alt="fig-01" width="500"/> 
 
 Firstly to estimate the class-prior probability $P(c)$:   
 
