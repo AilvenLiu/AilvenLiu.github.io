@@ -7,7 +7,7 @@ author:     OUC_LiuX
 header-img: img/wallpic02.jpg
 catalog: true
 tags:
-    - Machine Learning, Bayesia, Classification
+    - Machine Learning, Bayes, Classification
 ---
 
 <head>
@@ -84,3 +84,85 @@ $$
 \hat{\theta}_c = \mathop{argmax}\limits_{\theta_c} LL(\theta_c).  
 \tag{2.3}
 $$   
+
+## (III) Naive Bayes Classifier  
+The primary obstacle of estimating posterior probability based on Bayse formula eq.$(1.8)$ is that, class-conditional probability $P(x | c)$ is a joint probability on all attributes, and is hard to directly estimate from limited smaples. The *naive Bayes classifier* uses *attribute conditional independence assumption* to avoid the obstacle. It assumes all attributes are independent for known categories, in other words, assumes each attribute affects the classified result independently. Based on the above assumption, the formula eq.$(1.8)$ can be re-written as:  
+$$
+P(c|x) = \frac{P(c)P(x|c)}{P(x)} = \Pi_{i=1}^d P(x_i|c),  \tag{3.1}  
+$$     
+in which, $d$ is the number of attributes, $x_i$ is the value of $i^{th}$ attribute of $x$. $P(x)$ is equal for all categories, therefore based on formula eq.$(1.6)$, the Bayes descriminative principle is:  
+$$
+h_{nb}(x) = \mathop{\argmax}\limits_{c\in \mathcal{Y}} P(c)\Pi_{i=1}^d P(x_i|c), \tag{3.2}
+$$    
+which is the expression of *naive Bayes classifier*. The training process of naive Bayes classifier is that estimate class-prior probability $P(c)$ based on training set $D$, and estimate conditional probability $P(x_i|c)$ for each attribute.   
+Let $D_c$ represents the set of class $c$ in training set, and when there are abundant independent and identical sampels, the class-prior probability can be easily estimated:  
+$$
+\begin{aligned}
+& P(c) = \frac{|D_c|}{|D|}, \\
+& P(x_i|c) = \frac{|D_{x_i,c}|}{|D_c|},       
+\end{aligned} \tag{3.3}
+$$    
+in which, $\|D_{x_i,c}\|= \frac{\|D_{x_i,c}\|}{\|D_c\|}$ represents the set consituted by samples whose value is $x_i$ in the $i^{th}$ attribute among $D_c$.    
+For continuous attribute, $\|D_{x_i,c}\|$ is calculated by probability density function. Assume $p(x_i|c)~\mathcal{N}(\mu_{c,i}, \sigma_{c,i}^2)$, in which $\mu_{c,i}, \sigma_{c,i}^2$ are separately the mean and varience of the $i_{th}$ attribute in class $c$:   
+$$
+p(x_i|c) = \frac{1}{\sqrt{2\Pi}\sigma_{c,i}}exp(-\frac{(x_i-\mu_{c,i}^2}{2\sigma_{c,i}^2}).  
+$$     
+
+We use the *watermelon dataset 3.0* ( from table 3.0, page.84, *Machine Learning -- Chi-H. Chou*) to train a naive Bayes classifier, and classifies the sample "test.01":  
+|色泽|根蒂|敲声|纹理|脐部|触感|密度|含糖率|好瓜|
+|----|----|----|----|----|----|----|----|----|
+|青绿|蜷缩|浊响|清晰|凹陷|硬滑|0.697|0.460|？|   
+
+Firstly to estimate the class-prior probability $P(c)$:   
+$$
+\begin{aligned}
+&P(好瓜=是) = \frac{8}{17} \approx 0.471, \\
+&P(好瓜=否) = \frac{9}{17} \approx 0.529.
+\end{aligned}
+$$   
+And then estimate each attribute's conditional probability $P(x_i|c)$:   
+$$
+\begin{aligned}
+& P_{青绿|是}=P(色泽=青绿|好瓜=是)=\frac{3}{8}=0.375, \\
+& P_{青绿|否}=\frac{3}{9}\approx 0.333, \\
+& P_{蜷缩|是}=\frac{5}{8} = 0.625, \\
+& P_{蜷缩|否}=\frac{3}{9}\approx 0.333, \\
+& P_{浊响|是}=\frac{6}{8} = 0.750, \\
+& P_{浊响|否}=\frac{4}{9}\approx 0.444, \\
+& P_{清晰|是}=\frac{7}{8} = 0.875, \\
+& P_{清晰|否}=\frac{2}{9}\approx 0.222, \\
+& P_{凹陷|是}=\frac{6}{8} = 0.750, \\
+& P_{凹陷|否}=\frac{2}{9}\approx 0.222, \\
+& P_{硬滑|是}=\frac{6}{8} = 0.750, \\
+& P_{硬滑|否}=\frac{6}{9}\approx 0.667, \\
+& P_{密度:0.697|是} = p(密度=0.697|好瓜=是) = \frac{1}{\sqrt{2\pi}\cdot0.129}exp\left\( -\frac{(0.697-0.574)^2}{2\cdot0.129^2}\right\) \approx 1.959, \\
+& P_{密度:0.697|否} = \frac{1}{\sqrt{2\pi}\cdot0.195} exp\left\( -\frac{(0.697-0.496)^2}{2\cdot0.195^2}\right\) \approx 1.203, \\
+& P_{含糖:0.460|是} = \frac{1}{\sqrt{2\pi}\cdot0.101} exp\left\( -\frac{(0.460-0.279)^2}{2\cdot0.101^2}\right\) \approx 0.788, \\
+& P_{含糖:0.460|否} = \frac{1}{\sqrt{2\pi}\cdot0.108} exp\left\( -\frac{(0.460-0.154)^2}{2\cdot0.108^2}\right\) \approx 0.066, \\
+\end{aligned}
+$$   
+And then:   
+$$
+\begin{aligned}    
+&P(好瓜=是) \times P_{青绿|是} \times P_{蜷缩|是} \times P_{浊响|是} \times P_{清晰|是} \times P_{凹陷|是} \\
+&\,\,\,\,\times P_{硬滑|是}\times P_{密度:0.697|是}\times P_{含糖:0.460|是} \approx 0.038,  \\\\
+&P(好瓜=否) \times P_{青绿|否} \times P_{蜷缩|否} \times P_{浊响|否} \times P_{清晰|否} \times P_{凹陷|否} \\
+&\,\,\,\,\times P_{硬滑|否}\times P_{密度:0.697|否}\times P_{含糖:0.460|否} \approx 6.80\times10^{-5}.   
+\end{aligned}   
+$$     
+$0.038 > 6.80\times10^{-5}$, naive Bayes classifier classifies sample *"test.01"* as *"好瓜"*.     
+What should note is, if one attribute in training set never appeared with a certain category, and still use the above original frequency-based method to estimate prior probability, the naive Bayes classifier will not work at all since the occurrance of zero value:  
+$$
+P_{清脆|是} = \frac08 = 0.  
+$$   
+Smoothing the value of probability with *"Laplace correction"*:  
+$$
+\hat P(c) = \frac{|D_c|+1}{|D|+N},    \tag{3.4}
+$$     
+$$
+\hat P(x_i|c) = \frac{|D_{c,x_i}|+1}{|D_c|+N},    \tag{3.5}
+$$    
+in which, $N$ represents the number of possible category in training set, $N_i$ represents the number of possible value of $i_th$ attribute.   
+
+## (Semi-naive Bayes Classifier)   
+To be completed...
