@@ -108,12 +108,12 @@ $$
 p(x_i|c) = \frac{1}{\sqrt{2\Pi}\sigma_{c,i}}exp(-\frac{(x_i-\mu_{c,i}^2}{2\sigma_{c,i}^2}).  
 $$     
 
-We use the *watermelon dataset 3.0* ( from table 3.0, page.84, *Machine Learning -- Chi-H. Chou*) to train a naive Bayes classifier, and classifies the sample "test.01": 
-$$ 
+We use the *watermelon dataset 3.0* ( from table 3.0, page.84, *Machine Learning -- Chi-H. Chou*) to train a naive Bayes classifier, and classifies the sample "test.01": <br>  
+
 |色泽|根蒂|敲声|纹理|脐部|触感|密度|含糖率|好瓜|
-|----|----|----|----|----|----|----|----|----|
+|:---|:---|:---|:---|:---|:---|:---|:---|:---|
 |青绿|蜷缩|浊响|清晰|凹陷|硬滑|0.697|0.460|？|   
-$$   
+<br>
 
 Firstly to estimate the class-prior probability $P(c)$:   
 $$
@@ -122,7 +122,8 @@ $$
 &P(好瓜=否) = \frac{9}{17} \approx 0.529.
 \end{aligned}
 $$   
-Estimate each attribute's conditional probability $P(x_i|c)$:   
+Calculate each attribute's conditional probability $P(x_i|c)$:   
+
 $$
 \begin{aligned}  
 & P_{青绿|是}=P(色泽=青绿|好瓜=是)=\frac{3}{8}=0.375, \\
@@ -143,6 +144,7 @@ $$
 & P_{含糖:0.460|否} = \frac{1}{\sqrt{2\pi}\cdot0.108} exp\left\( -\frac{(0.460-0.154)^2}{2\cdot0.108^2}\right\) \approx 0.066,  
 \end{aligned}
 $$     
+
 And then:   
 $$
 \begin{aligned}    
