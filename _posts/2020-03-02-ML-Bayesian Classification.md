@@ -92,14 +92,14 @@ P(c|x) = \frac{P(c)P(x|c)}{P(x)} = \Pi_{i=1}^d P(x_i|c),  \tag{3.1}
 $$     
 in which, $d$ is the number of attributes, $x_i$ is the value of $i^{th}$ attribute of $x$. $P(x)$ is equal for all categories, therefore based on formula eq.$(1.6)$, the Bayes descriminative principle is:  
 $$
-h_{nb}(x) = \mathop{\argmax}\limits_{c\in \mathcal{Y}} P(c)\Pi_{i=1}^d P(x_i|c), \tag{3.2}
+h_{nb}(x) = \mathop{argmax}\limits_{c\in \mathcal{Y}} P(c)\Pi_{i=1}^d P(x_i|c), \tag{3.2}
 $$    
 which is the expression of *naive Bayes classifier*. The training process of naive Bayes classifier is that estimate class-prior probability $P(c)$ based on training set $D$, and estimate conditional probability $P(x_i|c)$ for each attribute.   
 Let $D_c$ represents the set of class $c$ in training set, and when there are abundant independent and identical sampels, the class-prior probability can be easily estimated:  
 $$
 \begin{aligned}
-& P(c) = \frac{|D_c|}{|D|}, \\
-& P(x_i|c) = \frac{|D_{x_i,c}|}{|D_c|},       
+& P(c)     &= \frac{|D_c|}{|D|}, \\
+& P(x_i|c) &= \frac{|D_{x_i,c}|}{|D_c|},       
 \end{aligned} \tag{3.3}
 $$    
 in which, $\|D_{x_i,c}\|= \frac{\|D_{x_i,c}\|}{\|D_c\|}$ represents the set consituted by samples whose value is $x_i$ in the $i^{th}$ attribute among $D_c$.    
