@@ -156,10 +156,7 @@ $$
 \end{aligned}   
 $$     
 $0.038 > 6.80\times10^{-5}$, naive Bayes classifier classifies sample *"test.01"* as *"好瓜"*.     
-What should note is, if one attribute in training set never appeared with a certain category, and still use the above original frequency-based method to estimate prior probability, the naive Bayes classifier will not work at all since the occurrance of zero value:  
-$$
-P_{清脆|是} = \frac08 = 0.  
-$$   
+What should note is, if one attribute in training set never appeared with a certain category, and still use the above original frequency-based method to estimate prior probability, the naive Bayes classifier will not work at all since the occurrance of zero value: $P_{清脆|是} = \frac08 = 0$.    
 Smoothing the value of probability with *"Laplace correction"*:  
 $$
 \hat P(c) = \frac{|D_c|+1}{|D|+N},    \tag{3.4}
