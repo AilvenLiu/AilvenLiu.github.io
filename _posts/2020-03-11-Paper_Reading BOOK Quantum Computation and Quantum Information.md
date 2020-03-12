@@ -80,4 +80,22 @@ $$Any algorithmic process can be simulated rfficiently using a Turing machine. $
 
 强化丘奇图灵理论的一类挑战来自于模拟计算(analog computation)领域，自图灵之后，许多不同的研究团队注意到某些类型的计算机可以有效地解决曾被认为在图灵机上没有有效解决方案的问题。最初看来(at first glance)这些模拟计算机似乎(appear to)违反了(violate)丘奇图灵理论的强化形式。很不幸的是对于模拟计算，事实表明当对模拟计算机中存在的噪声做出现实的假设时，在所有已知的例子(in all known instances)中他们的能力都将消失；他们不再能解决图灵机无法有效解决的问题。这个教训(lesson)————在评估(evaluate)计算模型有效性时现实噪声的影响必须考虑在内(take into account)————是量子计算和量子信息早期一个巨大的挑战；*量子纠错编码(quantum error-correcting codes)*和*容错量子计算(fault-tolerent quantum computation)*理论成功应对了这一挑战(a challenge met by ...)。因此不同于模拟计算(analog computation)，量子计算原则上讲(in principle)可以容忍有限量(a finite amount)的噪声依然保持其计算优势。   
 
-强化丘奇图灵理论的第一个较大挑战出现在(arose)1970年代中叶，其时 Robert Solovay和Volker Strassen展示了使用*随机化算法(randomized algorithm)*测试一个整数(integer)是质数(prime)还是合数(composite)是可行的。也就是说(That is)，素性(primality)的Solovay-Strassen测试使用随机性(randomness)作为算法最重要部分。这个算法并不确定一个给定的整数是质数还是合数，而是给出一个数是质数还是合数的确定的概率。仅需要少量几次重复Solovay-Strassen测验几乎就能确定一个数是质数还是合数。Solovay-Strassen测验的提出在那个时代具有特殊(especial)意义，因为质数确定性检验(deterministic test)其时尚是未知的。因此，它看起来好像具有随机数生成器的计算机可以高效地执行在传统确定图灵机上没有有效解的计算任务。
+强化丘奇图灵理论的第一个较大挑战出现在(arose)1970年代中叶，其时 Robert Solovay和Volker Strassen展示了使用*随机化算法(randomized algorithm)*测试一个整数(integer)是质数(prime)还是合数(composite)是可行的。也就是说(That is)，素性(primality)的Solovay-Strassen测试使用随机性(randomness)作为算法最重要部分。这个算法并不确定一个给定的整数是质数还是合数，而是给出一个数是质数还是合数的确定的概率。仅需要少量几次重复Solovay-Strassen测验几乎就能确定一个数是质数还是合数。Solovay-Strassen测验的提出在那个时代具有特殊(especial)意义，因为质数确定性检验(deterministic test)其时尚是未知的。因此，它看起来好像在具有随机数生成器的计算机上可以高效地执行在传统确定图灵机上没有有效解的计算任务。这个发现激发(inspire)了人们对于其他有着丰厚回报(has paid off handsomely  handsomely, adv,漂亮的慷慨的相当大的)随机算法的研究，这个领域发展(blossoming into)为一个繁荣(thriving)的研究领域。   
+
+随机算法对强化丘奇图灵理论提出(pose)了挑战，该挑战认为(suggesting that)的确有一些高效可解的问题存在，尽管确定图灵机无法有效解决他们。这个挑战看起来可以被强化丘奇图灵理论的一个很简单的修正所克服(solved)：   
+$$概率图灵机可以有效地模拟任何算法过程$$ 
+$$Any algorithmic process can be simulated rfficiently using a probabilitics Turing machine. $$  
+
+这个强丘奇图灵理论的特设(*ad hoc*)修正应该令你感到有一些反胃(queasy,adj. 呕吐的；不稳定的；催吐的)。这是不是预示着在未来的某天还会有其他的计算模型可以有效解决图灵机不可解的问题？我们是否可以通过某种方式寻得一个单独的计算模型，可以保证(guarantee)其可以高效模拟任何其他计算模型？  
+
+1985年，在这个问题的驱使下(motivated by)大卫多伊奇(David Deutsch)开始探寻是否可以用物理规则推导(derive)丘奇图灵理论的一个更强大版本。多伊奇寻求用物理理论而不是向其添加特设假设(ad hoc hypothesis)提供给丘奇图灵理论一个如物理理论本身状态一般稳固(as secure as)的根基(foundation)。特别地，多伊奇尝试定义一种可以高效模拟任意物理系统的计算设备。由于物理定律最终(ultimately)是量子力学的，多伊奇很自然的会考虑以量子力学规则(principles)为根基的计算设备。这些设备，在四十九年前就已经被图灵定义的机器的量子对应(analogues)，最终导出(led ultimately)了一个现代概念，也就是本书所介绍的量子计算机。    
+
+事实上截至本书撰写时，多伊奇的通用量子计算机的概念是否能高效模拟任意物理系统依然是未知的(not clear)。证明或证伪(refute, 反驳，驳斥)这个猜想(conjecture)是量子计算和量子信息领域一个很大的开放命题。例如量子场论(quantum field theory)或者甚至是更加深奥的(esoteric)基于弦论、量子引力或其他物理理论的一些效应或许可以令我们超越多伊奇的通用量子计算机，带给我们一个更强的计算模型。不过在现在这个阶段，一切还未可知。  
+ 
+对丘奇图灵理论的强化形式来说，多伊奇的量子计算机模型可以做到的事情是一个挑战。多伊奇想要知道使用量子计算机能否有效解决在经典计算机甚至概率图灵机上无解的计算问题。他设计了一个简单的例子用以指示量子计算机的确可能有远超过经典计算机的算力。   
+n
+多伊奇做出的这杰出的第一步在接下来(subsequent)的十年n间得到了许多人的改进(was improved)，最终(culminating)Peter Shor在1994年证明(demonstration)了两个最重要的(enormously important)问题————寻找整数质因子问题和被称作“离散化对数”的问题————可以被量子计算机有效解决。Shor的证明引起了(attracted)人们广泛(widespread)的兴趣，因为这两个问题一直到现在还被认为在经典计算机上无有效解。Shor的结论有力的表明了量子计算机比图灵机甚至是概率图灵机更加niubility。1995年量子计算机威力的被进一步(further)证明，Lov Grover展示了另一个重要问题————在一些非结构化搜索空间中实行搜索的问题————也可以被量子计算机加速。尽管Grover算法并没有提供Shor水平的惊人(spectacular)加速，基于搜索的方法论的广泛适应性(applicability)激起了人们对Grover算法的强烈(considerable)兴趣。   
+
+几乎在Shor算法和Grover算法提出(discover)的同时，许多人也在挖掘(develop)理查德费曼(Richard Feynman)1982年提出(suggest)的一个想法。Feynman曾指出在经典计算机上模拟量子力学系统看起来有着巨大的(essential)困难，并且提出(suggest)到直接给予量子力学准则构建计算机可以避免这个困难。在1990年代，许多研究团队开始充实(flesh ... out)这个想法，表示使用量子计算机去有效模拟在经典计算机上没有已知有效模拟方法的系统的确是可能的。或许(It's likely that)量子计算机在未来一个主要的用途(application)就是执行经典计算机难以模拟的量子力学系统的模拟，这是一个有着深远(profound)科技意义(implication)的问题。   
+
+相比经典计算机，量子计算机可以更快的解决的问题还有什么？简单地说，我们还不知道。落实较好的量子算法看起来依然是困难的。悲观主义者可能会认为这是因为可以很好地支持已发现算法的量子计算机还不存在，但我们持有不同意见。由于开发者面临着设计经典计算机算法不可能遇到的两个难题，导致量子计算机的算法设计本身就是困难的。首先，人类的直觉是扎根在现实世界的，如果我们依靠直觉辅助(aid to)算法设计，那我们实现的算法思想依然会是经典的。要设计出优秀的量子算法，至少在设计算法的过程中，必须“关闭”(turn off)我们的经典直觉(intuition)，而使用真正的量子效应实现想要的(desired)算法结果(end)。其次，真正有趣的是，仅仅设计一个量子力学算法是不够的。该算法必须胜过所有现有的经典算法。因此，人们可能会找到一种利用了量子力学真正的量子方面的算法，但由于有在对应性能上表现与之类似的经典算法的存在，它并不足以(nevertheless做插入语)引起(be not of...)广泛的兴趣。这两个问题的的结合
