@@ -25,9 +25,9 @@ tags:
     </script>
 </head>
 
-> Partial Translation of Classical Quantum Computation Book *Quantum Computation and Quantum Information*
+> Parts of Translation of Classical Quantum Computation Book **"Quantum Computation and Quantum Information"**
 
-## (I) Fundamental concepts    
+## (I) Fundamental concepts (part)    
 > 科学提供了这个时代最勇敢的形而上学。它是一种彻底的人类构想，我们梦想、然后努力去发现、去解释、又继续去梦想，正是如此的信念驱动了科学的不懈前进。也正是这种信念促使我们不断踏足新的领域，世界因此以某种方式更加清晰明了，而我们将掌握宇宙真正的奇异之处。这些奇异之处终将被证明有某些关联，而且意义非凡。  
 > Science offers the boldest metaphysics of the age. It is thoroughly human construct, driven by the faith that if we dream, press to discover, explain, and dream again, thereby plunging repeately into new terrain, the world will somehow come clearer and we will grasp the true strangeness of the universe. And the strangeness will all prove to be connected, and make sense.   
 > Edward O. Wilson    
@@ -73,8 +73,8 @@ tags:
 这个有摩尔定律最终失效所导致(posed by)的问题的一个可能的解是转向不同的计算机范式(paradigm, n, 范例，词形变化表)。量子计算理论提供了一种范式，其基本思想是基于量子力学而不是经典物理学执行计算。事实表明(It turns out)尽管普通的(ordinary)量子计算机可以用来模拟量子计算机，但以有效的方式执行模拟看起来依然是不可能的。相比经典计算机，量子计算机提供了基本的(essential)速度优势。这种速度优势是非常巨大的，以至于许多研究者都坚信经典计算的任何可想像的进步(conceivable progress)都不足以克服经典计算机和量子计算机的算力之间的差距。  
 
 对量子计算机的有效模拟和(versus, v.s.)无效模拟是什么意思？回答这个问题的许多核心理念(notions)实际在量子计算机这一概念提出之间就有了。特别地，在计算复杂度领域，有效和无效算法的思想在数学上被精确化了。大概来讲，一个有效的算法可以在问题规模的多项式时间内解决问题；相反地，低效算法则需要超多项式(通常是指数级别)时间。值得注意的是在1960年代末70年代初，图灵机计算模型看起来好像(as though)至少和任何其他计算模型一样有效，从这种意义(in the sense that)看来，任何可以被其他计算模型解决的问题通过使用图灵机模拟其他计算模型，也都可以被图灵模型有效地解决。这种观察被总结(condified into)为一种加强的(strengthened)丘奇图灵理论：  
-$$图灵机可以有效地模拟任何算法过程$$ 
-$$Any algorithmic process can be simulated rfficiently using a Turing machine. $$    
+*<center> 图灵机可以有效地模拟任何算法过程 </center>*
+*<center> Any algorithmic process can be simulated rfficiently using a Turing machine. </center>*    
 
 强化丘奇图灵理论强调的关键是*有效的efficiently*一词。如果强化丘奇图灵理论是正确的，那就意味着无论我们在什么类型的机器上执行算法，这个机器都都以使用图灵模型进行模拟。这是一个非常重要的加强，因为这指示了为了分析一个给定的计算任务是否可以被有效地完成，我们可以自我限定在图灵机模型的计算上。   
 
@@ -83,8 +83,8 @@ $$Any algorithmic process can be simulated rfficiently using a Turing machine. $
 强化丘奇图灵理论的第一个较大挑战出现在(arose)1970年代中叶，其时 Robert Solovay和Volker Strassen展示了使用*随机化算法(randomized algorithm)*测试一个整数(integer)是质数(prime)还是合数(composite)是可行的。也就是说(That is)，素性(primality)的Solovay-Strassen测试使用随机性(randomness)作为算法最重要部分。这个算法并不确定一个给定的整数是质数还是合数，而是给出一个数是质数还是合数的确定的概率。仅需要少量几次重复Solovay-Strassen测验几乎就能确定一个数是质数还是合数。Solovay-Strassen测验的提出在那个时代具有特殊(especial)意义，因为质数确定性检验(deterministic test)其时尚是未知的。因此，它看起来好像在具有随机数生成器的计算机上可以高效地执行在传统确定图灵机上没有有效解的计算任务。这个发现激发(inspire)了人们对于其他有着丰厚回报(has paid off handsomely  handsomely, adv,漂亮的慷慨的相当大的)随机算法的研究，这个领域发展(blossoming into)为一个繁荣(thriving)的研究领域。   
 
 随机算法对强化丘奇图灵理论提出(pose)了挑战，该挑战认为(suggesting that)的确有一些高效可解的问题存在，尽管确定图灵机无法有效解决他们。这个挑战看起来可以被强化丘奇图灵理论的一个很简单的修正所克服(solved)：   
-$$概率图灵机可以有效地模拟任何算法过程$$ 
-$$Any algorithmic process can be simulated rfficiently using a probabilitics Turing machine. $$  
+*<center>概率图灵机可以有效地模拟任何算法过程</center>* 
+*<center>Any algorithmic process can be simulated rfficiently using a probabilitics Turing machine.</center>*  
 
 这个强丘奇图灵理论的特设(*ad hoc*)修正应该令你感到有一些反胃(queasy,adj. 呕吐的；不稳定的；催吐的)。这是不是预示着在未来的某天还会有其他的计算模型可以有效解决图灵机不可解的问题？我们是否可以通过某种方式寻得一个单独的计算模型，可以保证(guarantee)其可以高效模拟任何其他计算模型？  
 
@@ -93,9 +93,44 @@ $$Any algorithmic process can be simulated rfficiently using a probabilitics Tur
 事实上截至本书撰写时，多伊奇的通用量子计算机的概念是否能高效模拟任意物理系统依然是未知的(not clear)。证明或证伪(refute, 反驳，驳斥)这个猜想(conjecture)是量子计算和量子信息领域一个很大的开放命题。例如量子场论(quantum field theory)或者甚至是更加深奥的(esoteric)基于弦论、量子引力或其他物理理论的一些效应或许可以令我们超越多伊奇的通用量子计算机，带给我们一个更强的计算模型。不过在现在这个阶段，一切还未可知。  
  
 对丘奇图灵理论的强化形式来说，多伊奇的量子计算机模型可以做到的事情是一个挑战。多伊奇想要知道使用量子计算机能否有效解决在经典计算机甚至概率图灵机上无解的计算问题。他设计了一个简单的例子用以指示量子计算机的确可能有远超过经典计算机的算力。   
-n
+
 多伊奇做出的这杰出的第一步在接下来(subsequent)的十年n间得到了许多人的改进(was improved)，最终(culminating)Peter Shor在1994年证明(demonstration)了两个最重要的(enormously important)问题————寻找整数质因子问题和被称作“离散化对数”的问题————可以被量子计算机有效解决。Shor的证明引起了(attracted)人们广泛(widespread)的兴趣，因为这两个问题一直到现在还被认为在经典计算机上无有效解。Shor的结论有力的表明了量子计算机比图灵机甚至是概率图灵机更加niubility。1995年量子计算机威力的被进一步(further)证明，Lov Grover展示了另一个重要问题————在一些非结构化搜索空间中实行搜索的问题————也可以被量子计算机加速。尽管Grover算法并没有提供Shor水平的惊人(spectacular)加速，基于搜索的方法论的广泛适应性(applicability)激起了人们对Grover算法的强烈(considerable)兴趣。   
 
 几乎在Shor算法和Grover算法提出(discover)的同时，许多人也在挖掘(develop)理查德费曼(Richard Feynman)1982年提出(suggest)的一个想法。Feynman曾指出在经典计算机上模拟量子力学系统看起来有着巨大的(essential)困难，并且提出(suggest)到直接给予量子力学准则构建计算机可以避免这个困难。在1990年代，许多研究团队开始充实(flesh ... out)这个想法，表示使用量子计算机去有效模拟在经典计算机上没有已知有效模拟方法的系统的确是可能的。或许(It's likely that)量子计算机在未来一个主要的用途(application)就是执行经典计算机难以模拟的量子力学系统的模拟，这是一个有着深远(profound)科技意义(implication)的问题。   
 
-相比经典计算机，量子计算机可以更快的解决的问题还有什么？简单地说，我们还不知道。落实较好的量子算法看起来依然是困难的。悲观主义者可能会认为这是因为可以很好地支持已发现算法的量子计算机还不存在，但我们持有不同意见。由于开发者面临着设计经典计算机算法不可能遇到的两个难题，导致量子计算机的算法设计本身就是困难的。首先，人类的直觉是扎根在现实世界的，如果我们依靠直觉辅助(aid to)算法设计，那我们实现的算法思想依然会是经典的。要设计出优秀的量子算法，至少在设计算法的过程中，必须“关闭”(turn off)我们的经典直觉(intuition)，而使用真正的量子效应实现想要的(desired)算法结果(end)。其次，真正有趣的是，仅仅设计一个量子力学算法是不够的。该算法必须胜过所有现有的经典算法。因此，人们可能会找到一种利用了量子力学真正的量子方面的算法，但由于有在对应性能上表现与之类似的经典算法的存在，它并不足以(nevertheless做插入语)引起(be not of...)广泛的兴趣。这两个问题的的结合
+相比经典计算机，量子计算机可以更快的解决的问题还有什么？简单地说，我们还不知道。落实较好的量子算法看起来依然是困难的。悲观主义者可能会认为这是因为可以很好地支持已发现算法的量子计算机还不存在，但我们持有不同意见。由于开发者面临着设计经典计算机算法不可能遇到的两个难题，导致量子计算机的算法设计本身就是困难的。首先，人类的直觉是扎根在现实世界的，如果我们依靠直觉辅助(aid to)算法设计，那我们实现的算法思想依然会是经典的。要设计出优秀的量子算法，至少在设计算法的过程中，必须“关闭”(turn off)我们的经典直觉(intuition)，而使用真正的量子效应实现想要的(desired)算法结果(end)。其次，真正有趣的是，仅仅设计一个量子力学算法是不够的。该算法必须胜过所有现有的经典算法。因此，人们可能会找到一种利用了量子力学真正的量子方面的算法，但由于有在对应性能上表现与之类似的经典算法的存在，它并不足以(nevertheless做插入语)引起(be not of...)广泛的兴趣。这两个问题的的结合使未来新量子算法的构建成为一个挑战。    
+
+更广泛地(Even more broadly)，我们还可以探寻(ask)关于经典计算机和量子计算机地能力，我们是否可以做出一些概括(generalization)。假设情况的确如此，是什么令量子计算机比经典计算机更加强力？量子计算机可以有效解决什么样的问题，和经典计算机可以有效解决的问题相比呢。关于量子计算和量子信息，最令人激动的事情之一是我们对这些问题的答案知之甚少，这对未来更好的理解这些问题又是一个不小的挑战。     
+
+已经到达量子计算的前沿，我们现在转而考虑(switch to)对量子计算和量子信息有贡献的另一个思想分支的历史：信息论。就在1940年代计算机科学爆炸般(exploding)发展的同时，另一场关于我们对*交流(communication)*的理解的革命也正在进行。1948年克劳德香农(Claude Shannon)发表的两篇璀璨的论文奠定了现代信息和通信理论的基础。   
+
+或许香农做出的最重要的一步就是数学地定义了信息这一概念。在许多数学科学领域，根本定义(fundamental defination)的选择是一件相当灵活的事情。试着花几分钟的时间单纯地思考一个问题：你会怎样给信息源这个概念做一个数学定义？这个问题很多不同的答案已经得到广泛应用；然而就增进理解而言(in terms of increased understanding)香农做出的定义看起来是远远(far and away)最富有成果的(fruitful)，该定义引出了大量(a plethora of)深层结论和一个结构丰富(with a rich structure)的理论，看起来准确地反映了许多(尽管不是全部)现实世界的通讯问题。   
+
+香农对于在信道(communications channel)上进行的信息通讯的两个相关问题非常感兴趣。第一个是，在信道上发送信息需要怎样的资源(resource but not source)？比如电话公司需要知道在给定的电缆(cable)上可以可靠的传输多少信息。第二个是，在信道有噪声干扰时信息能否传播(transmit)？  
+
+通过对信息论的两个基本定理(theorems)做出证明，香农解答了这两个问题。第一，香农的无噪声通道编码定理*noiseless channel coding theorem*量化了需要从信息源存储输出的物理资源。香农第二基本定理，无噪声通道编码定理*noiseless channel coding theorem*量化了通过含噪信道能可靠传输的信息量。为了实现噪声存在时的信息可靠传输，Shannon展示了可以用来保护发送信息的纠错码(*error-correcting codes*)。香农噪声通道编码定理给出了纠错码提供的(afforded by)保护上限。不幸的是，香农定理没有显式地给出实现这个上限的实践可行的纠错码集合。从香农论文发表直到如今，在逐渐逼近香农定理给定的极限的尝试中，研究人员构建了更多和更好类别的纠错码。一个复杂的(sophisticated)纠错码理论给寻求(in their quest to)设计良好纠错码的使用者提供了大量(a plethora of)选择。这些编码用在包括如(小型)光盘播放器(compact disc(光碟) player)、计算机调制解调器(modems)和卫星(satellite)通信系统等。    
+
+量子信息理论有着类似的发展历程。1995年本舒马赫(Ben Schumacher)提出了香农无噪声编码理论的一个对应(analogue)，并在该过程中定义量子比特*qubit*作为实体物理资源(tangible physical resource)。然而Shannon噪声信道编码定理在量子信息中的对应(analogue)至今仍未可知。不过尽管如此(Nevertheless)，类似于(in analogy to)其经典对应物(counterparts)，一个量子纠错码理论，就像已经提到过的，已经得到一定发展，其允许量子计算机在噪声存在时执行高效的计算，并且在含噪量子信道建立可靠的通信也是允许的。   
+
+的确，经典纠错码的思想已经被证明对于发展和理解量子纠错码非常重要。1996年，由*Calderbank & Shor*，和Steane组成的两个团队独立研究发现了一种非常重要的量子编码，以他们名字的首字母(after their initial)命名为CSS编码。该工作后来(since)被归为(been subsumed by)稳定器(stabilizer)编码，由Calderbank，Rains，Shor，Sloane和Gotessman独立发现。基于经典线性编码理论的思想进行构建(build upon)，这些发现为快速理解(rapid understanding)量子纠错码及其在量子计算和量子信息上的应用提供了极大便利(facilitate)。    
+
+量子纠错码为保护量子态免受噪声干扰而发展(be developed to)。经由量子信道传输原始(oridinary)经典信息怎么样？这样做的效率如何？我们在这个舞台(arena，舞台，竞技场)上发现了一点(a few)惊喜。1992年Bennett和Wiesner解释了如何在仅有一个量子比特从发送方传输到接收方的情况下传输两个经典量子比特的信息，这是一个被称为(dub)超稠密编码(*superdense coding*)的结果。   
+
+分布式(distributed)量子计算的结果更加有趣。想象你有两台联网的计算机，用以尝试解决一个特殊问题。解决这个问题需要多少次通信？近来发现，比之联网的经典计算机，量子计算机某些问题需要的通讯次数呈指数级减少。但不幸的是as yet(迄今为止)这些问题在实际环境(in practical setting)中并没有那么重要(especially)，并且受到一些undesirable技术限制。对量子信息和量子计算的未来的一个主要挑战，是寻找在具有现实重要性的问题，相比于分布式经典计算，分布式量子计算在这些问题上可以提供实质性的优势。   
+
+让我们回到信息论本身。信息论的研究始于对单信道性质的研究，实际应用中，我们需要处理的问题(deal with)往往不是单信道，而是有许多通道的网络。信息网论(*networked information theory*)这一课题着眼于(deal with)具有多信道的网络的信息承载性质(information carring properities)。其已经发展成一个内容丰富又错从复杂(intricate)的学科。   
+
+相反的是，量子信息网理论的研究还处于(is very much in, very much 作副词可省略)起步阶段(infancy)。甚至对于量子信道网络的信息搭载能力这种最基本问题我们都知之甚少。过去几年间我们已经做出了一些相当(rather)杰出的(striking)初步工作(perliminary)，然而对于量子信道仍不存在一个统一的量子网信息理论。一个量子信息网理论的例子应当足以(suffice to)使人相信(convince)它具有一般性理论的价值。假设我们正尝试经由含噪量子信道从Alice向Bob发送量子信息，如果该信道对量子信息的容量为零，那么任何信息都不可能可靠发送。再想象我们有两个该信道的同步(in synchrony)运行的副本(copies)。直觉(intuitively)上（而且是可以严格证明(riforously justified)的）这种信道对发送量子信息的容量也是零。但是，如果我们把其中一条信道的方向反过来，如下图**Figure1.1**所示，情况就成了(it turns out)我们可以得到Alice到Bob这件信息传输的非零容量！类似这样的反直觉性质正反应了量子信息的本质。更好地理解这种量子渠道网络的信息搭载性质是量子计算和量子信息的一个主要的开放性问题。
+<img src="https://raw.githubusercontent.com/OUCliuxiang/OUCliuxiang.github.io/master/img/Quantum-book-01.png" alt="Figure1.1" width="400"/>  
+<center>图一：经典地认为，如果我们有两个并排运行的由强噪声通道，这个组合通道无法发送信息。毫不意外地，及时将其中一条通道反向，其依然无法发送信息。在量子力学中，将其中一条零容量通道反向事实上是允许我们发送信息的！</center>   
+
+让我们最后一次切换领域，转向庄严(venerable)而古老的*密码学(cryptography)*科学与艺术。广义地(broadly)讲，密码学是两个或多个互不相信的当事人(parties)进行交流或计算的问题。最著名的密码学(cryptographic)问题就是传输加密信息了，假设两个当事人希望加密交流，就比如你打算把你的信用卡号给商人(merchant)以换取商品(goods)，并且希望没有任何恶意的(malevolent)第三方截获(intercept)你的卡号。做成这件事的的方法正是使用*密码协议(cryptographic protocol)*。我们会在本书的后面部分详细描述密码协议是怎样工作的，但是现在简单做一些区分(distinction)就足够了(suffice)。最重要的是私钥密码系统和公钥密码系统之间的差别。  
+
+私钥密码系统的工作机制是，两个当事人Alice和Bob希望通过共享一个只有他们知道的私钥进行通信。密钥的准确(exact)形式此处并不重要，可以认为其是一个0/1串。重要的是Alice使用这个私钥加密她希望发送给Bob的信息。加密完成会Alice将之发送给Bob，后者现在必须恢复原始信息。Alice依靠私钥加密加密(encrypt)信息，所以为了recover信息Bob也必须知道这串私钥，以撤销(undo)Alice做出(apply)的转换(transformation)。   
+
+不幸的是在很多情境(contexts)私钥系统是有很多问题的，其中最基本的问题就是如何分配(distribute)密钥。在许多方面(in many ways)，密钥的分配问题和原始的私密交流问题一样困难——一个恶意的(malevolent)第三方可能会盗取(eavesdrop)密钥分配，然后使用这个截获的(intercepted)密钥解加密(decrypt)某些信息转换。    
+
+在量子计算和量子信息方面最早的发现之一量子力学可以用来进行密钥分配，如此Alice和Bob的安全将不受任何影响(compromised)。这个过程称作量子密码学(quantum cryptography)或量子密钥分发(quantum key distribution)。基础的想法是利用(exploit)量子力学规则也就是在一般情况下观测(observation)会干扰(disturb)被观测系统。因此，如果一个窃听者(eavesdropper)在Alice和Bob尝试传输密钥时进行监听，由于在Alice和Bob正在用已建立密钥的信道上的干扰的存在，窃听者将无处遁形(be visible)。Alice和Bob就可以抛弃(throw out)在窃听者(eavesdroppers)监听时建立的密钥位并重新开始。第一个量子密码学(quantum cryptographic)的idea是Stephen Wiesner在1960年代提出的，但很不幸的是当时并未被大众所接受。1984年Bennet和Brassard基于Wiesner的早期工作提出(propose)了使用量子力学在Alice和Bob之间分发密钥的协议(protocol)，依照该协议密钥分发没有任何妥协的可能(probability of a compromise)。自那以后，不计其数的量子密码学协议被提出，实验原型也得到了发展。截至写作时，实验原型正在接近在有限尺度现实世界应用的水准(stage)。   
+
+
+## (V) The quantum Fourier transform and its application (part)   

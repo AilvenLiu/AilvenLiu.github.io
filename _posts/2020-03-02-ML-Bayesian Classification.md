@@ -98,8 +98,8 @@ which is the expression of *naive Bayes classifier*. The training process of nai
 Let $D_c$ represents the set of class $c$ in training set, and when there are abundant independent and identical sampels, the class-prior probability can be easily estimated:  
 $$
 \begin{aligned}
-& P(c)     &=& \frac{|D_c|}{|D|}, \\
-& P(x_i|c) &=& \frac{|D_{x_i,c}|}{|D_c|},       
+&P(c)     &=& \frac{|D_c|}{|D|}, \\
+&P(x_i|c) &=& \frac{|D_{x_i,c}|}{|D_c|},       
 \end{aligned} \tag{3.3}
 $$    
 in which, $\|D_{x_i,c}\|= \frac{\|D_{x_i,c}\|}{\|D_c\|}$ represents the set consituted by samples whose value is $x_i$ in the $i^{th}$ attribute among $D_c$.    
