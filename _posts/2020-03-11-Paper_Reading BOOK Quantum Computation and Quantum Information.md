@@ -130,7 +130,114 @@ tags:
 
 不幸的是在很多情境(contexts)私钥系统是有很多问题的，其中最基本的问题就是如何分配(distribute)密钥。在许多方面(in many ways)，密钥的分配问题和原始的私密交流问题一样困难——一个恶意的(malevolent)第三方可能会盗取(eavesdrop)密钥分配，然后使用这个截获的(intercepted)密钥解加密(decrypt)某些信息转换。    
 
-在量子计算和量子信息方面最早的发现之一量子力学可以用来进行密钥分配，如此Alice和Bob的安全将不受任何影响(compromised)。这个过程称作量子密码学(quantum cryptography)或量子密钥分发(quantum key distribution)。基础的想法是利用(exploit)量子力学规则也就是在一般情况下观测(observation)会干扰(disturb)被观测系统。因此，如果一个窃听者(eavesdropper)在Alice和Bob尝试传输密钥时进行监听，由于在Alice和Bob正在用已建立密钥的信道上的干扰的存在，窃听者将无处遁形(be visible)。Alice和Bob就可以抛弃(throw out)在窃听者(eavesdroppers)监听时建立的密钥位并重新开始。第一个量子密码学(quantum cryptographic)的idea是Stephen Wiesner在1960年代提出的，但很不幸的是当时并未被大众所接受。1984年Bennet和Brassard基于Wiesner的早期工作提出(propose)了使用量子力学在Alice和Bob之间分发密钥的协议(protocol)，依照该协议密钥分发没有任何妥协的可能(probability of a compromise)。自那以后，不计其数的量子密码学协议被提出，实验原型也得到了发展。截至写作时，实验原型正在接近在有限尺度现实世界应用的水准(stage)。   
+在量子计算和量子信息方面最早的发现之一量子力学可以用来进行密钥分配，如此Alice和Bob的安全将不受任何影响(compromised)。这个过程称作量子密码学(quantum cryptography)或量子密钥分发(quantum key distribution)。基础的想法是利用(exploit)量子力学规则也就是在一般情况下观测(observation)会干扰(disturb)被观测系统。因此，如果一个窃听者(eavesdropper)在Alice和Bob尝试传输密钥时进行监听，由于在Alice和Bob正在用已建立密钥的信道上的干扰的存在，窃听者将无处遁形(be visible)。Alice和Bob就可以抛弃(throw out)在窃听者(eavesdroppers)监听时建立的密钥位并重新开始。第一个量子密码学(quantum cryptographic)的idea是Stephen Wiesner在1960年代提出的，但很不幸的是当时并未被大众所接受。1984年Bennet和Brassard基于Wiesner的早期工作提出(propose)了使用量子力学在Alice和Bob之间分发密钥的协议(protocol)，依照该协议密钥分发没有任何妥协的可能(probability of a compromise)。自那以后，不计其数的量子密码学协议被提出，实验原型也得到了发展。截至写作时，实验原型正在接近在现实世界实现有限尺度应用的水准(stage)。   
 
 
-## (V) The quantum Fourier transform and its application (part)   
+## (V) The quantum Fourier transform and its application (part of)      
+> 当有人做出量子计算机(If computers that you build are quantum.)
+> 所有的间谍都想得到它(Then spies everywhere will all want'em.)
+> 它会破解我们的密码(Our codes will all fail,)
+> 读取我们的邮件(And they'll read our email,)
+> 直到我们以量子加密术对抗他们(Till we get crypt that's quantum, and daunt'em.)
+> Jennifer and Peter Shor  
+
+> 为了读取我们的邮件(To read our E-mail, how mean)
+> 间谍和他们的量子机器如此卑鄙(of spies and their quantum machine;)
+> 值得安慰的是(be comforted though,)
+> 他们仍然不知道(they do not yet know)
+> 怎样分解12和15的因子(how to factorize twelve or fifteen.)
+> Volker Strssen
+
+> 计算机编程是一种艺术形式，就像创作诗歌和音乐一般。
+> Computer programming is a art form, like the creation of poetry or music.   
+> Donald Knuth   
+
+量子计算机可以高效地执行在经典计算机上不可行(not feasible)的任务，是迄今为止在量子计算领域最引人注目的(spectacular)发现。比如截至写作时，寻找n比特整数质因子这一任务，最好的经典算法，数域筛(number field sieve)仍需要$exp(\Theta(n^\frac13 log^\frac23 n))$步操作才能实现。该算法是指数于(be exponential in)被分解整数规模的，所以在经典计算机做因数分解被认为是个棘手的(intractabel)问题：即使是分解一个不大的数也会迅速成为一个不可能的事儿。相反的是，量子算法只需$O(n^2log\,n\,log\,log\,n)$步操作即可完成相同的任务。这就意味这，量子计算机在因数分解上指数倍快于已知最好的经典算法。这个结果本身就很重要(in its own right)，但或许最令人激动的方面是它引出的问题：量子计算机还能高效完成哪些经典计算机不可行的(infeasibel)问题？   
+本章我们会介绍(develop)量子因式分解和许多其他有趣的量子算法的关键成分(ingredient)：量子傅里叶变换(*quantum Fourier transform*)。
+
+### (V-1) The quantum Fourier transform   
+> 一个好想法是可以简化的，且可以解决其创造时没有面临的问题。
+> A good idea has a way of becoming simpler and solving problems other than that for which it was intended.   
+> --Robert Tarjan   
+
+在数学和计算机科学领域，解决问题最有效的方法之一时将其转化为其他解已知的问题。有几类变换，其频繁地出现且适用于许多不同问题，以至于变换本身(for their own sake)就是值得研究的。量子计算领域有一个大发现：在量子计算机上计算一些此类的变换(transformation that be studied for their own sake)比经典计算机快得多。这是一个使基于量子计算机的快速算法的构建变得可行的发现。   
+
+一种此类变换是离散傅里叶变换(*discrete Fourier Transform*)。在经典数学概念中，离散傅里叶变换的输入时一个复数向量(complex numbers)，$x_0,\cdots,x_{N-1}$，数组的长度N是定参数(fixed parameter)。输出的转换数据也是一个复数向量$y_0,\cdots,y_{N-1}$，$y_k$定义为：  
+$$
+y_k\equiv\frac{1}{\sqrt{N}\sum_{j=0}^{N-1}x_je^{i2\pi jk/N}},
+\tag{5.1}
+$$
+此处$i$代表欧拉方程$e^{i\theta}$中的单位虚数。   
+尽管量子傅里叶变换中卷积的概念有些不同，但其仍是一个完全相同的变换。建立在正交基$\|0\rangle,\cdots,,\|N-1\rangle$上的傅里叶变换可以定义为基态上的线性操作如下:   
+$$
+|j\rangle\longrightarrow\frac{1}{\sqrt{N}}\sum_{k=0}^{N-1}e^{i2\pi jk/N}}|k\rangle. \tag{5.2}
+$$   
+同样的，任意(arbitirary)状态的的行为都可以写作：   
+$$
+\sum_{j=0}^{N-1}x_j|j\rangle\longrightarrow\sum_{k=0}^{N-1}x_k|k\rangle, \tag{5.3}
+$$   
+此处振幅$\|y_k\rangle$是振幅$\|x_j\rangle$的离散傅里叶变换。从定义上来看并不明显，但该变换就是一个幺正变换(unitary transformation)，因此可以作为量子计算机动力学来实现(implement as)。我们会通过构建一个清晰明白的(manifestly)幺正量子电路计算傅里叶变换的方式证明其幺正性：   
+* **实验5.1**：给出式$(5.2)$定义的线性变换的幺正性的直接证明。
+* **实验5.2**：显示地(Explictly)计算n昆比特状态$\|00...0\rangle$的傅里叶变换。   
+
+接下来，令$N=2^n$，其中$n$是整数；基$\|0\rangle,\cdots,\|2^n-1\rangle$是有$n$昆比特的量子计算机的计算基础。使用二进制表示法$j\,=\,j_1j_2\cdots j_n$书写状态$\|j\rangle$更便于理解。再正式一点可以写作$j\,=\,j_12^{n-1}+j_22^{n-2}+\cdots+j_n2^0$。使用(adopt)$0.j_lj_{l+1}\cdots j_{l+m}$这种符号(notation)表示二进制分式$j_l/2+j_{l+1}/4+\cdots +j_{l+m}/2^{m-l+1}$也很方便。   
+量子傅里叶变换再加一点代数(algebra)就变成了下面这种实用的乘积(product)表示：     
+$$  
+|j_1,\cdots,j_n\rangle \rightarrow
+\frac{
+    \left(|0\rangle+e^{i2\pi0.j_n}|1\rangle\right)
+    \left(|0\rangle+e^{i2\pi0.j_{n-1}j_n}|1\rangle\right)\cdots 
+    \left(|0\rangle+e^{i2\pi0.j_1\cdots j_{n-1}j_n}|1\rangle \right)}
+    {2^{n/2}}.   \tag{5.4}
+$$ 
+此处对每个$\|1\rangle$的系数$e^{i2\pi0.j_n}, e^{i2\pi0.j_{n-1}j_n}, e^{i2\pi0.j_1\cdots j_{n-1}j_n}$的设置保留疑问。  
+乘积表示(product represatation)实用到你甚至希望考虑以之作为量子傅里叶变换的定义（讲真，没看出来，先记住吧）。正如我们简单介绍的，这种表示允许我们建立(construct)一个高效的计算傅里叶变换的量子电路，证明量子傅里叶变换的幺正性，提供基于量子傅里叶变换的算法的观点(insight)。作为一个附加奖励(incidental bonus)，我们会在实验中实现(obtain)快速傅里叶变换。运用一些基本代数(elementary algebra)知识，可以证明乘积表达$(5.4)$和定义$(5.2)$之间的相等关系：  
+
+$$
+\begin{aligned}
+&(5.5)\,\,\,\,|j\rangle&\rightarrow&\frac{1}{2^{n/2}}\sum_{k=0}^{2^n-1}e^{i2\pi jk/2^n}|k\rangle\\
+  
+&(5.6)&=&\frac{1}{2^{n/2}}\sum_{k_1=0}^1\cdots\sum_{k_n=0}^1e^{i2\pi j(\sum_{l=0}^nk_l2^{-l})}|k_1\cdots k_n\rangle\\
+  
+&(5.7)&=&\frac{1}{2^{n/2}}\sum_{k_1=0}^1\cdots\sum_{k_n=0}^1\bigotimes\limits_{l=1}^{n} e^{i2\pi jk_l 2^{-l}}|k_l\rangle\\
+\end{aligned}\\
+
+&(5.8)&=&\frac{1}{2^{n/2}}\bigotimes\limits_{l=1}^{n}\left[\sum_{k_l=0}^1e^{i2\pi jk_l2^{-l}}|k_l\rangle\right]\\
+
+&(5.9)&=&\frac{1}{2^{n/2}}\bigotimes\limits_{l=1}^{n}\left[|0\rangle+e^{i2\pi j2^{-l}}|1\rangle\right]\\
+&(5.10)&=&\frac{
+    \left(|0\rangle+e^{i2\pi0.j_n}|1\rangle\right)
+    \left(|0\rangle+e^{i2\pi0.j_{n-1}j_n}|1\rangle\right)\cdots 
+    \left(|0\rangle+e^{i2\pi0.j_1\cdots j_{n-1}j_n}|1\rangle \right)}
+    {2^{n/2}}.
+$$  
+
+尝试解释该过程（译注）：  
+* **$(5.5)\rightarrow (5.6)$**：$\|k\rangle$同样是$n-qubit$的量子态，需要$2^n$个经典比特位线性表示。所以多项累加$\sum_{k_1=0}^1\cdots\sum_{k_n=0}^1$并不表示乘法，仅表示涵盖所有$k=k_1k_2\cdots k_n$的可能取值；而$k=k_1k_2\cdots k_n$也显然是二进制串。那么考虑
+$$
+\frac{k}{2^n} = \frac{k_1k_2\cdots k_n}{2^n}，
+$$
+
+* $k_1$在最高位(第1位)，单列出来也就是$k_1*2^{n-1}/2^n=k_1/2^1=k_12^{-1}$(在 ***“实验5.2”***下第一段有相关说明，最低位$2^0$)，将第$l$位推广至一般化就是$k_l*2^{n-l}/2^n=k_l2^{-l}$，从而：   
+$$
+\frac{k}{2^n} = \frac{k_1k_2\cdots k_n}{2^n} = \sum_{l=1}^nk_l2^{-l}。  
+$$  
+* **$(5.6)\rightarrow (5.7)$**：为了方便电路设计和理解，我们把$n-qubit$的$\|k_1\cdots k_n\rangle$分解成单量子位$\|0\rangle$的内积形式：  
+$$
+\begin{aligned}
+e^{i2\pi j\sum_{l=1}^n}k_l2^{-l}\|k_1\cdots k_n\rangle&=&
+e^{i2\pi jk_1/2}|k_1\rangle}\otimese^{i2\pi jk_2/2^2}|k_2\rangle}\cdots e^{i2\pi jk_n/2^n}|k_n\rangle}\\
+&=&\bigotimes\limits_{l=1}^ne^{i2\pi jk_l/2^l}|k_l\rangle}。   
+$$   
+* **$(5.8)\rightarrow (5.9)$**：每个单昆比特量子位表示为线性组合$\sum_{k_l=0}^1e^{i2\pi jk_l2^{-l}}|k_l\rangle$，展开到$(5.9)$式为：$|0\rangle+e^{i2\pi j2^{-l}}|1\rangle$。
+* **$(5.9)\rightarrow (5.10)$**：将内积形式展开到定义$(5.4)$的最终形式。   
+
+由乘积表示$(5.4)$可以很轻松的推出(derive)量子傅里叶变换的电路形式，如图$Figure5.1$所示：   
+<img src="https://raw.githubusercontent.com/OUCliuxiang/OUCliuxiang.github.io/master/img/Quantum-book-02.png" alt="Figure5.1" width="500"/>    
+量子门$R_k$表示幺正转换
+$$
+R_k\equiv
+\begin{pmatrix}
+1&0\\0&e^{i2\pi/2^k}
+\end{pmatrix}.   \tag{5.11}
+$$
