@@ -240,8 +240,8 @@ $$
 <img src="https://raw.githubusercontent.com/OUCliuxiang/OUCliuxiang.github.io/master/img/Quantum-book-02.png" alt="Figure5.1" width="550"/>    
 量子门$R_k$表示幺正转换
 $$
-R_k\equiv
-\begin{pmatrix}
+R_k\equiv\left[
+\begin{matrix}
 1&0\\0&e^{i2\pi/2^k}
-\end{pmatrix}.   \tag{5.11}
+\end{matrix}\right].   \tag{5.11}
 $$
