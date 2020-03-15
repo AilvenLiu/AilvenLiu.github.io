@@ -121,7 +121,7 @@ tags:
 让我们回到信息论本身。信息论的研究始于对单信道性质的研究，实际应用中，我们需要处理的问题(deal with)往往不是单信道，而是有许多通道的网络。信息网论(*networked information theory*)这一课题着眼于(deal with)具有多信道的网络的信息承载性质(information carring properities)。其已经发展成一个内容丰富又错从复杂(intricate)的学科。   
 
 相反的是，量子信息网理论的研究还处于(is very much in, very much 作副词可省略)起步阶段(infancy)。甚至对于量子信道网络的信息搭载能力这种最基本问题我们都知之甚少。过去几年间我们已经做出了一些相当(rather)杰出的(striking)初步工作(perliminary)，然而对于量子信道仍不存在一个统一的量子网信息理论。一个量子信息网理论的例子应当足以(suffice to)使人相信(convince)它具有一般性理论的价值。假设我们正尝试经由含噪量子信道从Alice向Bob发送量子信息，如果该信道对量子信息的容量为零，那么任何信息都不可能可靠发送。再想象我们有两个该信道的同步(in synchrony)运行的副本(copies)。直觉(intuitively)上（而且是可以严格证明(riforously justified)的）这种信道对发送量子信息的容量也是零。但是，如果我们把其中一条信道的方向反过来，如下图**Figure1.1**所示，情况就成了(it turns out)我们可以得到Alice到Bob这件信息传输的非零容量！类似这样的反直觉性质正反应了量子信息的本质。更好地理解这种量子渠道网络的信息搭载性质是量子计算和量子信息的一个主要的开放性问题。
-<img src="https://raw.githubusercontent.com/OUCliuxiang/OUCliuxiang.github.io/master/img/Quantum-book-01.png" alt="Figure1.1" width="400"/>  
+<img src="https://raw.githubusercontent.com/OUCliuxiang/OUCliuxiang.github.io/master/img/Quantum-book-01.png" alt="Figure1.1" width="550"/>  
 <center>图一：经典地认为，如果我们有两个并排运行的由强噪声通道，这个组合通道无法发送信息。毫不意外地，及时将其中一条通道反向，其依然无法发送信息。在量子力学中，将其中一条零容量通道反向事实上是允许我们发送信息的！</center>   
 
 让我们最后一次切换领域，转向庄严(venerable)而古老的*密码学(cryptography)*科学与艺术。广义地(broadly)讲，密码学是两个或多个互不相信的当事人(parties)进行交流或计算的问题。最著名的密码学(cryptographic)问题就是传输加密信息了，假设两个当事人希望加密交流，就比如你打算把你的信用卡号给商人(merchant)以换取商品(goods)，并且希望没有任何恶意的(malevolent)第三方截获(intercept)你的卡号。做成这件事的的方法正是使用*密码协议(cryptographic protocol)*。我们会在本书的后面部分详细描述密码协议是怎样工作的，但是现在简单做一些区分(distinction)就足够了(suffice)。最重要的是私钥密码系统和公钥密码系统之间的差别。  
@@ -134,31 +134,31 @@ tags:
 
 
 ## (V) The quantum Fourier transform and its application (part of)      
-> 当有人做出量子计算机(If computers that you build are quantum.)
-> 所有的间谍都想得到它(Then spies everywhere will all want'em.)
-> 它会破解我们的密码(Our codes will all fail,)
-> 读取我们的邮件(And they'll read our email,)
-> 直到我们以量子加密术对抗他们(Till we get crypt that's quantum, and daunt'em.)
-> Jennifer and Peter Shor  
+> 当有人做出量子计算机(If computers that you build are quantum.)   
+> 所有的间谍都想得到它(Then spies everywhere will all want'em.)   
+> 它会破解我们的密码(Our codes will all fail,)   
+> 读取我们的邮件(And they'll read our email,)   
+> 直到我们以量子加密术对抗他们(Till we get crypt that's quantum, and daunt'em.)   
+> Jennifer and Peter Shor     
 
-> 为了读取我们的邮件(To read our E-mail, how mean)
-> 间谍和他们的量子机器如此卑鄙(of spies and their quantum machine;)
-> 值得安慰的是(be comforted though,)
-> 他们仍然不知道(they do not yet know)
-> 怎样分解12和15的因子(how to factorize twelve or fifteen.)
-> Volker Strssen
+> 为了读取我们的邮件(To read our E-mail, how mean)    
+> 间谍和他们的量子机器如此卑鄙(of spies and their quantum machine;)      
+> 值得安慰的是(be comforted though,)     
+> 他们仍然不知道(they do not yet know)     
+> 怎样分解12和15的因子(how to factorize twelve or fifteen.)    
+> Volker Strssen    
 
-> 计算机编程是一种艺术形式，就像创作诗歌和音乐一般。
-> Computer programming is a art form, like the creation of poetry or music.   
+> 计算机编程是一种艺术形式，就像创作诗歌和音乐一般。    
+> Computer programming is a art form, like the creation of poetry or music.       
 > Donald Knuth   
 
 量子计算机可以高效地执行在经典计算机上不可行(not feasible)的任务，是迄今为止在量子计算领域最引人注目的(spectacular)发现。比如截至写作时，寻找n比特整数质因子这一任务，最好的经典算法，数域筛(number field sieve)仍需要$exp(\Theta(n^\frac13 log^\frac23 n))$步操作才能实现。该算法是指数于(be exponential in)被分解整数规模的，所以在经典计算机做因数分解被认为是个棘手的(intractabel)问题：即使是分解一个不大的数也会迅速成为一个不可能的事儿。相反的是，量子算法只需$O(n^2log\,n\,log\,log\,n)$步操作即可完成相同的任务。这就意味这，量子计算机在因数分解上指数倍快于已知最好的经典算法。这个结果本身就很重要(in its own right)，但或许最令人激动的方面是它引出的问题：量子计算机还能高效完成哪些经典计算机不可行的(infeasibel)问题？   
 本章我们会介绍(develop)量子因式分解和许多其他有趣的量子算法的关键成分(ingredient)：量子傅里叶变换(*quantum Fourier transform*)。
 
 ### (V-1) The quantum Fourier transform   
-> 一个好想法是可以简化的，且可以解决其创造时没有面临的问题。
-> A good idea has a way of becoming simpler and solving problems other than that for which it was intended.   
-> --Robert Tarjan   
+> 一个好想法是可以简化的，且可以解决其创造时没有面临的问题。   
+> A good idea has a way of becoming simpler and solving problems other than that for which it was intended.      
+> --Robert Tarjan      
 
 在数学和计算机科学领域，解决问题最有效的方法之一时将其转化为其他解已知的问题。有几类变换，其频繁地出现且适用于许多不同问题，以至于变换本身(for their own sake)就是值得研究的。量子计算领域有一个大发现：在量子计算机上计算一些此类的变换(transformation that be studied for their own sake)比经典计算机快得多。这是一个使基于量子计算机的快速算法的构建变得可行的发现。   
 
@@ -170,7 +170,7 @@ $$
 此处$i$代表欧拉方程$e^{i\theta}$中的单位虚数。   
 尽管量子傅里叶变换中卷积的概念有些不同，但其仍是一个完全相同的变换。建立在正交基$\|0\rangle,\cdots,,\|N-1\rangle$上的傅里叶变换可以定义为基态上的线性操作如下:   
 $$
-|j\rangle\longrightarrow\frac{1}{\sqrt{N}}\sum_{k=0}^{N-1}e^{i2\pi jk/N}}|k\rangle. \tag{5.2}
+|j\rangle \longrightarrow \frac{1}{\sqrt{N}} \sum_{k=0}^{N-1} e^{i2\pi jk/N}|k\rangle. \tag{5.2}
 $$   
 同样的，任意(arbitirary)状态的的行为都可以写作：   
 $$
@@ -181,7 +181,8 @@ $$
 * **实验5.2**：显示地(Explictly)计算n昆比特状态$\|00...0\rangle$的傅里叶变换。   
 
 接下来，令$N=2^n$，其中$n$是整数；基$\|0\rangle,\cdots,\|2^n-1\rangle$是有$n$昆比特的量子计算机的计算基础。使用二进制表示法$j\,=\,j_1j_2\cdots j_n$书写状态$\|j\rangle$更便于理解。再正式一点可以写作$j\,=\,j_12^{n-1}+j_22^{n-2}+\cdots+j_n2^0$。使用(adopt)$0.j_lj_{l+1}\cdots j_{l+m}$这种符号(notation)表示二进制分式$j_l/2+j_{l+1}/4+\cdots +j_{l+m}/2^{m-l+1}$也很方便。   
-量子傅里叶变换再加一点代数(algebra)就变成了下面这种实用的乘积(product)表示：     
+量子傅里叶变换再加一点代数(algebra)就变成了下面这种实用的乘积(product)表示：    
+
 $$  
 |j_1,\cdots,j_n\rangle \rightarrow
 \frac{
@@ -189,7 +190,8 @@ $$
     \left(|0\rangle+e^{i2\pi0.j_{n-1}j_n}|1\rangle\right)\cdots 
     \left(|0\rangle+e^{i2\pi0.j_1\cdots j_{n-1}j_n}|1\rangle \right)}
     {2^{n/2}}.   \tag{5.4}
-$$ 
+$$   
+
 此处对每个$\|1\rangle$的系数$e^{i2\pi0.j_n}, e^{i2\pi0.j_{n-1}j_n}, e^{i2\pi0.j_1\cdots j_{n-1}j_n}$的设置保留疑问。  
 乘积表示(product represatation)实用到你甚至希望考虑以之作为量子傅里叶变换的定义（讲真，没看出来，先记住吧）。正如我们简单介绍的，这种表示允许我们建立(construct)一个高效的计算傅里叶变换的量子电路，证明量子傅里叶变换的幺正性，提供基于量子傅里叶变换的算法的观点(insight)。作为一个附加奖励(incidental bonus)，我们会在实验中实现(obtain)快速傅里叶变换。运用一些基本代数(elementary algebra)知识，可以证明乘积表达$(5.4)$和定义$(5.2)$之间的相等关系：  
 
@@ -200,16 +202,17 @@ $$
 &(5.6)&=&\frac{1}{2^{n/2}}\sum_{k_1=0}^1\cdots\sum_{k_n=0}^1e^{i2\pi j(\sum_{l=0}^nk_l2^{-l})}|k_1\cdots k_n\rangle\\
   
 &(5.7)&=&\frac{1}{2^{n/2}}\sum_{k_1=0}^1\cdots\sum_{k_n=0}^1\bigotimes\limits_{l=1}^{n} e^{i2\pi jk_l 2^{-l}}|k_l\rangle\\
-\end{aligned}\\
 
 &(5.8)&=&\frac{1}{2^{n/2}}\bigotimes\limits_{l=1}^{n}\left[\sum_{k_l=0}^1e^{i2\pi jk_l2^{-l}}|k_l\rangle\right]\\
 
 &(5.9)&=&\frac{1}{2^{n/2}}\bigotimes\limits_{l=1}^{n}\left[|0\rangle+e^{i2\pi j2^{-l}}|1\rangle\right]\\
+
 &(5.10)&=&\frac{
     \left(|0\rangle+e^{i2\pi0.j_n}|1\rangle\right)
     \left(|0\rangle+e^{i2\pi0.j_{n-1}j_n}|1\rangle\right)\cdots 
     \left(|0\rangle+e^{i2\pi0.j_1\cdots j_{n-1}j_n}|1\rangle \right)}
     {2^{n/2}}.
+\end{aligned}
 $$  
 
 尝试解释该过程（译注）：  
@@ -222,18 +225,19 @@ $$
 $$
 \frac{k}{2^n} = \frac{k_1k_2\cdots k_n}{2^n} = \sum_{l=1}^nk_l2^{-l}。  
 $$  
-* **$(5.6)\rightarrow (5.7)$**：为了方便电路设计和理解，我们把$n-qubit$的$\|k_1\cdots k_n\rangle$分解成单量子位$\|0\rangle$的内积形式：  
+* **$(5.6)\rightarrow (5.7)$**：为了方便电路设计和理解，我们把$n-qubit$的$\|k_1\cdots k_n\rangle$分解成单量子位$\|0\rangle$的内积形式：   
 $$
 \begin{aligned}
-e^{i2\pi j\sum_{l=1}^n}k_l2^{-l}\|k_1\cdots k_n\rangle&=&
-e^{i2\pi jk_1/2}|k_1\rangle}\otimese^{i2\pi jk_2/2^2}|k_2\rangle}\cdots e^{i2\pi jk_n/2^n}|k_n\rangle}\\
-&=&\bigotimes\limits_{l=1}^ne^{i2\pi jk_l/2^l}|k_l\rangle}。   
-$$   
-* **$(5.8)\rightarrow (5.9)$**：每个单昆比特量子位表示为线性组合$\sum_{k_l=0}^1e^{i2\pi jk_l2^{-l}}|k_l\rangle$，展开到$(5.9)$式为：$|0\rangle+e^{i2\pi j2^{-l}}|1\rangle$。
+e^{i2\pi j\sum_{l=1}^n}k_l2^{-l} |k_1\cdots k_n\rangle&=
+e^{i2\pi jk_1/2}|k_1\rangle\otimes e^{i2\pi jk_2/2^2}|k_2\rangle\cdots e^{i2\pi jk_n/2^n}|k_n\rangle\\
+&=\bigotimes\limits_{l=1}^ne^{i2\pi jk_l/2^l}|k_l\rangle.  
+\end{aligned}   
+$$    
+* **$(5.8)\rightarrow (5.9)$**：每个单昆比特量子位表示为线性组合$\sum_{k_l=0}^1e^{i2\pi jk_l2^{-l}}\|k_l\rangle$，展开到$(5.9)$式为：$\|0\rangle+e^{i2\pi j2^{-l}}\|1\rangle$。
 * **$(5.9)\rightarrow (5.10)$**：将内积形式展开到定义$(5.4)$的最终形式。   
 
 由乘积表示$(5.4)$可以很轻松的推出(derive)量子傅里叶变换的电路形式，如图$Figure5.1$所示：   
-<img src="https://raw.githubusercontent.com/OUCliuxiang/OUCliuxiang.github.io/master/img/Quantum-book-02.png" alt="Figure5.1" width="500"/>    
+<img src="https://raw.githubusercontent.com/OUCliuxiang/OUCliuxiang.github.io/master/img/Quantum-book-02.png" alt="Figure5.1" width="550"/>    
 量子门$R_k$表示幺正转换
 $$
 R_k\equiv
