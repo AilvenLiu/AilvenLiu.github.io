@@ -234,8 +234,10 @@ e^{i2\pi jk_1/2}|k_1\rangle\otimes e^{i2\pi jk_2/2^2}|k_2\rangle\cdots e^{i2\pi 
 \end{aligned}   
 $$    
 * **$(5.8)\rightarrow (5.9)$**：每个单昆比特量子位表示为线性组合$\sum_{k_l=0}^1e^{i2\pi jk_l2^{-l}}\|k_l\rangle$，展开到$(5.9)$式为：$\|0\rangle+e^{i2\pi j2^{-l}}\|1\rangle$。
-* **$(5.9)\rightarrow (5.10)$**：将内积形式展开到定义$(5.4)$的最终形式。   
-
+* **$(5.9)\rightarrow (5.10)$**：将内积形式展开到定义$(5.4)$的最终形式。对于$\frac{j_1\cdots j_n}{2^l}$的结果只保留小数部分，认为整数部分$j_{int}$对$e^i2\pi j_{int}$的结果不产生影响。从而：   
+$$
+\frac{j_1\cdots j_n}{2^l} = \frac{j_12^{n-1}\cdots j_n2^0}{2^l} = j_1\cdots j_{n-l}.j_{n-l+1}\cdots j_{n}.
+$$   
 由乘积表示$(5.4)$可以很轻松的推出(derive)量子傅里叶变换的电路形式，如图$Figure5.1$所示：   
 <img src="https://raw.githubusercontent.com/OUCliuxiang/OUCliuxiang.github.io/master/img/Quantum-book-02.png" alt="Figure5.1" width="550"/>    
 量子门$R_k$表示幺正转换
@@ -244,4 +246,69 @@ R_k\equiv\left[
 \begin{matrix}
 1&0\\0&e^{i2\pi/2^k}
 \end{matrix}\right].   \tag{5.11}
+$$   
+
+为知晓(To see)上图所示的电路怎样计算量子傅里叶变换，我们先考虑量子态$\|j_1\cdots j_n$被输入之后会发生什么。部署(Apply)哈德马(Hadamard)门到第一个比特生成状态   
 $$
+\frac{1}{2^{1/2}}\left(|0\rangle+e^{i2\pi 0.j_1}|1\rangle\right)|j_2\cdots j_n\rangle ,   
+\tag{5.12}
+$$   
+（译注：所有过程均应注意$j=j_1j_2\cdots j_n$是二进制串）   
+（译注：对于$\|j_1\rangle$的初始状态不深究，仅记$H(\|j_1\rangle)=\frac{|0\rangle+e^{i2\pi 0.j_1}|1\rangle}{\sqrt{2}}$）当$j_1=1$时$e^{i2\pi0.j_1}=e^{2\pi i/2}=-1$，$j_1=0$时$e^{i2\pi0.j_1}=e^{2\pi\cdot 0}=+1$。再部署一个连接$j_2$的二阶受控幺正变换controlled-$R_2$，从而产生状态：   
+$$
+\frac{1}{2^{1/2}}\left(|0\rangle+e^{i2\pi 0.j_1j_2}|1\rangle\right)|j_2\cdots j_n\rangle . 
+\tag{5.13}
+$$   
+继续部署受控幺正变换controlled-$R_3$, $R_4$直到$R_n$，每一个受控幺正门都会在第一个$\|1\rangle$的有效相位(co-efficient)上添加一个额外位(extra bit)，最终得到状态：   
+$$
+\frac{1}{2^{1/2}}\left(|0\rangle+e^{i2\pi 0.j_1\cdots j_n}|1\rangle\right)|j_2\cdots j_n\rangle . 
+\tag{5.14}
+$$    
+对第二个昆比特执行类似过程的操作，现在被操作的昆比特已经是两个了。部署哈德马门得到状态：   
+$$
+\frac{1}{2^{2/2}}\left(|0\rangle+e^{i2\pi 0.j_1\cdots j_n}|1\rangle\right) \left(|0\rangle+e^{i2\pi 0.j_2}|1\rangle\right)|j_3\cdots j_n\rangle , 
+\tag{5.15}  
+$$  
+部署受控旋转门（幺正变换）controlled-$R_2,\cdots R_n-1$（译注，由于$j_2$到$j_n$的距离只有$n-1$）产生(yield)状态：   
+$$
+\frac{1}{2^{2/2}}\left(|0\rangle+e^{i2\pi 0.j_1\cdots j_n}|1\rangle\right) \left(|0\rangle+e^{i2\pi 0.j_2\cdots j_n}|1\rangle\right)|j_3\cdots j_n\rangle . 
+\tag{5.16}  
+$$  
+类似地，对后面的每个昆比特执行类似的操纵得到最终状态：   
+$$
+\frac{1}{2^{n/2}}\left(|0\rangle+e^{i2\pi 0.j_1\cdots j_n}|1\rangle\right) \left(|0\rangle+e^{i2\pi 0.j_2\cdots j_n}|1\rangle\right) \cdots \left(|0\rangle+e^{i2\pi 0.j_n}|1\rangle\right) . 
+\tag{5.17}  
+$$   
+简洁起见(for clearity)，图Figure-5.1中省略了(omitted from)Swap门。其用意反转昆比特的顺序。经过swap操作后的昆比特状态就成了：   
+$$
+\left(|0\rangle+e^{i2\pi 0.j_n}|1\rangle\right) 
+\left(|0\rangle+e^{i2\pi 0.j_{n-1} j_n}|1\rangle\right). 
+\cdots 
+\frac{1}{2^{n/2}}\left(|0\rangle+e^{i2\pi 0.j_1\cdots j_n}|1\rangle\right).
+\tag{5.18}  
+$$   
+对比式$(5.4)$，我们看到这正是量子傅里叶变换所需的(desired)输出。电路中的每个量子门都是幺正的，从而这种结构也证明了量子傅里叶变换是幺正的。图$Box-5.1$显示地展示了一个三昆比特量子傅里叶变换电路的例子：  
+<img src="https://raw.githubusercontent.com/OUCliuxiang/OUCliuxiang.github.io/master/img/Quantum-book-03.png" alt="Box-5.1" width="200"/>  
+确切地讲(for concreteness)这可能有助于查看(look at)三昆比特量子傅里叶变换的显式电路。  
+
+这个电路使用了几个门？先是在第一个昆比特上部署一个哈德马门和$n-1$个受控旋转门(分别为二阶旋转$\frac\pi2^2$和三阶旋转$\frac\pi2^3$)，然后在第一个昆比特上部署一个哈德马门和$n-2$个受控(二阶)旋转门，现在是$n+(n-1)$个门。如此继续，总共需要$n+(n-1)+\cdots+1=n(n+1)/2$个门，再加上Swap门。最多需要$n/2$个Swap门，每个交换可以使用三个受控非门(controlled-NOT, CX)来实现(accomplished)。这样一来，该电路提供了一个复杂度$\Theta(n^2)$的算法实现量子傅里叶变换。  
+
+对比而言(In contrast)，在$2^n$个元素上实现离散傅里叶变换的最好经典算法比如快速傅里叶变换FFT的复杂度是$\Theta(n2^n)$。也就是说，相比于在量子计算机上，经典算法计算傅里叶变换需要的操作数指数倍多于量子实现(inplement)。  
+
+表象上(At face value)听起来(sounds)这棒极了(terrific)，因为傅里叶变换是现实世界许多数据处理应用的重要步骤(crucial)。比如计算机语音识别，音素(phoneme)识别的第一步就是进行数字化(digitized)声音的傅里叶转变。那我们能否利用量子傅里叶变换加速傅里叶变换的计算？很遗憾，答案是至今没有已知的方法完成如此操作。问题出在，量子计算机的振幅(amplitude)无法通过测量直接获取。因此就无从(no way of)确定(determine)初始状态的傅里叶变换振幅。Worse still，通常(in gerneral)没有办法有效准备傅里叶变换的初始状态。因此寻找量子傅里叶变换的用途(uses)可能比我们希望的更加微妙(subtle)。在本章和下一章节，我们会介绍(develop)一些建立在量子傅里叶变换的更精妙应用上的算法。   
+
+### (V-2) Phase estimation   
+傅里叶变换是相位估计(*phase estimation, pe*)这一通用过程(general procedure)的关键，(in turn)相位估计又是许多量子算法的关键。假设幺正操作$U$对应于特征值(eigenvalue)$e^{i2\pi\phi}$的特征向量(eigenvector)为$\|u\rangle$，此处$\phi$是未知值，相位估计算法的目标就是估计出$\phi$。为了完成估计，我们假设我们有可用的(available)黑盒(有时也被称为神谕*oracles*)，对于合适的非负整数$j$该*black box*用以(capable of)准备好状态$\|u\rangle$并执行受控幺正操作$controlled-U^{2_j}$。黑盒的使用意味着(indicate)相位估计过程就其自身而言不是一个完备量子算法，而更应被认为是一种"子程"*subroutine*或"模块"*modeule*，当与其他子程结合就可以用来执行一些有趣的计算任务。在相位估计过程的具体(specific)应用中我们将准确地(exactly)做到这一点以描述这些黑盒操作怎样被执行，并且把它们和相位估计过程结合去做一些真正(genuinely)有用的任务。但现在我们依然先把它们视作黑盒。   
+量子相位估计过程使用两个寄存器。第一个由$t$个初始化为$\|0\rangle$状态的昆比特组成。$t$的选择依靠两个条件：我们对$\phi$的估计所希望得到的精确度的数字位数，以及我们所希望相位估计过程的成功概率。第二个寄存器以状态$\|u\rangle$开始，包含存储$\|u\rangle$所需的昆比特数。相位估计分成两步执行。首先部署图$Figure-5.2$所示的电路，
+<img src="https://raw.githubusercontent.com/OUCliuxiang/OUCliuxiang.github.io/master/img/Quantum-book-04.png" alt="Figure-5.2" width="500"/> 
+<center>此处保留疑惑，controlled-U应当是受控门，为什么会对控制量子位施加影响？0初始态的量子位经哈德马门后应当统一是:+态，此处却根据所控制受控门的不同而输出不同。</center>
+
+电路先是在第一个寄存器部署哈德马门，再把受控幺正变换controlled-$U$操作应用于第二个寄存器，U升幂至2的连续(successive)次幂(译注：根据第一个$t$-qubits寄存器，one by one 地$U^{2^0},\cdots,U^{2^{t-1}}$)。第一个寄存器的终态很显然就成了：   
+$$
+\begin{aligned}
+&\frac{1}{2^{t/2}} \left(|0\rangle+e^{i2\pi 2^{t-1}\phi}|1\rangle\right) \left(|0\rangle+e^{i2\pi 2^{t-2}\phi}|1\rangle\right) \cdots \left(|0\rangle+e^{i2\pi 2^0\phi}|1\rangle\right)\\   
+&\frac{1}{2^{t/2}} \sum_{k=0}^{2^t-1}e^{i2\pi k\phi}|0\rangle.
+\end{aligned}
+\tag{5.20}   
+$$   
+同时忽略(omit)第二个寄存器，由于其自始至终保持状态$\|u\rangle$不变（所以受控操作controlled-$U$以之为控制位？受多量子比特控制？）
