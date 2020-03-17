@@ -25,7 +25,7 @@ tags:
     </script>
 </head>
 
-> Parts of Translation of Classical Quantum Computation Book [**"Quantum Computation and Quantum Information"**](https://github.com/OUCliuxiang/PaperReading/tree/master/QML/QuantumComputation&QuantumInformation.pdf)
+> Parts of Translation of Classical Quantum Computation Book [**"Quantum Computation and Quantum Information"**](https://github.com/OUCliuxiang/PaperReading/tree/master/QML/)
 
 ## (I) Fundamental concepts (part)    
 > 科学提供了这个时代最勇敢的形而上学。它是一种彻底的人类构想，我们梦想、然后努力去发现、去解释、又继续去梦想，正是如此的信念驱动了科学的不懈前进。也正是这种信念促使我们不断踏足新的领域，世界因此以某种方式更加清晰明了，而我们将掌握宇宙真正的奇异之处。这些奇异之处终将被证明有某些关联，而且意义非凡。  
@@ -41,16 +41,16 @@ tags:
 如果你读到了感觉难以理解的地方，略过它跳到一个读起来舒服的地方即可。在这些方面上我们不得不使用一些技术术语(technical lingo)，最本书的最后会做出详细解释。先接受这些不理解的地方，当详细地理解了所有技术的细节后再回过头来看。第一张的重点是大局，细节部分将后续补充。  
 
 ### (I-1) Global presectives   
-量子计算和量子信息是可以在量子力学系统中完成的信息处理任务的研究。这听起来相当地简单和显而易见，事实真的如此吗？和许多简单却深刻的想法一样，很长一段时间没有人考虑过使用量子力学系统处理信息。为了了解为什么出现这种情况，我们必须回到过去研究对量子信息和量子计算贡献了基础思想的各个领域————量子力学，计算机科学，信息理论和密码学(cryptography)。读者需要分别以物理学家、计算机科学家、信息理论学家和密码学家的角色去思考以在不同角度理解这个领域。   
+量子计算和量子信息是可以在量子力学系统中完成的信息处理任务的研究。这听起来相当地简单和显而易见，事实真的如此吗？和许多简单却深刻的想法一样，很长一段时间没有人考虑过使用量子力学系统处理信息。为了了解为什么出现这种情况，我们必须回到过去研究对量子信息和量子计算贡献了基础思想的各个领域——量子力学，计算机科学，信息理论和密码学(cryptography)。读者需要分别以物理学家、计算机科学家、信息理论学家和密码学家的角色去思考以在不同角度理解这个领域。   
 
 #### (I-1.1) History of quantum computation and quantum information     
 故事开始在二十世纪，当时科学界正经历一场未为人知(unheralded)的革命，物理学领域出现了一系列危机。问题开始于彼时的物理理论(现在被称为(dubbed)经典物理学)做出了一系列荒谬的预测(absurdity, n. 荒谬；谬论；荒谬的言行)比如含有无限能量的紫外线大灾难(ultraviolet catastrophe)，或电子无情地(inexorably)螺旋进入(spiraling into)原子核。起初，这些问题可以通过在经典物理学中添加特例(*ad hoc*)假设(hypothesis)来解决，但是随着对原子(atom)和辐射(radiation)的理解日益深入，这些尝试性的解释变得愈益错综复杂(convoluted)。经历了进四分之一个世纪的混乱(turmoil)后，在1920年代，危机来了，一个崭新的现代理论*量子力学*在这场危机中诞生了。自诞生之日起，量子力学就成为科学体系不可或缺(indispensable)的一部分，在太阳内外一切领域取得巨大成功(has been applied with enormous sucess to everything under and inside the Sun)，包括原子结构、恒星核聚变(nuclear fusion of stars)、超导体(superconductor)、DNA结构和自然界基本粒子(the elementary particles of Nature)。   
 
-什么是量子力学？量子力学是一种构建(construction)物理理论的数学框架或规则集合。例如，有一种称为*量子电动力学(quantum electrodynamics)*的物理理论，极其精确地(with fantastic accuracy)描述了原子和光子之间的相互作用(interaction)，量子电动力学就是建立在量子力学框架上的，它包含了一些没有被量子力学确定的特殊规则。量子力学和特定物理理论比如量子电动力学之间的关系就像计算机操作系统和特定计算机应用软件之间的关联————操作系统设定了基本参数和操作模式，又给应用软件如何去完成特定任务留足了空间。   
+什么是量子力学？量子力学是一种构建(construction)物理理论的数学框架或规则集合。例如，有一种称为*量子电动力学(quantum electrodynamics)*的物理理论，极其精确地(with fantastic accuracy)描述了原子和光子之间的相互作用(interaction)，量子电动力学就是建立在量子力学框架上的，它包含了一些没有被量子力学确定的特殊规则。量子力学和特定物理理论比如量子电动力学之间的关系就像计算机操作系统和特定计算机应用软件之间的关联——操作系统设定了基本参数和操作模式，又给应用软件如何去完成特定任务留足了空间。   
 
 量子力学的规则非常简洁，又但是即使是专家也会认为它是反直觉的(counterintuitive)，量子计算和量子信息的最早先兆(antecedent, 祖先)可能在物理学家更好的理解量子力学的长久渴望(long-standing desire)中被发现。最著名的量子力学批评家(critic)阿尔伯特爱因斯坦(Albert Einstein)直到去世也不认同(unreconciled with)这个由他所帮助缔造的理论。自量子力学诞生之日起一代又一代的物理学家一直在与之角力(wrestle with)，力图使量子力学的预测更容易被接受(palatable, adj, 美味的，可口的)。量子计算和量子信息的一个目标是开发(develop)令我们的直觉对量子力学更敏锐的工具，令它的预测对人类大脑更透明(trensparent, 透明的、坦率地、易懂的)。   
 
-比如，在1980年代早期，人们对于能否利用量子效应(quantum effect)完成信号超光速传播产生了兴趣————根据爱因斯坦的相对论理论，这显然不可能(a big no-no)。这个问题的解答也转变成了能否能否克隆一个未知的量子态，也就是说构建(construct)一个量子态的副本。如果这种克隆是可行的，那么利用量子效应使信号比光还快也就成为可能。然而，克隆————在经典信息很容易完成的事情————在量子力学中却通常是不可能的。在1980年代早期发现的*不可克隆理论(no-cloning theorem)*是量子计算和量子信息的最早结论之一。自*no-cloning*理论诞生后人们又对它做出许多改进工作，现在我们有了概念工具，允许我们理解一个量子克隆设备(必然是不完善的, necessarily imperfect)可以工作得多好。这些工具反过来也被应用于理解量子力学的的其它方面。     
+比如，在1980年代早期，人们对于能否利用量子效应(quantum effect)完成信号超光速传播产生了兴趣——根据爱因斯坦的相对论理论，这显然不可能(a big no-no)。这个问题的解答也转变成了能否能否克隆一个未知的量子态，也就是说构建(construct)一个量子态的副本。如果这种克隆是可行的，那么利用量子效应使信号比光还快也就成为可能。然而，克隆——在经典信息很容易完成的事情——在量子力学中却通常是不可能的。在1980年代早期发现的*不可克隆理论(no-cloning theorem)*是量子计算和量子信息的最早结论之一。自*no-cloning*理论诞生后人们又对它做出许多改进工作，现在我们有了概念工具，允许我们理解一个量子克隆设备(必然是不完善的, necessarily imperfect)可以工作得多好。这些工具反过来也被应用于理解量子力学的的其它方面。     
 
 对量子计算和量子信息起到贡献作用的另一个历史分支(hestorical strand)是1970年代对于获得单个量子系统完全控制的兴趣。在1970年代之前(prior to the 1970s)对量子力学的应用通常包括对一个有大量量子力学系统组成的大样本(bulk sample)的总体级别(a gross level of)的控制，无一直接可行。比如超导电性(superconductivity)有一个极好的(superb)量子力学解释。然而由于一个超导体包含了大量(相比较于原子尺度而言)导体金属样本，我们只能证实其量子力学性质(nature)的极少几个方面，组成超导体的独立的量子系统依然是不可知的(inaccessible)。有一些系统比如粒子加速器(particle accelerators) 的确允许对独立量子系统进行有限的访问(access)，但依然极少提供对于组成系统(constitute system)的控制。   
 
@@ -62,9 +62,9 @@ tags:
 
 尽管有这强烈的兴趣，建立量子信息处理系统的努力已经resulted in了迄今为止的(to date)一定程度的(modest)成功。有能力在少量量子比特(昆比特qubits)进行一系列操作的小型量子计算机，展示了量子计算的最顶尖(the state of art)成果。实现*量子加密(quantum cryptography)*的实验原型(experimental prototypes)——一种长距离加密交流的方式——已经被论证，甚至已经在一定水平上应用到现实世界的某些任务上了。然而未来留给物理学家和工程师的挑战依然是巨大的：发展使大规模量子信息处理成为现实的技术。    
 
-让我们把注意力从量子力学转移到20实际另一个伟大的智力大胜利(intellectual triumphs)，计算机科学。计算机科学的源头已经消弭在历史长河中。楔形(cuneiform)文字板表明，在汉谟拉比(Hammurabi)时期(circa 1750 B.C.大约公元前1750年)巴比伦人(Babylonians)已经发展出一些相当复杂的(sophisticated)想法思想，而且似乎许多想法可以追溯到更早的时期。   
+让我们把注意力从量子力学转移到20实际另一个伟大的智力大胜利(intellectual triumphs)，计算机科学。计算机科学的源头已经消弭在历史长河中。楔形(cuneiform)文字板表明，在汉谟拉比(Hammurabi)时期(circa 1750 B.C.大约公元前1750年)巴比伦人(Babylonians)已经发展出一些相当复杂的(sopsisticated)想法思想，而且似乎许多想法可以追溯到更早的时期。   
 
-现代计算机的原型(incarnation, 化身，典型)由伟大的数学家阿兰图灵(Alan Turing)在1936年的一篇杰出论文中提出(announce)。图灵详细地developed了一个我们现在称之为可编程计算机的抽象概念，为了纪念图灵(in his honor)，这种计算模式也被称作*图灵机*。图灵表明(showed)有一种通用图灵机可以模拟一切其他图灵机。此外，他声称通用图灵机完整的掌握(capture)通过算法手段(mean)执行任务的含义(mean)。这也就是说，如果一个算法可以被某个硬件(可以理解为PC机)所执行，那么在通用图灵机也有一个对应的算法，可以实现与PC机上运行的算法所能完成的绝对相同的任务。这种论断(assertion)————被称为*丘奇图灵理论(Church-Turing thesis)*以纪念图灵和另一位计算机科学的先驱(pioneer)，Alonzo Church————断言(assert)了物理设备可以执行怎样的算法的物理概念和通用图灵机的严格的数学概念之间的等效性(equivalence)。这一理论广泛被接受，为丰富的计算机科学理论发展奠定了基础(laid the foundation)。  
+现代计算机的原型(incarnation, 化身，典型)由伟大的数学家阿兰图灵(Alan Turing)在1936年的一篇杰出论文中提出(announce)。图灵详细地developed了一个我们现在称之为可编程计算机的抽象概念，为了纪念图灵(in his honor)，这种计算模式也被称作*图灵机*。图灵表明(showed)有一种通用图灵机可以模拟一切其他图灵机。此外，他声称通用图灵机完整的掌握(capture)通过算法手段(mean)执行任务的含义(mean)。这也就是说，如果一个算法可以被某个硬件(可以理解为PC机)所执行，那么在通用图灵机也有一个对应的算法，可以实现与PC机上运行的算法所能完成的绝对相同的任务。这种论断(assertion)——被称为*丘奇图灵理论(Church-Turing thesis)*以纪念图灵和另一位计算机科学的先驱(pioneer)，Alonzo Church——断言(assert)了物理设备可以执行怎样的算法的物理概念和通用图灵机的严格的数学概念之间的等效性(equivalence)。这一理论广泛被接受，为丰富的计算机科学理论发展奠定了基础(laid the foundation)。  
 
 在图灵的论文发表后不久，由电子组件构成的初代计算机结构得到了发展。约翰·冯·诺伊曼(John von Neumann)提出了一个简单的理论模型，模型描述了怎样把所有计算机需要的组件以实际风格组合在一起，使其具有全部通用图灵机的功能。硬件开始真正的高速发展(take off, 起飞)在1947年，晶体管的出现。自那之后，计算机硬件以惊人的速度(race)强力发展,以至于1965年被戈登摩尔(Gordon Moore)总结为了一条定律，后来被称为*摩尔定律(Moore's law)*，这条定律声明计算机能力在成本不变的情况下(for constant cost)每两年翻一番。   
 
@@ -78,7 +78,7 @@ tags:
 
 强化丘奇图灵理论强调的关键是*有效的efficiently*一词。如果强化丘奇图灵理论是正确的，那就意味着无论我们在什么类型的机器上执行算法，这个机器都都以使用图灵模型进行模拟。这是一个非常重要的加强，因为这指示了为了分析一个给定的计算任务是否可以被有效地完成，我们可以自我限定在图灵机模型的计算上。   
 
-强化丘奇图灵理论的一类挑战来自于模拟计算(analog computation)领域，自图灵之后，许多不同的研究团队注意到某些类型的计算机可以有效地解决曾被认为在图灵机上没有有效解决方案的问题。最初看来(at first glance)这些模拟计算机似乎(appear to)违反了(violate)丘奇图灵理论的强化形式。很不幸的是对于模拟计算，事实表明当对模拟计算机中存在的噪声做出现实的假设时，在所有已知的例子(in all known instances)中他们的能力都将消失；他们不再能解决图灵机无法有效解决的问题。这个教训(lesson)————在评估(evaluate)计算模型有效性时现实噪声的影响必须考虑在内(take into account)————是量子计算和量子信息早期一个巨大的挑战；*量子纠错编码(quantum error-correcting codes)*和*容错量子计算(fault-tolerent quantum computation)*理论成功应对了这一挑战(a challenge met by ...)。因此不同于模拟计算(analog computation)，量子计算原则上讲(in principle)可以容忍有限量(a finite amount)的噪声依然保持其计算优势。   
+强化丘奇图灵理论的一类挑战来自于模拟计算(analog computation)领域，自图灵之后，许多不同的研究团队注意到某些类型的计算机可以有效地解决曾被认为在图灵机上没有有效解决方案的问题。最初看来(at first glance)这些模拟计算机似乎(appear to)违反了(violate)丘奇图灵理论的强化形式。很不幸的是对于模拟计算，事实表明当对模拟计算机中存在的噪声做出现实的假设时，在所有已知的例子(in all known instances)中他们的能力都将消失；他们不再能解决图灵机无法有效解决的问题。这个教训(lesson)——在评估(evaluate)计算模型有效性时现实噪声的影响必须考虑在内(take into account)——是量子计算和量子信息早期一个巨大的挑战；*量子纠错编码(quantum error-correcting codes)*和*容错量子计算(fault-tolerent quantum computation)*理论成功应对了这一挑战(a challenge met by ...)。因此不同于模拟计算(analog computation)，量子计算原则上讲(in principle)可以容忍有限量(a finite amount)的噪声依然保持其计算优势。   
 
 强化丘奇图灵理论的第一个较大挑战出现在(arose)1970年代中叶，其时 Robert Solovay和Volker Strassen展示了使用*随机化算法(randomized algorithm)*测试一个整数(integer)是质数(prime)还是合数(composite)是可行的。也就是说(That is)，素性(primality)的Solovay-Strassen测试使用随机性(randomness)作为算法最重要部分。这个算法并不确定一个给定的整数是质数还是合数，而是给出一个数是质数还是合数的确定的概率。仅需要少量几次重复Solovay-Strassen测验几乎就能确定一个数是质数还是合数。Solovay-Strassen测验的提出在那个时代具有特殊(especial)意义，因为质数确定性检验(deterministic test)其时尚是未知的。因此，它看起来好像在具有随机数生成器的计算机上可以高效地执行在传统确定图灵机上没有有效解的计算任务。这个发现激发(inspire)了人们对于其他有着丰厚回报(has paid off handsomely  handsomely, adv,漂亮的慷慨的相当大的)随机算法的研究，这个领域发展(blossoming into)为一个繁荣(thriving)的研究领域。   
 
@@ -94,7 +94,7 @@ tags:
  
 对丘奇图灵理论的强化形式来说，多伊奇的量子计算机模型可以做到的事情是一个挑战。多伊奇想要知道使用量子计算机能否有效解决在经典计算机甚至概率图灵机上无解的计算问题。他设计了一个简单的例子用以指示量子计算机的确可能有远超过经典计算机的算力。   
 
-多伊奇做出的这杰出的第一步在接下来(subsequent)的十年n间得到了许多人的改进(was improved)，最终(culminating)Peter Shor在1994年证明(demonstration)了两个最重要的(enormously important)问题————寻找整数质因子问题和被称作“离散化对数”的问题————可以被量子计算机有效解决。Shor的证明引起了(attracted)人们广泛(widespread)的兴趣，因为这两个问题一直到现在还被认为在经典计算机上无有效解。Shor的结论有力的表明了量子计算机比图灵机甚至是概率图灵机更加niubility。1995年量子计算机威力的被进一步(further)证明，Lov Grover展示了另一个重要问题————在一些非结构化搜索空间中实行搜索的问题————也可以被量子计算机加速。尽管Grover算法并没有提供Shor水平的惊人(spectacular)加速，基于搜索的方法论的广泛适应性(applicability)激起了人们对Grover算法的强烈(considerable)兴趣。   
+多伊奇做出的这杰出的第一步在接下来(subsequent)的十年n间得到了许多人的改进(was improved)，最终(culminating)Peter Shor在1994年证明(demonstration)了两个最重要的(enormously important)问题——寻找整数质因子问题和被称作“离散化对数”的问题——可以被量子计算机有效解决。Shor的证明引起了(attracted)人们广泛(widespread)的兴趣，因为这两个问题一直到现在还被认为在经典计算机上无有效解。Shor的结论有力的表明了量子计算机比图灵机甚至是概率图灵机更加niubility。1995年量子计算机威力的被进一步(further)证明，Lov Grover展示了另一个重要问题——在一些非结构化搜索空间中实行搜索的问题——也可以被量子计算机加速。尽管Grover算法并没有提供Shor水平的惊人(spectacular)加速，基于搜索的方法论的广泛适应性(applicability)激起了人们对Grover算法的强烈(considerable)兴趣。   
 
 几乎在Shor算法和Grover算法提出(discover)的同时，许多人也在挖掘(develop)理查德费曼(Richard Feynman)1982年提出(suggest)的一个想法。Feynman曾指出在经典计算机上模拟量子力学系统看起来有着巨大的(essential)困难，并且提出(suggest)到直接给予量子力学准则构建计算机可以避免这个困难。在1990年代，许多研究团队开始充实(flesh ... out)这个想法，表示使用量子计算机去有效模拟在经典计算机上没有已知有效模拟方法的系统的确是可能的。或许(It's likely that)量子计算机在未来一个主要的用途(application)就是执行经典计算机难以模拟的量子力学系统的模拟，这是一个有着深远(profound)科技意义(implication)的问题。   
 
@@ -108,7 +108,7 @@ tags:
 
 香农对于在信道(communications channel)上进行的信息通讯的两个相关问题非常感兴趣。第一个是，在信道上发送信息需要怎样的资源(resource but not source)？比如电话公司需要知道在给定的电缆(cable)上可以可靠的传输多少信息。第二个是，在信道有噪声干扰时信息能否传播(transmit)？  
 
-通过对信息论的两个基本定理(theorems)做出证明，香农解答了这两个问题。第一，香农的无噪声通道编码定理*noiseless channel coding theorem*量化了需要从信息源存储输出的物理资源。香农第二基本定理，无噪声通道编码定理*noiseless channel coding theorem*量化了通过含噪信道能可靠传输的信息量。为了实现噪声存在时的信息可靠传输，Shannon展示了可以用来保护发送信息的纠错码(*error-correcting codes*)。香农噪声通道编码定理给出了纠错码提供的(afforded by)保护上限。不幸的是，香农定理没有显式地给出实现这个上限的实践可行的纠错码集合。从香农论文发表直到如今，在逐渐逼近香农定理给定的极限的尝试中，研究人员构建了更多和更好类别的纠错码。一个复杂的(sophisticated)纠错码理论给寻求(in their quest to)设计良好纠错码的使用者提供了大量(a plethora of)选择。这些编码用在包括如(小型)光盘播放器(compact disc(光碟) player)、计算机调制解调器(modems)和卫星(satellite)通信系统等。    
+通过对信息论的两个基本定理(theorems)做出证明，香农解答了这两个问题。第一，香农的无噪声通道编码定理*noiseless channel coding theorem*量化了需要从信息源存储输出的物理资源。香农第二基本定理，无噪声通道编码定理*noiseless channel coding theorem*量化了通过含噪信道能可靠传输的信息量。为了实现噪声存在时的信息可靠传输，Shannon展示了可以用来保护发送信息的纠错码(*error-correcting codes*)。香农噪声通道编码定理给出了纠错码提供的(afforded by)保护上限。不幸的是，香农定理没有显式地给出实现这个上限的实践可行的纠错码集合。从香农论文发表直到如今，在逐渐逼近香农定理给定的极限的尝试中，研究人员构建了更多和更好类别的纠错码。一个复杂的(sopsisticated)纠错码理论给寻求(in their quest to)设计良好纠错码的使用者提供了大量(a plethora of)选择。这些编码用在包括如(小型)光盘播放器(compact disc(光碟) player)、计算机调制解调器(modems)和卫星(satellite)通信系统等。    
 
 量子信息理论有着类似的发展历程。1995年本舒马赫(Ben Schumacher)提出了香农无噪声编码理论的一个对应(analogue)，并在该过程中定义量子比特*qubit*作为实体物理资源(tangible physical resource)。然而Shannon噪声信道编码定理在量子信息中的对应(analogue)至今仍未可知。不过尽管如此(Nevertheless)，类似于(in analogy to)其经典对应物(counterparts)，一个量子纠错码理论，就像已经提到过的，已经得到一定发展，其允许量子计算机在噪声存在时执行高效的计算，并且在含噪量子信道建立可靠的通信也是允许的。   
 
@@ -124,13 +124,13 @@ tags:
 <img src="https://raw.githubusercontent.com/OUCliuxiang/OUCliuxiang.github.io/master/img/Quantum-book-01.png" alt="Figure1.1" width="550"/>  
 <center>图一：经典地认为，如果我们有两个并排运行的由强噪声通道，这个组合通道无法发送信息。毫不意外地，及时将其中一条通道反向，其依然无法发送信息。在量子力学中，将其中一条零容量通道反向事实上是允许我们发送信息的！</center>   
 
-让我们最后一次切换领域，转向庄严(venerable)而古老的*密码学(cryptography)*科学与艺术。广义地(broadly)讲，密码学是两个或多个互不相信的当事人(parties)进行交流或计算的问题。最著名的密码学(cryptographic)问题就是传输加密信息了，假设两个当事人希望加密交流，就比如你打算把你的信用卡号给商人(merchant)以换取商品(goods)，并且希望没有任何恶意的(malevolent)第三方截获(intercept)你的卡号。做成这件事的的方法正是使用*密码协议(cryptographic protocol)*。我们会在本书的后面部分详细描述密码协议是怎样工作的，但是现在简单做一些区分(distinction)就足够了(suffice)。最重要的是私钥密码系统和公钥密码系统之间的差别。  
+让我们最后一次切换领域，转向庄严(venerable)而古老的*密码学(cryptography)*科学与艺术。广义地(broadly)讲，密码学是两个或多个互不相信的当事人(parties)进行交流或计算的问题。最著名的密码学(cryptograpsic)问题就是传输加密信息了，假设两个当事人希望加密交流，就比如你打算把你的信用卡号给商人(merchant)以换取商品(goods)，并且希望没有任何恶意的(malevolent)第三方截获(intercept)你的卡号。做成这件事的的方法正是使用*密码协议(cryptograpsic protocol)*。我们会在本书的后面部分详细描述密码协议是怎样工作的，但是现在简单做一些区分(distinction)就足够了(suffice)。最重要的是私钥密码系统和公钥密码系统之间的差别。  
 
 私钥密码系统的工作机制是，两个当事人Alice和Bob希望通过共享一个只有他们知道的私钥进行通信。密钥的准确(exact)形式此处并不重要，可以认为其是一个0/1串。重要的是Alice使用这个私钥加密她希望发送给Bob的信息。加密完成会Alice将之发送给Bob，后者现在必须恢复原始信息。Alice依靠私钥加密加密(encrypt)信息，所以为了recover信息Bob也必须知道这串私钥，以撤销(undo)Alice做出(apply)的转换(transformation)。   
 
 不幸的是在很多情境(contexts)私钥系统是有很多问题的，其中最基本的问题就是如何分配(distribute)密钥。在许多方面(in many ways)，密钥的分配问题和原始的私密交流问题一样困难——一个恶意的(malevolent)第三方可能会盗取(eavesdrop)密钥分配，然后使用这个截获的(intercepted)密钥解加密(decrypt)某些信息转换。    
 
-在量子计算和量子信息方面最早的发现之一量子力学可以用来进行密钥分配，如此Alice和Bob的安全将不受任何影响(compromised)。这个过程称作量子密码学(quantum cryptography)或量子密钥分发(quantum key distribution)。基础的想法是利用(exploit)量子力学规则也就是在一般情况下观测(observation)会干扰(disturb)被观测系统。因此，如果一个窃听者(eavesdropper)在Alice和Bob尝试传输密钥时进行监听，由于在Alice和Bob正在用已建立密钥的信道上的干扰的存在，窃听者将无处遁形(be visible)。Alice和Bob就可以抛弃(throw out)在窃听者(eavesdroppers)监听时建立的密钥位并重新开始。第一个量子密码学(quantum cryptographic)的idea是Stephen Wiesner在1960年代提出的，但很不幸的是当时并未被大众所接受。1984年Bennet和Brassard基于Wiesner的早期工作提出(propose)了使用量子力学在Alice和Bob之间分发密钥的协议(protocol)，依照该协议密钥分发没有任何妥协的可能(probability of a compromise)。自那以后，不计其数的量子密码学协议被提出，实验原型也得到了发展。截至写作时，实验原型正在接近在现实世界实现有限尺度应用的水准(stage)。   
+在量子计算和量子信息方面最早的发现之一量子力学可以用来进行密钥分配，如此Alice和Bob的安全将不受任何影响(compromised)。这个过程称作量子密码学(quantum cryptography)或量子密钥分发(quantum key distribution)。基础的想法是利用(exploit)量子力学规则也就是在一般情况下观测(observation)会干扰(disturb)被观测系统。因此，如果一个窃听者(eavesdropper)在Alice和Bob尝试传输密钥时进行监听，由于在Alice和Bob正在用已建立密钥的信道上的干扰的存在，窃听者将无处遁形(be visible)。Alice和Bob就可以抛弃(throw out)在窃听者(eavesdroppers)监听时建立的密钥位并重新开始。第一个量子密码学(quantum cryptograpsic)的idea是Stephen Wiesner在1960年代提出的，但很不幸的是当时并未被大众所接受。1984年Bennet和Brassard基于Wiesner的早期工作提出(propose)了使用量子力学在Alice和Bob之间分发密钥的协议(protocol)，依照该协议密钥分发没有任何妥协的可能(probability of a compromise)。自那以后，不计其数的量子密码学协议被提出，实验原型也得到了发展。截至写作时，实验原型正在接近在现实世界实现有限尺度应用的水准(stage)。   
 
 
 ## (V) The quantum Fourier transform and its application (part of)      
@@ -184,12 +184,13 @@ $$
 量子傅里叶变换再加一点代数(algebra)就变成了下面这种实用的乘积(product)表示：    
 
 $$  
-|j_1,\cdots,j_n\rangle \rightarrow
-\frac{
-    \left(|0\rangle+e^{i2\pi0.j_n}|1\rangle\right)
-    \left(|0\rangle+e^{i2\pi0.j_{n-1}j_n}|1\rangle\right)\cdots 
+\begin{aligned}
+& |j_1,\cdots,j_n\rangle \rightarrow \\
+& \frac{
+    \left(|0\rangle+e^{i2\pi0.j_n}|1\rangle\right)\cdots 
     \left(|0\rangle+e^{i2\pi0.j_1\cdots j_{n-1}j_n}|1\rangle \right)}
-    {2^{n/2}}.   \tag{5.4}
+    {2^{n/2}}.
+\end{aligned}   \tag{5.4}
 $$   
 
 此处对每个$\|1\rangle$的系数$e^{i2\pi0.j_n}, e^{i2\pi0.j_{n-1}j_n}, e^{i2\pi0.j_1\cdots j_{n-1}j_n}$的设置保留疑问。  
@@ -221,7 +222,7 @@ $$
 \frac{k}{2^n} = \frac{k_1k_2\cdots k_n}{2^n}，
 $$
 
-* $k_1$在最高位(第1位)，单列出来也就是$k_1*2^{n-1}/2^n=k_1/2^1=k_12^{-1}$(在 ***“实验5.2”***下第一段有相关说明，最低位$2^0$)，将第$l$位推广至一般化就是$k_l*2^{n-l}/2^n=k_l2^{-l}$，从而：   
+* $k_1$在最高位(第1位)，单列出来也就是$k_1\cdot2^{n-1}/2^n=k_1/2^1=k_12^{-1}$(在 **“实验5.2”**下第一段有相关说明，最低位$2^0$)，将第$l$位推广至一般化就是$k_l\cdot2^{n-l}/2^n=k_l2^{-l}$，从而：   
 $$
 \frac{k}{2^n} = \frac{k_1k_2\cdots k_n}{2^n} = \sum_{l=1}^nk_l2^{-l}。  
 $$  
@@ -298,40 +299,40 @@ $$
 表象上(At face value)听起来(sounds)这棒极了(terrific)，因为傅里叶变换是现实世界许多数据处理应用的重要步骤(crucial)。比如计算机语音识别，音素(phoneme)识别的第一步就是进行数字化(digitized)声音的傅里叶转变。那我们能否利用量子傅里叶变换加速傅里叶变换的计算？很遗憾，答案是至今没有已知的方法完成如此操作。问题出在，量子计算机的振幅(amplitude)无法通过测量直接获取。因此就无从(no way of)确定(determine)初始状态的傅里叶变换振幅。Worse still，通常(in gerneral)没有办法有效准备傅里叶变换的初始状态。因此寻找量子傅里叶变换的用途(uses)可能比我们希望的更加微妙(subtle)。在本章和下一章节，我们会介绍(develop)一些建立在量子傅里叶变换的更精妙应用上的算法。   
 
 ### (V-2) Phase estimation   
-傅里叶变换是相位估计(*phase estimation, pe*)这一通用过程(general procedure)的关键，(in turn)相位估计又是许多量子算法的关键。假设幺正操作$U$对应于特征值(eigenvalue)$e^{i2\pi\phi}$的特征向量(eigenvector)为$\|u\rangle$，此处$\phi$是未知值，相位估计算法的目标就是估计出$\phi$。为了完成估计，我们假设我们有可用的(available)黑盒(有时也被称为神谕*oracles*)，对于合适的非负整数$j$该*black box*用以(capable of)准备好状态$\|u\rangle$并执行受控幺正操作$controlled-U^{2_j}$。黑盒的使用意味着(indicate)相位估计过程就其自身而言不是一个完备量子算法，而更应被认为是一种"子程"*subroutine*或"模块"*modeule*，当与其他子程结合就可以用来执行一些有趣的计算任务。在相位估计过程的具体(specific)应用中我们将准确地(exactly)做到这一点以描述这些黑盒操作怎样被执行，并且把它们和相位估计过程结合去做一些真正(genuinely)有用的任务。但现在我们依然先把它们视作黑盒。   
-量子相位估计过程使用两个寄存器。第一个由$t$个初始化为$\|0\rangle$状态的昆比特组成。$t$的选择依靠两个条件：我们对$\phi$的估计所希望得到的精确度的数字位数，以及我们所希望相位估计过程的成功概率。第二个寄存器以状态$\|u\rangle$开始，包含存储$\|u\rangle$所需的昆比特数。相位估计分成两步执行。首先部署图$Figure-5.2$所示的电路，
+傅里叶变换是相位估计(*phase estimation, pe*)这一通用过程(general procedure)的关键，(in turn)相位估计又是许多量子算法的关键。假设幺正操作$U$对应于特征值(eigenvalue)$e^{i2\pi\psi}$的特征向量(eigenvector)为$\|u\rangle$，此处$\psi$是未知值，相位估计算法的目标就是估计出$\psi$。为了完成估计，我们假设我们有可用的(available)黑盒(有时也被称为神谕*oracles*)，对于合适的非负整数$j$该*black box*用以(capable of)准备好状态$\|u\rangle$并执行受控幺正操作$controlled-U^{2_j}$。黑盒的使用意味着(indicate)相位估计过程就其自身而言不是一个完备量子算法，而更应被认为是一种"子程"*subroutine*或"模块"*modeule*，当与其他子程结合就可以用来执行一些有趣的计算任务。在相位估计过程的具体(specific)应用中我们将准确地(exactly)做到这一点以描述这些黑盒操作怎样被执行，并且把它们和相位估计过程结合去做一些真正(genuinely)有用的任务。但现在我们依然先把它们视作黑盒。   
+量子相位估计过程使用两个寄存器。第一个由$t$个初始化为$\|0\rangle$状态的昆比特组成。$t$的选择依靠两个条件：我们对$\psi$的估计所希望得到的精确度的数字位数，以及我们所希望相位估计过程的成功概率。第二个寄存器以状态$\|u\rangle$开始，包含存储$\|u\rangle$所需的昆比特数。相位估计分成两步执行。首先部署图$Figure-5.2$所示的电路，
 <img src="https://raw.githubusercontent.com/OUCliuxiang/OUCliuxiang.github.io/master/img/Quantum-book-04.png" alt="Figure-5.2" width="500"/> 
 <center>此处保留疑惑，controlled-U应当是受控门，为什么会对控制量子位施加影响？0初始态的量子位经哈德马门后应当统一是:+态，此处却根据所控制受控门的不同而输出不同。</center>
 
 电路先是在第一个寄存器部署哈德马门，再把受控幺正变换controlled-$U$操作应用于第二个寄存器，U升幂至2的连续(successive)次幂(译注：根据第一个$t$-qubits寄存器，one by one 地$U^{2^0},\cdots,U^{2^{t-1}}$)。第一个寄存器的终态很显然就成了：   
 $$
 \begin{aligned}
-&\frac{1}{2^{t/2}} \left(|0\rangle+e^{i2\pi 2^{t-1}\phi}|1\rangle\right) \left(|0\rangle+e^{i2\pi 2^{t-2}\phi}|1\rangle\right) \cdots \left(|0\rangle+e^{i2\pi 2^0\phi}|1\rangle\right)\\   
-&\frac{1}{2^{t/2}} \sum_{k=0}^{2^t-1}e^{i2\pi k\phi}|0\rangle.
+&\frac{1}{2^{t/2}} \left(|0\rangle+e^{i2\pi 2^{t-1}\psi}|1\rangle\right) \left(|0\rangle+e^{i2\pi 2^{t-2}\psi}|1\rangle\right) \cdots \left(|0\rangle+e^{i2\pi 2^0\psi}|1\rangle\right)\\   
+=\,\,\,&\frac{1}{2^{t/2}} \sum_{k=0}^{2^t-1}e^{i2\pi k\psi}|0\rangle.
 \end{aligned}
 \tag{5.20}   
 $$   
 忽略(omit)第二个寄存器，其自始至终保持状态$\|u\rangle$不变（所以受控操作controlled-$U$以之为控制位？受多量子比特控制？）  
  
-相位估计的第二阶段是在第一个寄存器部署逆量子傅里叶变换，可以由反转上一节实验五中的量子傅里叶变换电路完成(be obtained)，只需$\Theta(t^2)$步。第三和最后一阶段就是通过进行计算基础上的测量读出第一寄存器的状态。该算法提供了一个相当出色的对$\phi$的估计，其整体原理图(schematic)如图$Figure-5.3$所示。   
+相位估计的第二阶段是在第一个寄存器部署逆量子傅里叶变换，可以由反转上一节实验五中的量子傅里叶变换电路完成(be obtained)，只需$\Theta(t^2)$步。第三和最后一阶段就是通过进行计算基础上的测量读出第一寄存器的状态。该算法提供了一个相当出色的对$\psi$的估计，其整体原理图(schematic)如图$Figure-5.3$所示。   
 
 <img src="https://raw.githubusercontent.com/OUCliuxiang/OUCliuxiang.github.io/master/img/Quantum-book-04.png" alt="Figure-5.3" width="550"/>   
 
-图$Figure-5.3$：相位估计过程的整体原理图。顶部$t$个昆比特('/'通常表示一捆量子比特 a bundle of wires)是第一个寄存器，底部的量子比特是第二个寄存器，数目为执行幺正操作$U$所需的量。$\|u\rangle$是$U$对应于特征值$e^{i2\pi\phi}$的特征向量。测量输出是$\phi$的近似，精度为$t-\left[log(2+\frac{1}{2\epsilon})\right]$个比特位，成功的概率至少$1-\epsilon$。   
+图$Figure-5.3$：相位估计过程的整体原理图。顶部$t$个昆比特('/'通常表示一捆量子比特 a bundle of wires)是第一个寄存器，底部的量子比特是第二个寄存器，数目为执行幺正操作$U$所需的量。$\|u\rangle$是$U$对应于特征值$e^{i2\pi\psi}$的特征向量。测量输出是$\psi$的近似，精度为$t-\left[log(2+\frac{1}{2\epsilon})\right]$个比特位，成功的概率至少$1-\epsilon$。   
 
-为了增强我们对相位估计为什么可以运行的直觉，假设相位$\phi$可以精确地表示为$t$比特$\phi=0.\phi_1\cdots\phi_t$。此时考虑$(5.20)$所示的第一阶段状态，可以被重写为：   
+为了增强我们对相位估计为什么可以运行的直觉，假设相位$\psi$可以精确地表示为$t$比特$\psi=0.\psi_1\cdots\psi_t$。此时考虑$(5.20)$所示的第一阶段状态，可以被重写为：   
 $$
-\frac{1}{2^{t/2}} \left(|0\rangle+e^{i2\pi0.\phi_t}\right)
-\left(|0\rangle+e^{i2\pi0.\phi_{t-1}\phi_t}\right)\cdots
-\left(|0\rangle+e^{i2\pi0.\phi_1\cdots\phi_{t-1}\phi_t}\right).
+\frac{1}{2^{t/2}} \left(|0\rangle+e^{i2\pi0.\psi_t}\right)
+\left(|0\rangle+e^{i2\pi0.\psi_{t-1}\psi_t}\right)\cdots
+\left(|0\rangle+e^{i2\pi0.\psi_1\cdots\psi_{t-1}\psi_t}\right).
 \tag{5.21}
 $$    
-第二阶段应用逆量子傅里叶变换。与先前乘法形式傅里叶变换公式$(5.4)$相比可以看出第二阶段输出状态的形式是乘积态$\|\phi_1\cdots\phi_t\rangle$。从而计算基础上的测量精确地提供相位$\phi$！（从而？从哪儿？！）    
-总结一下，相位估计算法允许我们在给定特征向量$\|u\rangle$的情况下估计出对应的幺正操作$U$特征值的相位$\phi$。此过程的核心(in the heart of)基本(essential)特征是逆傅里叶变换执行变换的能力：   
+第二阶段应用逆量子傅里叶变换。与先前乘法形式傅里叶变换公式$(5.4)$相比可以看出第二阶段输出状态的形式是乘积态$\|\psi_1\cdots\psi_t\rangle$。从而计算基础上的测量精确地提供相位$\psi$！（从而？从哪儿？！）    
+总结一下，相位估计算法允许我们在给定特征向量$\|u\rangle$的情况下估计出对应的幺正操作$U$特征值的相位$\psi$。此过程的核心(in the heart of)基本(essential)特征是逆傅里叶变换执行变换的能力：   
 $$
-\frac{1}{2^{t/2}}\sum_{j=0}^{2^t-1}e^{i2\pi\phi j}|j\rangle|u\rangle\longrightarrow|\hat{\phi}\rangle|u\rangle,  \tag{5.22}
+\frac{1}{2^{t/2}}\sum_{j=0}^{2^t-1}e^{i2\pi\psi j}|j\rangle|u\rangle\longrightarrow|\hat{\psi}\rangle|u\rangle,  \tag{5.22}
 $$   
-此处$\hat{\phi}$表示测量$\phi$的良好估计态。
+此处$\hat{\psi}$表示测量$\psi$的良好估计态。
 
 # 完结   
 基础部分至此完结，关于量子傅里叶变换，相位估计，依然知其然不知其所以然，甚至大部分情况下不知其然。不过对于野路子出身的学生来讲，有一个粗浅印象也足够了，留待与后续理论和实验内容相互映衬以深入理解。下一篇HHL算法和实验会大量应用本章内容。   
