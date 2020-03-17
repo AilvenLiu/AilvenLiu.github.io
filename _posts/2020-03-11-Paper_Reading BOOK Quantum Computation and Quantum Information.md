@@ -25,7 +25,7 @@ tags:
     </script>
 </head>
 
-> Parts of Translation of Classical Quantum Computation Book **"Quantum Computation and Quantum Information"**
+> Parts of Translation of Classical Quantum Computation Book [**"Quantum Computation and Quantum Information"**](https://github.com/OUCliuxiang/PaperReading/tree/master/QML/QuantumComputation&QuantumInformation.pdf)
 
 ## (I) Fundamental concepts (part)    
 > 科学提供了这个时代最勇敢的形而上学。它是一种彻底的人类构想，我们梦想、然后努力去发现、去解释、又继续去梦想，正是如此的信念驱动了科学的不懈前进。也正是这种信念促使我们不断踏足新的领域，世界因此以某种方式更加清晰明了，而我们将掌握宇宙真正的奇异之处。这些奇异之处终将被证明有某些关联，而且意义非凡。  
@@ -311,4 +311,27 @@ $$
 \end{aligned}
 \tag{5.20}   
 $$   
-同时忽略(omit)第二个寄存器，由于其自始至终保持状态$\|u\rangle$不变（所以受控操作controlled-$U$以之为控制位？受多量子比特控制？）
+忽略(omit)第二个寄存器，其自始至终保持状态$\|u\rangle$不变（所以受控操作controlled-$U$以之为控制位？受多量子比特控制？）  
+ 
+相位估计的第二阶段是在第一个寄存器部署逆量子傅里叶变换，可以由反转上一节实验五中的量子傅里叶变换电路完成(be obtained)，只需$\Theta(t^2)$步。第三和最后一阶段就是通过进行计算基础上的测量读出第一寄存器的状态。该算法提供了一个相当出色的对$\phi$的估计，其整体原理图(schematic)如图$Figure-5.3$所示。   
+
+<img src="https://raw.githubusercontent.com/OUCliuxiang/OUCliuxiang.github.io/master/img/Quantum-book-04.png" alt="Figure-5.3" width="550"/>   
+
+图$Figure-5.3$：相位估计过程的整体原理图。顶部$t$个昆比特('/'通常表示一捆量子比特 a bundle of wires)是第一个寄存器，底部的量子比特是第二个寄存器，数目为执行幺正操作$U$所需的量。$\|u\rangle$是$U$对应于特征值$e^{i2\pi\phi}$的特征向量。测量输出是$\phi$的近似，精度为$t-\left[log(2+\frac{1}{2\epsilon})\right]$个比特位，成功的概率至少$1-\epsilon$。   
+
+为了增强我们对相位估计为什么可以运行的直觉，假设相位$\phi$可以精确地表示为$t$比特$\phi=0.\phi_1\cdots\phi_t$。此时考虑$(5.20)$所示的第一阶段状态，可以被重写为：   
+$$
+\frac{1}{2^{t/2}} \left(|0\rangle+e^{i2\pi0.\phi_t}\right)
+\left(|0\rangle+e^{i2\pi0.\phi_{t-1}\phi_t}\right)\cdots
+\left(|0\rangle+e^{i2\pi0.\phi_1\cdots\phi_{t-1}\phi_t}\right).
+\tag{5.21}
+$$    
+第二阶段应用逆量子傅里叶变换。与先前乘法形式傅里叶变换公式$(5.4)$相比可以看出第二阶段输出状态的形式是乘积态$\|\phi_1\cdots\phi_t\rangle$。从而计算基础上的测量精确地提供相位$\phi$！（从而？从哪儿？！）    
+总结一下，相位估计算法允许我们在给定特征向量$\|u\rangle$的情况下估计出对应的幺正操作$U$特征值的相位$\phi$。此过程的核心(in the heart of)基本(essential)特征是逆傅里叶变换执行变换的能力：   
+$$
+\frac{1}{2^{t/2}}\sum_{j=0}^{2^t-1}e^{i2\pi\phi j}|j\rangle|u\rangle\longrightarrow|\hat{\phi}\rangle|u\rangle,  \tag{5.22}
+$$   
+此处$\hat{\phi}$表示测量$\phi$的良好估计态。
+
+# 完结   
+基础部分至此完结，关于量子傅里叶变换，相位估计，依然知其然不知其所以然，甚至大部分情况下不知其然。不过对于野路子出身的学生来讲，有一个粗浅印象也足够了，留待与后续理论和实验内容相互映衬以深入理解。下一篇HHL算法和实验会大量应用本章内容。   
