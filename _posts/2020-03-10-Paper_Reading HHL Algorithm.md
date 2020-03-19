@@ -50,8 +50,7 @@ tags:
 
 该过程先对应的向量$\vec{x}$得出量子力学表示形式$\|x\rangle$，显然为了读出$\vec{x}$的全部组成需要执行该程序至少N次。事实上更常见的情况是相对于$\vec{x}$本身，我们对$\vec{x}^TM\vec{x}$的期望值更感兴趣，此处$M$是某些线性操作符(下面的内容会说明该过程同样允许(accomodate)非线性操作)。将$M$应受为量子力学操作符在执行对应于$M$的量子测量，就得到了对期望值的估计$\langle x\|M\|x\rangle=\vec{x}^TM\vec{x}$，正如我们所期望的(as desired)。这种方法可以提取(extract)向量$\vec{x}$包括正则化、状态空间不同部分的权重、矩(moments)等在内的许多(a wide variety of)特征。     
 
-举一个简单例子，该算法可以用以查看两个不同的随机过程(stochastic process)是否拥有相似的稳定状态[8]。考虑一个随机过程
-$\mathop{\vec{x}_t}=A\mathop{\vec{x}_{t-1}}+\vec{b}$，向量$\vec{x}_t$中的第$i$个坐标(coordinate)表示$t$时刻第$i$项的丰度(abandance)。该分布的稳定状态就表示成$\|x\rangle=(I-A)^{-1}\|b\rangle$(稳定状态：$x_t\equiv x_{t-1}$)。考虑另一个随机过程$\vec{x}_t^{'}=A^{'}\vec{x}_{t-1}^{'}+\vec{b^{'}}$，对应的稳定状态$\|x^{'}\rangle=(I-A^{'})^{-1}\|b^{'}\rangle$。为确定$\|x\rangle$和$\|x^{'}\rangle$是否相似，我们对它们执行SWAP测试。注意到(note that)找出两个概率分布是否相似需要至少$O(\sqrt{N})$个样本[10]。     
+举一个简单例子，该算法可以用以查看两个不同的随机过程(stochastic process)是否拥有相似的稳定状态[8]。考虑一个随机过程 $\vec{x}_t=A\vec{x}_{t-1}+\vec{b}$ ，向量 $\vec{x}_t$ 中的第 $\bm{i}$ 个坐标(coordinate)表示 $\bm{t}$ 时刻第 $\bm{i}$ 项的丰度(abandance)。该分布的稳定状态就表示成 $\|x\rangle=(I-A)^{-1}\|b\rangle$ (稳定状态： $x_t\equiv x_{t-1}$ )。考虑另一个随机过程 $\vec{x}_t^{'}=A^{'}\vec{x}_{t-1}^{'}+\vec{b^{'}}$ ，对应的稳定状态 $\|x^{'}\rangle=(I-A^{'})^{-1}\|b^{'}\rangle$ 。为确定 $\|x\rangle$ 和 $\|x^{'}\rangle$ 是否相似，我们对它们执行SWAP测试。注意到(note that)找出两个概率分布是否相似需要至少 $O(\sqrt{N})$ 个样本[10]。     
   
 该算法的优势(strength)就在于其仅需要$O(log\,N)$的昆比特寄存器就可以运行，且不必写出全部的$A,\,\vec{b},$或$\vec{x}$。在Hamiltonian模拟和非幺正步骤仅需(incur)最高(overhead)N的多对数ploy-$log\,N$的情况下(接下来有详细描述)，相比经典计算机我们的算法可以指数级别地节省时间，甚至只需要经典计算机写出这些输出的时间。某种意义而言(in that sense)，我们的算法和经典蒙特卡洛算法(Monte Carlo)相关，后者通过在来自N个目标的概率分布的样本、而非分布的全部N个组分上运行，获得极大的(dramatic)加速。然而尽管这些经典采样算法很强力，我们依然会证明一般来说(in gerneral)任何经典算法执行相同的矩阵求逆任务需要的时间都指数倍多于量子算法。   
 
