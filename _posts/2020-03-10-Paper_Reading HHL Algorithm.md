@@ -62,6 +62,7 @@ tags:
 $$
 C=\begin{pmatrix}0&A \\ A^\dagger&0\end{pmatrix}\tag{1}   
 $$   
+
 由于$C$是Hermitian矩阵，我们可以解方程$C\vec{y}=\begin{pmatrix}\vec{b}\\\\0\end{pmatrix}$以得到$y=\begin{pmatrix}0\\\\ \vec{x}\end{pmatrix}$。当有必要时可以使用这种reduction，本篇的剩余部分均假定$A$是Hermitian矩阵。   
 
 我们还需要一个高效的过程准备$\|b\rangle$。比如如果$b_i$和$\sum_{i=i_1}^{i_2}\|b_i\|^2$都是有效可算的，我们可以使用引文[14]中的过程去准备$\|b\rangle$，或者(Alternatively)，我们的算法可以作为一个更大的量子算法的子程，该主程中的其他组分component负责产生$\|b\rangle$。   
@@ -71,6 +72,7 @@ $$
 \Phi_0\rangle := \sqrt{\frac{2}{T}}\sum_{\tau=0}^{T-1}\sin \frac{\pi(\tau+\frac12)}{T}|\tau\rangle   
 \tag{2}
 $$   
+
 (此处注意上式所有的包括$T,\tau, \Phi_0$都是第一次出现，与此前包括分解$\|b\rangle$在内的分析均无联系，则其意义是？)   
 
 $\|\Phi_0\rangle$系数的选择应最小化误差分析部分的一个确定的二次损失函数(引文[13]有详细介绍)。    
@@ -79,22 +81,29 @@ $\|\Phi_0\rangle$系数的选择应最小化误差分析部分的一个确定的
 $$
 \sum_{j=1}^{N}\sum_{k=0}^{T-1}\alpha_{k|j}|k\rangle|u_j\rangle,  \tag{3}
 $$   
+
 此处$$\|k\rangle$$是傅里叶基态，当且仅当$$\lambda_j\approx\frac{2\pi k}{t_0}$$时$$\|\alpha_{k|j}\|$$会很大。定义$$\tilde{\lambda}_k:=\frac{2\pi k}{t_0}$$，可以重标记寄存器$$\|k\rangle$$以获得：   
 $$
 \sum_{j=1}^N\sum_{k=0}^{T-1}\alpha_{k|j}\beta_j|\tilde{\lambda}_k\rangle|u_j\rangle   
 $$   
+
 添加辅助(ancilla)昆比特并以$$\|\tilde{\lambda}_k$$为条件旋转，得到：   
 $$
 \sum_{j=1}^N\sum_{k=0}^{T-1}\alpha_{k|j}\beta_j|\tilde{\lambda}_k\rangle|u_j\rangle\left(\sqrt{1-\frac{C^2}{\tilde{\lambda_k^2}}}|0\rangle+\frac{C}{\tilde{\lambda_k^2}}|1\rangle\right),   
 $$  
+
 此处$$C=O(1/\kappa)$$。现在撤销相位估计解运算$$\|\tilde{\lambda}_k\rangle$$。如果相位估计算法足够优秀，会有当$$\tilde{\lambda}_k=\lambda_j$$时$$a_{k|j}=0$$，其余情况等于零。那么现在就能得到：  
 $$
 \sum_{j=1}^N\beta_j|u_j\rangle\left(\sqrt{1-\frac{C^2}{\lambda_j^2}|0\rangle+\frac{C}{\lambda_j}|1\rangle}\right)
 $$  
+
 为完成取逆操作我们测量最后一个昆比特，设观测到1，则得到状态：   
 $$
 \sqrt{\frac{1}{\sum_{j=1}^NC^2|\beta_j|^2/|\lambda_j|^2}}
-\sum_{j=1}^N\beta_j\frac{C}{\lambda_j}|u\rangle
+\sum_{j=1}^N\beta_j\frac{C}{\lambda_j}|u_j\rangle
 $$   
+
 对应于correspond to $\|x\rangle=\sum_{j=1}^n\beta_j\lambda_j^{-1}|u_j\rangle$的正则化。正则化因子可以由观测到1的概率确定。最后对$M$进行测量，其期望值$\langle x\|M\|x\rangle$对应于我们希望评估的$\vec{x}$的特征。   
 
+***运行和误差分析***：我们present一个误差源的非正式描述；准确的误差分析和运行注意事项见引文[13]。通过模拟$e^{iAt}$执行相位估计，假定$A$是$s$-稀疏矩阵，那么其可以在正比于$ts^2(t/\epsilon)^{O(1)}=:\tilde{O}(ts^2)$的时间以$\epsilon$的误差执行完毕。   
+主要的误差来源是相位估计(dominant)，在估计$\lambda$时相位估计步骤有$O(1/t_0)$的误差，加入$\lambda^{-1}$转化为相对误差是$O(1/\lambda t_0)$。当$\lambda\geq 1/\kappa$，取值$t_0=O(\kappa/\epsilon)$将引发induce最后的$\epsilon$误差。最后我们考虑后选择过程的成功概率，由于$C=O(1/\kappa)$及$\lambda\leq 1$，这个概率最小是$\Omega(1/\kappa^2)$。使用振幅放大方法[15]可以发现$O(\kappa)$的重复次数是足够的。将全部分析整合在一起，得到运行时间$\tilde{O}(log(N)s^2\kappa^2)/\epsilon$。
