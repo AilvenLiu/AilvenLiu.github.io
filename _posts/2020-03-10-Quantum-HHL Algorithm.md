@@ -102,7 +102,7 @@ $$
 \sum_{j=1}^N\beta_j\frac{C}{\lambda_j}|u_j\rangle
 $$   
 
-对应于correspond to $$|x\rangle=\sum_{j=1}^n\beta_j\lambda_j^{-1}|u_j\rangle$$的正则化。正则化因子可以由观测到1的概率确定。最后对$M$进行测量，其期望值$$\langle x|M|x\rangle$$对应于我们希望评估的$\vec{x}$的特征。   
+对应于correspond to $\|x\rangle=\sum_{j=1}^n\beta_j\lambda_j^{-1}\|u_j\rangle$的正则化。正则化因子可以由观测到1的概率确定。最后对$M$进行测量，其期望值$\langle x\|M\|x\rangle$对应于我们希望评估的$\vec{x}$的特征。   
 
 ***运行和误差分析***：我们present一个误差源的非正式描述；准确的误差分析和运行注意事项见引文[13]。通过模拟$e^{iAt}$执行相位估计，假定$A$是$s$-稀疏矩阵，那么其可以在正比于$ts^2(t/\epsilon)^{O(1)}=:\tilde{O}(ts^2)$的时间以$\epsilon$的误差执行完毕。   
 主要的误差来源是相位估计(dominant)，在估计$\lambda$时相位估计步骤有$O(1/t_0)$的误差，加入$\lambda^{-1}$转化为相对误差是$O(1/\lambda t_0)$。当$\lambda\geq 1/\kappa$，取值$t_0=O(\kappa/\epsilon)$将引发induce最后的$\epsilon$误差。最后我们考虑后选择过程的成功概率，由于$C=O(1/\kappa)$及$\lambda\leq 1$，这个概率最小是$\Omega(1/\kappa^2)$。使用振幅放大方法[15]可以发现$O(\kappa)$的重复次数是足够的。将全部分析整合在一起，得到运行时间$\tilde{O}(log(N)s^2\kappa^2)/\epsilon$。   

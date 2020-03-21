@@ -1,13 +1,14 @@
 ---
 layout:     post
-title:      Series Articles of Quantum Machine Learning  -- 04
-subtitle:   Quantum Algorithm For Linear System, by Harrow etc.
+title:      Series Articles of Quantum Machine Learning  -- 05
+subtitle:   Note Translation of HHL
 date:       2020-03-18
 author:     OUC_LiuX
 header-img: img/wallpic02.jpg
 catalog: true
 tags:
-    - En2Ch Translation
+    - Translation
+    - Note
     - Quantum Machine Learning
     - HHL Algorithm
 ---
@@ -24,7 +25,7 @@ tags:
     </script>
 </head>
 
-> Re-understand HHL follow the [qutumist](https://www.qtumist.com/post/5372)   
+> Re-understand [HHL](https://oucliuxiang.github.io/2020/03/10/Quantum-HHL-Algorithm/) follow the [qutumist](https://www.qtumist.com/post/5372)   
 
 ## (I) Inputs And Outputs of HHL Algorithm   
 A classical solving linear equation problem requires a $n\times n$ matrix and $n$-dimision vector $\vec{b}$ as inputs and outputs a $n$-dimision vector $\vec{x}$ satisfying $A\vec{x}=\vec{b}$ as the following picture **Figure-1** illustrating:   
@@ -69,6 +70,24 @@ As we have known that a HHL Algorithm consists of three subroutines that are sep
 
 For the brevity of description, the ancilla qubit in the top row is marked as "first register"; the middle row is called "second register"; and the bottom's which accommodates the input $|b\rangle$ is called "third register".  The following series of figures illustrate the key step of HHL:  
 1. **Step 1**
-<img src="https://raw.githubusercontent.com/OUCliuxiang/OUCliuxiang.github.io/master/img/Quantum-book-10.png" alt="Figure-4" width="550"/>  
+   <img src="https://raw.githubusercontent.com/OUCliuxiang/OUCliuxiang.github.io/master/img/Quantum-book-10.png" alt="Figure-4" width="550"/>  
+   In the first step, we prepare $\|b\rangle=\sum_{i=0}^Nb_i\|i\rangle$ in which $\vec{b}=(b_1, \cdots, b_N)$ and assuming $\sum_{i=1}^N\|b_i\|^2=1$.   
 
-In the first step, we prepare $\|$
+2. **Step 2**
+   <img src="https://raw.githubusercontent.com/OUCliuxiang/OUCliuxiang.github.io/master/img/Quantum-book-11.png" alt="Figure-5" width="550"/>  
+   In the second step, we transform an arbitrary Hermite matrix $A$ into unitary operator $e^{iAt}$. Note that $A$ is $s$-sparse, and Ref.[3] denotes that the simulating time of $e^{iAt}$ is $\tilde{O}(log(N)s^2t)$. Note another, if $A$ is not Hermite matrix, then define $C=\begin{pmatrix}0&A\\\\A^\dagger&0\end{pmatrix}$, resolve $C\vec{y}=\begin{pmatrix}\vec{b}\\\\0\end{pmatrix}$, and finally get $\vec{y}=\begin{pmatrix}0\\\\\vec{x}\end{pmatrix}$.  
+
+3. **Step 3**
+   <img src="https://raw.githubusercontent.com/OUCliuxiang/OUCliuxiang.github.io/master/img/Quantum-book-12.png" alt="Figure-6" width="550"/>
+   The the third step, we decompose $\|b\rangle=\sum_{j=1}^N\beta_j\|u_j\rangle$ in the fature space of $A$, through phase estimation. Note that $\|u_j\rangle$ is the eigenvector, corresponding to the eigenvalue $\lambda_j$.  
+
+4. **Step 4**  
+   <img src="https://raw.githubusercontent.com/OUCliuxiang/OUCliuxiang.github.io/master/img/Quantum-book-13.png" alt="Figure-7" width="550"/>
+   Since the $\sum_{j=1}^N\beta_j\|u_j\rangle\|\lambda_j\rangle$ has been known, then the target is to get $\|x\rangle=\sum_{j=1}^N\lambda_j^{-1}\beta_j\|u_j\rangle$. Rotate the ancilla qubit with $\|\lambda_j\rangle$ as controlled qubit, we get $\sum_{j=1}^N\left\(\sqrt{1-\frac{C^2}{\lambda_j^2}}\|0\rangle+\frac{C}{\lambda_j}\|1\rangle\rangle\right\)$ in ancilla qubit. 
+
+5. **Step 5**
+   <img src="https://raw.githubusercontent.com/OUCliuxiang/OUCliuxiang.github.io/master/img/Quantum-book-14.png" alt="Figure-8" width="550"/>
+   We here in this step perform inverse phase estimation to transform $\|\lambda_j\rangle\rightarrow\|0\rangle$; measure the ancilla qubit, if the measurement results if $\|0\rangle$, we get $\|x^{'}\rangle$ (if $\|0\rangle$, re-calculate it).   
+
+## Conclusion  
+The most of key steps are still confused for me, and in th e next series of experimental articles, I'll attempt to practice and understand some of these concepts.  
