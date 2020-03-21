@@ -1,13 +1,13 @@
 ---
 layout:     post
-title:      Series Articles of Quantum Coding in Python -- 02
+title:      Series Articles of Quantum Machine Learning -- 02
 subtitle:   Some Basic Concepts in Quantum State
 date:       2020-01-05
 author:     OUC_LiuX
-header-img: img/quantum_IBM.png
+header-img: img/wallpic02.jpg
 catalog: true
 tags:
-    - Quantum Researching, Quantum Concepts, Quantum Computation, Qiskit
+    - Quantum Machine Learning
 ---
 
 <head>

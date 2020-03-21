@@ -1,6 +1,6 @@
 ---
 layout:     post
-title:      Series Articles of Paper Reading & Translation -- 03
+title:      Series Articles of Quantum Machine Learning -- 03
 subtitle:   Quantum Computation and Quantum Information, by Michael etc.
 date:       2020-03-11
 author:     OUC_LiuX

@@ -1,6 +1,6 @@
 ---
 layout:     post
-title:      Series Articles of Paper Reading & Translation -- 02
+title:      Series Articles of Quantum Machine Learning  -- 04
 subtitle:   Quantum Algorithm For Linear System, by Harrow etc.
 date:       2020-03-10
 author:     OUC_LiuX
@@ -9,7 +9,6 @@ catalog: true
 tags:
     - Paper Reading
     - Quantum Machine Learning
-    - Quantum 
     - HHL Algorithm
 ---
 
@@ -82,17 +81,17 @@ $$
 \sum_{j=1}^{N}\sum_{k=0}^{T-1}\alpha_{k|j}|k\rangle|u_j\rangle,  \tag{3}
 $$   
 
-此处$$\|k\rangle$$是傅里叶基态，当且仅当$$\lambda_j\approx\frac{2\pi k}{t_0}$$时$$\|\alpha_{k|j}\|$$会很大。定义$$\tilde{\lambda}_k:=\frac{2\pi k}{t_0}$$，可以重标记寄存器$$\|k\rangle$$以获得：   
+此处$$|k\rangle$$是傅里叶基态，当且仅当$$\lambda_j\approx\frac{2\pi k}{t_0}$$时$$|\alpha_{k|j}|$$会很大。定义$$\tilde{\lambda}_k:=\frac{2\pi k}{t_0}$$，可以重标记寄存器$$|k\rangle$$以获得：   
 $$
 \sum_{j=1}^N\sum_{k=0}^{T-1}\alpha_{k|j}\beta_j|\tilde{\lambda}_k\rangle|u_j\rangle   
 $$   
 
-添加辅助(ancilla)昆比特并以$$\|\tilde{\lambda}_k$$为条件旋转，得到：   
+添加辅助(ancilla)昆比特并以$$|\tilde{\lambda}_k\rangle$$为条件旋转，得到：   
 $$
 \sum_{j=1}^N\sum_{k=0}^{T-1}\alpha_{k|j}\beta_j|\tilde{\lambda}_k\rangle|u_j\rangle\left(\sqrt{1-\frac{C^2}{\tilde{\lambda_k^2}}}|0\rangle+\frac{C}{\tilde{\lambda_k^2}}|1\rangle\right),   
 $$  
 
-此处$$C=O(1/\kappa)$$。现在撤销相位估计解运算$$\|\tilde{\lambda}_k\rangle$$。如果相位估计算法足够优秀，会有当$$\tilde{\lambda}_k=\lambda_j$$时$$a_{k|j}=0$$，其余情况等于零。那么现在就能得到：  
+此处$$C=O(1/\kappa)$$。现在撤销相位估计解运算$$|\tilde{\lambda}_k\rangle$$。如果相位估计算法足够优秀，会有当$$\tilde{\lambda}_k=\lambda_j$$时$$a_{k|j}=0$$，其余情况等于零。那么现在就能得到：  
 $$
 \sum_{j=1}^N\beta_j|u_j\rangle\left(\sqrt{1-\frac{C^2}{\lambda_j^2}|0\rangle+\frac{C}{\lambda_j}|1\rangle}\right)
 $$  
@@ -103,36 +102,7 @@ $$
 \sum_{j=1}^N\beta_j\frac{C}{\lambda_j}|u_j\rangle
 $$   
 
-对应于correspond to $\|x\rangle=\sum_{j=1}^n\beta_j\lambda_j^{-1}|u_j\rangle$的正则化。正则化因子可以由观测到1的概率确定。最后对$M$进行测量，其期望值$\langle x\|M\|x\rangle$对应于我们希望评估的$\vec{x}$的特征。   
+对应于correspond to $$|x\rangle=\sum_{j=1}^n\beta_j\lambda_j^{-1}|u_j\rangle$$的正则化。正则化因子可以由观测到1的概率确定。最后对$M$进行测量，其期望值$$\langle x|M|x\rangle$$对应于我们希望评估的$\vec{x}$的特征。   
 
 ***运行和误差分析***：我们present一个误差源的非正式描述；准确的误差分析和运行注意事项见引文[13]。通过模拟$e^{iAt}$执行相位估计，假定$A$是$s$-稀疏矩阵，那么其可以在正比于$ts^2(t/\epsilon)^{O(1)}=:\tilde{O}(ts^2)$的时间以$\epsilon$的误差执行完毕。   
 主要的误差来源是相位估计(dominant)，在估计$\lambda$时相位估计步骤有$O(1/t_0)$的误差，加入$\lambda^{-1}$转化为相对误差是$O(1/\lambda t_0)$。当$\lambda\geq 1/\kappa$，取值$t_0=O(\kappa/\epsilon)$将引发induce最后的$\epsilon$误差。最后我们考虑后选择过程的成功概率，由于$C=O(1/\kappa)$及$\lambda\leq 1$，这个概率最小是$\Omega(1/\kappa^2)$。使用振幅放大方法[15]可以发现$O(\kappa)$的重复次数是足够的。将全部分析整合在一起，得到运行时间$\tilde{O}(log(N)s^2\kappa^2)/\epsilon$。   
-
-# (III) 量子客HHL算法笔记   
-> Re-understand HHL follow the [qutumist](https://www.qtumist.com/post/5372)   
-
-### (III-1) Inputs And Outputs of HHL Algorithm   
-A classical solving linear equation problem requires a $n\times n$ matrix and $n$-dimision vector $\vec{b}$ as inputs and outputs a $n$-dimision vector $\vec{x}$ satisfying $A\vec{x}=\vec{b}$ as the following picture **Figure-1** illustrating:   
-<img src="https://raw.githubusercontent.com/OUCliuxiang/OUCliuxiang.github.io/master/img/Quantum-book-06.png" alt="Figure-1" width="550"/>    
-
-The HHL itself has some restraints:  
-1. **The requirements for inputs $A$ and $\vec{b}$**: Firstly it demands the $n\times n$-dimision matrix $A$ is a Hermitian matrix (i.e. the conjugate transpose of A is equiavlent to itself), and $\vec{b}$ is an unit vector. If $A$ is not Hermitian, the paper also provides method to construct Hermitian matrix. The part of algorithm's input is labeled by the red box in **Figure-1**, in which $\vec{b}$ is stored in the bottom register and $A$ exists as a component of unitary operator of phase estimation.    
-2. **The form of output $\vec{x}$**: The part of algorithm's output is labeled by the blue box in **Figure-1**, and is still stored in the bottom register (i.e. output $\vec{x}$ is in the same register as input $\vec{b}$). What the bottom register stores is a quanutm state containing vector $\vec{x}$, where the word "contains" means we are unable to read out the concrete value of $\vec{x}$. However an overall feature of $\vec{x}$ is allowed to achieve, for example it is feasible to get an evaluation of the expectional value of $\vec{x}$: $\vec{x}^TM\vec{x}$ through a operator $M$. This is also a limitation of HHL algorithm. It is not necessary to extract the concrete value of $\vec{x}$ for many applications, and under this circumstance HHL is relative efficient.   
-
-### (III-2) The Key Idea Of HHL Algorithm   
-When reading the process of HHL algorithm, we can find the key idea of HHL, that is **extract the proportion**. In the following context we'll explore its specific meaning.  
-
-As it illustrated in **Figure-2**, HHL and lots of its derivative algorithms can be divided as three subprocedures: **phase extimation**, **controlled rotation**, and **inverse phase estimation**. The inverse phase estimation is the inverse calculation of phase estimation (regarding the subroutine of phase estimation as matrix $U_{PE}$, the inverse phase estimation can be regarded as the inversion of matrix $U_{PE}$).  
-<img src="https://raw.githubusercontent.com/OUCliuxiang/OUCliuxiang.github.io/master/img/Quantum-book-07.png" alt="Figure-2" width="550"/>   
-
-When the phase estimaton has existed, then the key and fantastic site of HHL is in the middle part (labeled by blue box in **Figure-2**): controlled rotation, also named **extract the proportion**.   
-
-Considering the Hermitian matrix $A$, which can be decomposed into the formula shown at the yellow bottom in **Figure-2**. $A$ has its eigenvalue $\lambda_j$ and corresponding eigenvector $u_j$. After phase estimation, a series of eigenvalues $\lambda_j$ will be stored into the basis state $\|\lambda_j\rangle$ in the middle register, while the input $\vec{b}$ stored in the bottom register will be decomposed in the feature space of $A$ and represented as $\|b\rangle=\sum_j\beta_j\|u_j\rangle$. Recall a skill used in the second stage of phase estimation that extract the values into basis state which are stored in probability amplitude originally. We here in the second stage of HHL intruduce the similar but inverse skill that extract the values stored originally in basis state into probability amplitude.  
-
-Considering the controlled rotation (labeled by blue box in **Figure-2**), in HHL algorithm the controlled rotation achieves to extract the reciprocal of basis state value into the probability amplitude of corresponding basis state proportionally, through a ancilla qubit. The last sentance will be explained step by step below, taking putting an elephant in the refrigerator as example.  
-
-1. **First, open the refrigerator**   
-   Designing a function $f(\lambda_j)$ about the basis state $\|\lambda_j\rangle$ ($f(\lambda_j)=1/\lambda_j$ in HHL). For this example, regard the refrigerator as quantum register and stores a series of superopsition of basis state $\|\lambda_j\rangle$, Then regard the action of opening the refrigerator as "opening" the $\|\lambda_j\rangle$ in register and take the value $\lambda_j$ out as independent variable. Finally design a function $f(j)$ about this independent variable $\lambda_j$.   
-
-2. **Second, put the elephant in**   
-   
