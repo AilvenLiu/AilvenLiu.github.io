@@ -299,7 +299,7 @@ $$
 表象上(At face value)听起来(sounds)这棒极了(terrific)，因为傅里叶变换是现实世界许多数据处理应用的重要步骤(crucial)。比如计算机语音识别，音素(phoneme)识别的第一步就是进行数字化(digitized)声音的傅里叶转变。那我们能否利用量子傅里叶变换加速傅里叶变换的计算？很遗憾，答案是至今没有已知的方法完成如此操作。问题出在，量子计算机的振幅(amplitude)无法通过测量直接获取。因此就无从(no way of)确定(determine)初始状态的傅里叶变换振幅。Worse still，通常(in gerneral)没有办法有效准备傅里叶变换的初始状态。因此寻找量子傅里叶变换的用途(uses)可能比我们希望的更加微妙(subtle)。在本章和下一章节，我们会介绍(develop)一些建立在量子傅里叶变换的更精妙应用上的算法。   
 
 ### (V-2) Phase estimation   
-傅里叶变换是相位估计(*phase estimation, pe*)这一通用过程(general procedure)的关键，(in turn)相位估计又是许多量子算法的关键。假设幺正操作$U$对应于特征值(eigenvalue)$e^{i2\pi\psi}$的特征向量(eigenvector)为$\|u\rangle$，此处$\psi$是未知值，相位估计算法的目标就是估计出$\psi$。为了完成估计，我们假设我们有可用的(available)黑盒(有时也被称为神谕*oracles*)，对于合适的非负整数$j$该*black box*用以(capable of)准备好状态$\|u\rangle$并执行受控幺正操作$controlled-U^{2_j}$。黑盒的使用意味着(indicate)相位估计过程就其自身而言不是一个完备量子算法，而更应被认为是一种"子程"*subroutine*或"模块"*modeule*，当与其他子程结合就可以用来执行一些有趣的计算任务。在相位估计过程的具体(specific)应用中我们将准确地(exactly)做到这一点以描述这些黑盒操作怎样被执行，并且把它们和相位估计过程结合去做一些真正(genuinely)有用的任务。但现在我们依然先把它们视作黑盒。   
+傅里叶变换是相位估计(*phase estimation, pe*)这一通用过程(general procedure)的关键，(in turn)相位估计又是许多量子算法的关键。假设幺正操作$U$对应于特征值(eigenvalue)$e^{i2\pi\psi}$的特征向量(eigenvector)为$\|u\rangle$，此处$\psi$是未知值，相位估计算法的目标就是估计出$\psi$。为了完成估计，我们假设我们有可用的(available)黑盒(有时也被称为神谕*oracles*)，对于合适的非负整数$j$该*black box*用以(capable of)准备好状态$\|u\rangle$并执行受控幺正操作controlled-$U^{2^j}$。黑盒的使用意味着(indicate)相位估计过程就其自身而言不是一个完备量子算法，而更应被认为是一种"子程"*subroutine*或"模块"*modeule*，当与其他子程结合就可以用来执行一些有趣的计算任务。在相位估计过程的具体(specific)应用中我们将准确地(exactly)做到这一点以描述这些黑盒操作怎样被执行，并且把它们和相位估计过程结合去做一些真正(genuinely)有用的任务。但现在我们依然先把它们视作黑盒。   
 量子相位估计过程使用两个寄存器。第一个由$t$个初始化为$\|0\rangle$状态的昆比特组成。$t$的选择依靠两个条件：我们对$\psi$的估计所希望得到的精确度的数字位数，以及我们所希望相位估计过程的成功概率。第二个寄存器以状态$\|u\rangle$开始，包含存储$\|u\rangle$所需的昆比特数。相位估计分成两步执行。首先部署图**Figure-5.2**所示的电路，
 <img src="https://raw.githubusercontent.com/OUCliuxiang/OUCliuxiang.github.io/master/img/Quantum-book-04.png" alt="Figure-5.2" width="500"/> 
 <center>此处保留疑惑，controlled-U应当是受控门，为什么会对控制量子位施加影响？0初始态的量子位经哈德马门后应当统一是:+态，此处却根据所控制受控门的不同而输出不同。</center>
@@ -308,15 +308,15 @@ $$
 $$
 \begin{aligned}
 &\frac{1}{2^{t/2}} \left(|0\rangle+e^{i2\pi 2^{t-1}\psi}|1\rangle\right) \left(|0\rangle+e^{i2\pi 2^{t-2}\psi}|1\rangle\right) \cdots \left(|0\rangle+e^{i2\pi 2^0\psi}|1\rangle\right)\\   
-=\,\,\,&\frac{1}{2^{t/2}} \sum_{k=0}^{2^t-1}e^{i2\pi k\psi}|0\rangle.
-\end{aligned}
+=\,\,\,&\frac{1}{2^{t/2}} \sum_{k=0}^{2^t-1}e^{i2\pi k\psi}|k\rangle.
+\end{aligned} 
 \tag{5.20}   
 $$   
 忽略(omit)第二个寄存器，其自始至终保持状态$\|u\rangle$不变（所以受控操作controlled-$U$以之为控制位？受多量子比特控制？）  
  
 相位估计的第二阶段是在第一个寄存器部署逆量子傅里叶变换，可以由反转上一节实验五中的量子傅里叶变换电路完成(be obtained)，只需$\Theta(t^2)$步。第三和最后一阶段就是通过进行计算基础上的测量读出第一寄存器的状态。该算法提供了一个相当出色的对$\psi$的估计，其整体原理图(schematic)如图**Figure-5.3**所示。   
 
-<img src="https://raw.githubusercontent.com/OUCliuxiang/OUCliuxiang.github.io/master/img/Quantum-book-04.png" alt="Figure-5.3" width="550"/>   
+<img src="https://raw.githubusercontent.com/OUCliuxiang/OUCliuxiang.github.io/master/img/Quantum-book-05.png" alt="Figure-5.3" width="550"/>   
 
 图**Figure-5.3**：相位估计过程的整体原理图。顶部$t$个昆比特('/'通常表示一捆量子比特 a bundle of wires)是第一个寄存器，底部的量子比特是第二个寄存器，数目为执行幺正操作$U$所需的量。$\|u\rangle$是$U$对应于特征值$e^{i2\pi\psi}$的特征向量。测量输出是$\psi$的近似，精度为$t-\left[log(2+\frac{1}{2\epsilon})\right]$个比特位，成功的概率至少$1-\epsilon$。   
 
