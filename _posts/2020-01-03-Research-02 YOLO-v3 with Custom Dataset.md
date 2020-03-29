@@ -1,13 +1,14 @@
 ---
 layout:     post
-title:      Training YOLO-v3 on Darknet with Your Own Custom Dataset
-subtitle:   训练自有数据集
+title:      Series Articles of Researching Recording -- 02
+subtitle:   Training YOLO-v3 with Custom Dataset
 date:       2020-01-03
 author:     OUC_LiuX
 header-img: img/wallpic02.jpg
 catalog: true
 tags:
-    - objectDetection
+    - pytorch
+    - object detection
 ---
 # Preface
 Recently, our SRDP (Student Researching and Development Project) occurs some problems about how to track multi objectives in one kind and count them. We then try the deep sort network based on YOLO-v3(You Only Look Once) network, however, although YOLO may be tested and deployed on pytorch or other DeepLearning framework, it only support darknet to train.

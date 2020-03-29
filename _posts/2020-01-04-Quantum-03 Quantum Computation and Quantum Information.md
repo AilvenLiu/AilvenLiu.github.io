@@ -8,8 +8,9 @@ header-img: img/wallpic02.jpg
 catalog: true
 tags:
     - Paper Reading
+    - Translation
+    - En2Zh
     - Quantum Machine Learning
-    - Quantum 
     - Quantum Computation
 ---
 

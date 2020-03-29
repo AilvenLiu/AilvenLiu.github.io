@@ -8,6 +8,7 @@ header-img: img/wallpic02.jpg
 catalog: true
 tags:
     - Quantum Machine Learning
+    - Quantum Computation
 ---
 
 <head>

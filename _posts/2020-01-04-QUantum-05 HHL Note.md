@@ -8,9 +8,9 @@ header-img: img/wallpic02.jpg
 catalog: true
 tags:
     - Translation
-    - Note
+    - Zh2En
     - Quantum Machine Learning
-    - HHL Algorithm
+    - HHL
 ---
 
 <head>

@@ -1,13 +1,14 @@
 ---
 layout:     post
-title:      Usage of Pytorch - 01
-subtitle:   Recording the process of shallowing networks with pytorch and python-file-system
+title:      Series Articles of Researching Recording - 01
+subtitle:   NN shallowing and py-files
 date:       2020-01-02
 author:     OUC_LiuX
 header-img: img/wallpic02.jpg
 catalog: true
 tags:
-    - Deep-Compression, pytorch basis
+    - deep compression 
+    - pytorch
 ---
 
 # Head files

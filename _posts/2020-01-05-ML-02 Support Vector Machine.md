@@ -7,7 +7,11 @@ author:     OUC_LiuX
 header-img: img/wallpic02.jpg
 catalog: true
 tags:
-    - Machine Learning, SVM, Classification
+    - machine learning
+    - Translation
+    - Zh2En 
+    - SVM 
+    - classification
 ---
 
 <head>

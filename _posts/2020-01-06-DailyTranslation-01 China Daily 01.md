@@ -7,8 +7,8 @@ author:     OUC_LiuX
 header-img: img/ChinaDaily-01-huawei.png
 catalog: true
 tags:
-    - Dayli Translation
-    - En2Zn
+    - Dayly Translation
+    - En2Zh
     - China Daily 
 ---
 

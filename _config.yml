@@ -4,15 +4,15 @@ SEOTitle: OUC_LiuX's Bolg
 header-img: img/wallpic02.jpg
 email: liuxiang@stu.ouc.edu.cn
 description: "Templete is from https://qiubaiying.github.io/"
-keyword: "OUC_LiuX, Personal Blob, Technology, Searching, Life, Machine Learning, ..."
+keyword: "OUC_LiuX, Personal Blob, Technology, Research, Study, Life, Machine Learning, ..."
 url: "http://OUCliuxiang.github.io"          # your host, for absolute URL
 baseurl: ""      # for example, '/blog' if your blog hosted on 'host/blog'
 github_repo: "https://github.com/OUCliuxiang/OUCliuxiang.github.io.git" # you code repository
 
 # Sidebar settings
 sidebar: true                           # whether or not using Sidebar.
-sidebar-about-description: "From MIGIC (Machine Intelligence Group in Innovative Center), Ocean University of China"
-sidebar-avatar: /img/OUC_LiuX.png      # use absolute URL, seeing it's used in both `/` and `/about/`
+sidebar-about-description: "From Innovative Center, Ocean University of China"
+sidebar-avatar: /img/childhood-01.png      # use absolute URL, seeing it's used in both `/` and `/about/`
 
 
 
