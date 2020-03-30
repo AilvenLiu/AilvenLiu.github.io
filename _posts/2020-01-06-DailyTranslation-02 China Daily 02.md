@@ -55,3 +55,35 @@ tags:
 中国也同来自许多国际组织和国家的卫生专家进行了视频会议，向全世界超过100个国家和十多个国际组织共享了包括新冠肺炎防控方案、确诊和治疗指南等在内的技术文档。   
 
 习近平在峰会期间表示，所有国家必须合作建立起一个迄今最强的疾病控制和治疗的全球网络。
+
+“中国已经建立了线上COVID-19知识中心，向所有国家开放。现在急需集中各国力量加速药品、疫苗和检测能力的研究和发展，以期早日实现突破、惠及各方。”
+
+## (Original artitle) Experts: Xi's call sets right tone for battle   
+
+***Mutual assistance is essential for world to prevail over contagion, say observers***
+
+Amid the mounting risks the novel coronavirus pneumonia outbreak has brought to the world, President Xi Jinping's call for "an all-out global war" against the pandemic at the recent G20 Extraordinary Leader's Summit on COVID-19 has great relevance to addressing the global public health crisis.
+
+The messages of solidarity and mutual assistance Xi sent at the videoconference for leaders of the Group of 20 countries on Thursday are the only way out for the world to prevail over the contagion and save the global economy from recession, observers said.
+
+The virtual summit, the first of its kind in the history of the G20, is the first major multilateral event Xi participated in since the start of the outbreak. Xi has been using telephone conversations, correspondence and meetings with leaders of foreign countries and international organizations to strengthen coordination between China and the rest of the world on the fight against the virus.
+
+"At such a moment, it is imperative for the international community to strengthen confidence, act with unity and work together in a collective response," Xi said at the summit. "We must comprehensively step up international cooperation and foster greater synergy so that humanity as one could win the battle against such a major infectious disease."
+
+Xi's remarks came as China's epidemic control is continuously improving and the trend of restoring normal work and life is being consolidated. Globally, the virus has spread to more than 200 countries and regions. Over 616,700 people have been infected and the death toll is still rising rapidly, according to the World Health Organization. The economic toll is also climbing as more businesses and trade comes to a halt amid massive lockdowns.
+
+Tom Fowdy, a British political and international relations analyst, said the virus is a global challenge which requires a global response as it does not discriminate in terms of nationality or culture.
+
+Although some nations have endeavored to pin it on one specific country and seen opportunities in doing so, in practice the outbreak harms the humanitarian, political, and economic interests of every nation, Fowdy said.
+
+China has always advocated international cooperation in the fight against the epidemic. It has been endeavoring to coordinate policies and share information and experiences with other countries and international organizations.
+
+The country has offered aid to 89 countries and four international organizations to contain the epidemic, including donations of face masks or other medical equipment and as well as $20 million to the WHO.
+
+China has also sent teams of medical experts to Iran, Iraq, Italy, Serbia, Cambodia and Pakistan as well as a joint task force to the United Kingdom to help those countries fight the epidemic. More medical teams are expected to be sent to countries in need.
+
+China has also held video conferences with health experts from many international organizations and countries. It also shared technical documents, including epidemic prevention and control measures, as well as diagnosis and treatment plans, with more than 100 countries around the world and over 10 international and regional organizations.
+
+Xi said during the summit that all nations must work together to build the strongest global network of disease control and treatment that the world has ever seen.
+
+"China has set up its online COVID-19 knowledge center that is open to all countries. It is imperative that countries pool their strengths and speed up research and development of drugs, vaccines and testing capabilities in the hope to achieve early breakthrough to the benefit of all."
