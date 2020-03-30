@@ -4,7 +4,7 @@ title:      Series Articles of Daily Translation -- 02
 subtitle:   ChinaDaily-> Xi's call sets right tone for battle
 date:       2020-03-30
 author:     OUC_LiuX 
-header-img: img/ChinaDaily-01-Xi's-calls.png
+header-img: img/ChinaDaily-02-Xi's-calls.png
 catalog: true
 tags:
     - Dayly Translation
