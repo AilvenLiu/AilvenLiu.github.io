@@ -24,7 +24,7 @@ tags:
     </script>
 </head>
 
-> On 29th Mar 2020, I decide to translate one English article to Chinese edition everyday, getting started with [*China Daily*](https://www.chinadaily.com.cn/).    
+> Since 29 March, 2020, I've decided to translate an English article to Chinese edition everyday, getting started with [*China Daily*](https://www.chinadaily.com.cn/).    
 
 > This article is originated in [this page](https://www.chinadaily.com.cn/a/202003/28/WS5e7e9849a310128217282a39.html), updated on 28th Mar 2020.  
 
