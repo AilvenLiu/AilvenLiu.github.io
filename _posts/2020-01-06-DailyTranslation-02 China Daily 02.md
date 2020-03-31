@@ -26,7 +26,7 @@ tags:
 
 > Since 29 March, 2020, I've decided to translate an English article to Chinese edition everyday, getting started with [*China Daily*](https://www.chinadaily.com.cn/).    
 
-> This article is originated in [this page](https://www.chinadaily.com.cn/a/202003/30/WS5e812c82a310128217282d36.html), updated on 30th Mar 2020.  
+> This translated edition is the first part of the original article, originated in [this page](https://www.chinadaily.com.cn/a/202003/30/WS5e812c82a310128217282d36.html), updated on 30th Mar 2020.  
 
 ## （翻译）习近平的呼吁为抗疫定下基调  
 
