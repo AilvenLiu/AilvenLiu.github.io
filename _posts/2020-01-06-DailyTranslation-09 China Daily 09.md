@@ -1,6 +1,6 @@
 ---
 layout:     post
-title:      Series Articles of Daily Translation -- 08
+title:      Series Articles of Daily Translation -- 09
 subtitle:   ChinaDaily-> QR codes becoming ubiquitous amid epidemic 
 date:       2020-04-08
 author:     OUC_LiuX 
