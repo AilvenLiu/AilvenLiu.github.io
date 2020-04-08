@@ -2,7 +2,7 @@
 layout:     post
 title:      Series Articles of Daily Translation -- 08
 subtitle:   ChinaDaily-> High-tech center helps in virus fight 
-date:       2020-04-06
+date:       2020-04-07
 author:     OUC_LiuX 
 header-img: img/ChinaDaily-08-highTechCenter.png
 catalog: true
