@@ -1,6 +1,6 @@
 ---
 layout:     post
-title:      Series Articles of Daily Translation -- 09
+title:      Series Articles of Daily Translation -- 10
 subtitle:   ChinaDaily-> Closer global cooperation, not trade restrictions, essential 
 date:       2020-04-09
 author:     OUC_LiuX 
