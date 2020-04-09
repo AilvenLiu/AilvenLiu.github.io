@@ -26,9 +26,9 @@ tags:
 
 > Since 29 March, 2020, I've decided to translate an English article to Chinese edition everyday, getting started with [*China Daily*](https://www.chinadaily.com.cn/).    
 
-> This article is originated in [this page](http://www.chinadaily.com.cn/a/202004/08/WS5e8d2d06a310aeaeeed50ac8.html), updated on 9th Apr, 2020. 这一篇写得太过直白了，对美国的批评不加掩饰。
+> This article is originated in [this page](http://www.chinadaily.com.cn/a/202004/08/WS5e8d2d06a310aeaeeed50ac8.html), updated on 8th Apr, 2020. 这一篇写得太过直白了，对美国的批评不加掩饰。
 
-> 本文图片摄于2020年3月7号。游客们在拉斯维加斯的消费电子展览上查看华为的产品。   
+> 本文图片摄于2020年1月7号。游客们在拉斯维加斯的消费电子展览上查看华为的产品。   
 
 ## （翻译）务必要加紧国际合作，不要贸易限制
 
