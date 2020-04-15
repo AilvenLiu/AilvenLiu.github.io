@@ -11,7 +11,6 @@ tags:
     - Anaconda 
     - Jupyter 
     - LaTeX 
-    - work-space
 ---
 
 <head>

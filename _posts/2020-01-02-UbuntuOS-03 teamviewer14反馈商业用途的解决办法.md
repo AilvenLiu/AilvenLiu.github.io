@@ -7,9 +7,7 @@ author:     OUC\_LiuX
 header-img: img/wallpic02.jpg
 catalog: true
 tags:
-    - work-space 
     - Ubuntu OS
-    - teamviewer
 ---
 # 整体流程
 1. 卸载当前teamviewer

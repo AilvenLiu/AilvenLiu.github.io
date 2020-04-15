@@ -7,7 +7,6 @@ author:     OUC_LiuX
 header-img: img/wallpic_02.jpg
 catalog: true
 tags:
-    - work-space
     - Ubuntu OS
 ---
 
