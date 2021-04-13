@@ -1,8 +1,8 @@
 ---
 layout:     post
 title:      Series Articles of Java Learning  -- 01
-subtitle:   Java学习练习01--基于阿里云的表格识别OCR工具开发
-date:       2021-01-30
+subtitle:   Java项目实录01--基于阿里云的表格识别OCR工具开发
+date:       2021-03-31
 author:     OUC_LiuX
 header-img: img/wallpic02.jpg
 catalog: true
@@ -23,17 +23,13 @@ tags:
     </script>
 </head>     
 
->  受崇教授所托，开发一款图片转表格OCR工具。考虑到时正在学习java，从头做个小项目并发布成exe正好能当成个练习。同时，由于崇教授只给了一天半的时间，难以从头训练一个神经网络，更遑论表格线分割等外围任务。综合考虑，决定调用阿里云的api，使用其java接口进行二次开发。项目代码开源在我的[github](https://github.com/OUCliuxiang/Java_related/tree/main/AliTableOCR)。  
+>  受崇教授所托，开发一款图片转表格OCR工具。决定调用阿里云的api，使用其java接口进行二次开发。项目代码开源在[github](https://github.com/OUCliuxiang/Java_related/tree/main/AliTableOCR)。  
 >  这篇博客主要记录项目开发的流程，一些共性的问题和基本语法问题会在其他博客中详细记录。  
 
 
-## API选择   
-综合比较了华为、腾讯和阿里云的效果及封装方便程度（也即使用时的方便程度），选择了阿里云市场的[一款产品](https://market.aliyun.com/products/57124001/cmapi024968.html?spm=5176.2020520132.101.8.6af772181XygKX#sku=yuncode1896800000)。事实证明，这款产品很好用，对低质量图片的识别效率高效果好。  
-这个API最方便的地方在于，处理好的excel表格可以通过base64编码偶不是json数据类型返回（虽然也需要从json读出base64码），这样以来，我们可以直接通过`org.apache.commons.codec`包中的`Base64.encodeBase64`将从json解码出表格文件。这里涉及到从零开始java项目过程遇到的第一个问题，[如何引入和使用初始环境不包含的jar包]()。  
 
-
-## 实际开发过程   
-整个项目的结构大致如下：   
+# 项目结构：    
+```
 AliTableOCR   
 |  
 |--data   
@@ -41,7 +37,7 @@ AliTableOCR
 |--out    
 |--src    
 |  |--com    
-|  |  |--alibaba.ocr.damo
+|  |  |--alibaba.ocr.damo    
 |  |  |  |--AliTableOCR  
 |  |  |  |--Base64excel  
 |  |  |   
@@ -53,3 +49,55 @@ AliTableOCR
 |  |  |  |--FileChooser   
 |  
 |--jars...
+```
+
+# 代码解析    
+## 类 AliTableOCR   
+### 方法 main()
+```java   
+public static void main(String[] args) {
+    EventQueue.invokeLater(new Runnable() {
+        @Override
+        public void run() {
+            FileChooser.createWindow();
+        }
+    });
+}
+```   
+由于`class AliTableOCR`的所有方法映射都到了GUI界面，从而项目`main`函数只有一个功能：启动GUI界面。并，通过`EventQueue.invokeLater(Runnable)`实现接口(Inference)`Runnable`中的`run()`方法保证`main`的线程安全。  
+
+### 方法 submit2AliAPI( String imgPath, String targetPath)      
+
+将图片编码为base64提交到阿里云API，并将返回的json数据解析为excel表格。   
+```
+Params:   
+@ imgPath:      接收图片路径    
+@ targetPath:   目标表格路径
+```   
+
+需要避免IO错误，但为查看实际解析出来的excel表格内容，此处不采取异常捕获机制，而是给`targetExcel`一个初始值。方便起见，目标表格路径需要和输入图片路径一一对应。由于输入图片限制为.jpg和.png格式，可以通过简单的字符串`replace()`方法实现，如66-69行代码：   
+```java
+else if (imgName.charAt(length-2)=='N') {
+    targetExcel = targetPath + '\\' + imgName.replace(".PNG", ".xlsx");
+}
+```    
+API的输入接口为base64编码字符串，则需要将目标图片编码为base64：      
+```java
+String imgBase64 = "";
+try {
+    File file = new File(imgFile);
+    byte[] content = new byte[(int) file.length()];
+    FileInputStream finputstream = new FileInputStream(file);
+    finputstream.read(content);
+    finputstream.close();
+    imgBase64 = new String(encodeBase64(content));
+} catch (IOException e) {
+    e.printStackTrace();
+    return;
+}
+```
+通过`try-catch`语句捕获输入输出异常。    
+通过`new FileInputStream(file)`创建文件`file = new File(path)`的输入流，并通过`read(byte[])`方法将文件流中的字节返回到字节数组中，字节数组的长度依照输入图片文件file而定。这是由于`encondBase64(byte[])`方法给出的输入接口是字节数组。    
+不要忘记关闭文件输入流。    
+
+下一步（row 114--）
