@@ -187,4 +187,5 @@ northPanel.add(picPath, BorderLayout.WEST);
 
 按钮通过静态方法*createButton(String name, JTextField textField)* 构造。   
 
-### 静态方法 createButton(String name, JTextField textField)   
+### 静态方法 createButton(String name, JTextField textField)     
+用以构造路径选择按键，按键可以打开一个路径选择框，并将选定的路径自动填充到路径文本框中。    
