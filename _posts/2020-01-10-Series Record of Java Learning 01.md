@@ -1,7 +1,7 @@
 ---
 layout:     post
 title:      Series Articles of Java Learning  -- 01
-subtitle:   Java项目实录01--基于阿里云的表格识别OCR工具开发
+subtitle:   Java项目实录01 -- 基于阿里云的表格识别OCR工具开发
 date:       2021-03-31
 author:     OUC_LiuX
 header-img: img/wallpic02.jpg
@@ -53,7 +53,7 @@ AliTableOCR
 
 # 代码解析    
 
-## 类： AliTableOCR    
+## 主函数类： AliTableOCR    
 
 ### 方法： main()    
 
