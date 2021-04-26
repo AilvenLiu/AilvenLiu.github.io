@@ -80,8 +80,14 @@ params.add(new BasicNameValuePair("AI_VAT_INVOICE_IMAGE", imgBase64));
 
 在接下来就是获取结果信息。`execute.getEntity()`会返回一个`HttpEntity`类型变量，既是结果。但是这个结果对我们不是直观可读的，通过`EntityUtils`的静态方法`EntityUtils.parseString(HttpEntity)`可以将`HttpEntity`类型的结果转化为字符串类型。由于结果中包含多种信息，显然json对我们的处理更加方便。
 
-JSON（来自`com.alibaba.fastjson`）中的静态方法`JSON.parseObject(String)`可以将字符串形式表示的结果转化为`JSONObject`变量。    
+JSON（来自`com.alibaba.fastjson`）中的静态方法`JSON.parseObject(String)`可以将字符串形式表示的结果转化为`JSONObject`变量`res_obj`。    
+
 
 #### 第二部分--结果解析    
 
+从上一步得到的JSONObject类型变量`res_obj`中将结果各部分提取出来，用到合适的位置。就本项目发票API而言：   
+* 发票抬头是一个字符串变量，直接通过`res_obj.getString(key)`提取。    
+* 发票日期是一个字符串变量，直接通过`res_obj.getString(key)`提取。   
+不同的是，这个日期是“year-month-day”格式的字符串变量。我们不希望出现中间的小短横‘-’，于是通过`Utils`的静态方法`IntegerOnly()`进行提取结果为纯数字。由于涉及到一些有关正则匹配的共性知识，方法的具体实现在[java知识总结](https://www.ouc-liux.cn/2021/01/31/Series-Record-of-Java-Learning-04/)中单独解读。    
+* 发票总额是一个浮点型变量，所以通过`res_obj.getString(key)`提取出后，需要再通过`Double`的静态方法`Double.parseDouble(String)`将之转化为double型的 **基本类型** 变量。基本类型这一点很重要，`Double`还有一个静态方法`Double.valueOf(String)`返回一个Double型的 **类类型** 变量，这一点依然见于[java知识总结](https://www.ouc-liux.cn/2021/01/31/Series-Record-of-Java-Learning-04/)中。    
 
