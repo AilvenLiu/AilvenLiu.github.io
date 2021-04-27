@@ -67,7 +67,7 @@ List<NameValuePair> params = new ArrayList<NameValuePair>();
 ```   
 关于接口类`List`和抽象类`AbstractList`的实现类`ArrayList`之间关系的小知识，见博客[java常见方法总结](https://www.ouc-liux.cn/2021/01/31/Series-Record-of-Java-Learning-04/)    
 
-下一步，参照[这篇博客](https://www.ouc-liux.cn/2021/03/31/Series-Record-of-Java-Learning-01/#%E9%9D%99%E6%80%81%E6%96%B9%E6%B3%95-submit2aliapi-string-imgpath-string-targetpath)进行图片的`Base64`编码，并将相应的base64编码构造为键值对加入到参数链表`params`中：   
+下一步，参照[这里](https://www.ouc-liux.cn/2021/03/31/Series-Record-of-Java-Learning-01/#%E9%9D%99%E6%80%81%E6%96%B9%E6%B3%95-submit2aliapi-string-imgpath-string-targetpath)关于图片`Base64`编码的知识对图片编码，并将相应的base64码构造为键值对加入到参数链表`params`中：   
 ```java    
 params.add(new BasicNameValuePair("AI_VAT_INVOICE_IMAGE", imgBase64));
 ```    
@@ -88,6 +88,11 @@ JSON（来自`com.alibaba.fastjson`）中的静态方法`JSON.parseObject(String
 从上一步得到的JSONObject类型变量`res_obj`中将结果各部分提取出来，用到合适的位置。就本项目发票API而言：   
 * 发票抬头是一个字符串变量，直接通过`res_obj.getString(key)`提取。    
 * 发票日期是一个字符串变量，直接通过`res_obj.getString(key)`提取。   
-不同的是，这个日期是“year-month-day”格式的字符串变量。我们不希望出现中间的小短横‘-’，于是通过`Utils`的静态方法`IntegerOnly()`进行提取结果为纯数字。由于涉及到一些有关正则匹配的共性知识，方法的具体实现在[java知识总结](https://www.ouc-liux.cn/2021/01/31/Series-Record-of-Java-Learning-04/)中单独解读。    
-* 发票总额是一个浮点型变量，所以通过`res_obj.getString(key)`提取出后，需要再通过`Double`的静态方法`Double.parseDouble(String)`将之转化为double型的 **基本类型** 变量。基本类型这一点很重要，`Double`还有一个静态方法`Double.valueOf(String)`返回一个Double型的 **类类型** 变量，这一点依然见于[java知识总结](https://www.ouc-liux.cn/2021/01/31/Series-Record-of-Java-Learning-04/)中。    
+不同的是，这个日期是“year-month-day”格式的字符串变量。我们不希望出现中间的小短横‘-’，于是通过`Utils`的静态方法`IntegerOnly()`进行提取结果为纯数字。由于涉及到一些有关正则匹配的共性知识，方法的具体实现在[java知识总结](https://www.ouc-liux.cn/2021/01/31/Series-Record-of-Java-Learning-04/#正则表达式去除字符串中特定值)中单独解读。    
+* 发票总额是一个浮点型变量，所以通过`res_obj.getString(key)`提取出后，需要再通过`Double`的静态方法`Double.parseDouble(String)`将之转化为double型的 **基本数据类型** 变量。基本类型这一点很重要，`Double`还有一个静态方法`Double.valueOf(String)`返回一个Double型的 **类类型** 变量。关于Double 和 double的区别与联系依然见于[java知识总结](https://www.ouc-liux.cn/2021/01/31/Series-Record-of-Java-Learning-04/#类类型Double与基本数据类型double)中。    
+* 发票detail是一个`JSONArray`变量，由多个具体条目组成，每个条目以`JSONObject`表现。通过`res_obj.getJSONArray(key)`提取。    
+
+至此，内容提取完成。     
+
+
 

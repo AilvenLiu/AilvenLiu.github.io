@@ -73,6 +73,17 @@ public static String IntegerOnly(String str){
 随后调用String变量的`trim()`方法，去除replaceAll之后的字符串头尾的空白符。得到纯数字组成的字符串,返回。     
 
 
+## 类类型Double与基本数据类型double    
+ 
+* Double是一个类，创建对象，存放在堆中   
+* double是一种基本数据类型，创建引用，存放在栈中   
+* Double是对double类型的封装，内置很多方法可以实现String到double的转换，以及获取各种double类型的属性值（MAX_VALUE，SIZE等）   
+* `Double d =new Double(dou)`  可将double基本数据类型自动装箱为Double包装类    
+* `double dou =d.doubleValue()`可将Double的包装类自动拆箱为基本数据类型    
+
+Double提取字符串中浮点数的两个静态方法：    
+* `Double.parseDouble(String)`： 把数字类型的字符串转换成基本数据类型double    
+* `Double.valueOf(String)`： 把数字类型的字符串转换成类类型Double    
 
 
-
+    
