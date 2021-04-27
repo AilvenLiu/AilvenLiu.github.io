@@ -2,7 +2,7 @@
 layout:     post
 title:      Series Articles of Java Learning  -- 03
 subtitle:   Java学习实录01 -- 一些基本知识
-date:       2021-01-30
+date:       2021-03-31
 author:     OUC_LiuX
 header-img: img/wallpic02.jpg
 catalog: true

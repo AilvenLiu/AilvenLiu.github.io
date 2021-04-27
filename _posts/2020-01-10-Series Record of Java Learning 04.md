@@ -2,7 +2,7 @@
 layout:     post
 title:      Series Articles of Java Learning  -- 04
 subtitle:   Java学习实录02 -- 总结一些小知识
-date:       2021-01-31
+date:       2021-03-31
 author:     OUC_LiuX
 header-img: img/wallpic02.jpg
 catalog: true
@@ -86,4 +86,22 @@ Double提取字符串中浮点数的两个静态方法：
 * `Double.valueOf(String)`： 把数字类型的字符串转换成类类型Double    
 
 
-    
+## String.format()格式化输出     
+
+来自String的静态类`String.format(String, [argvs])`用于格式化填充字符串。方法的第一个参数是一个含有格式化占位符的字符串变量，如%d, %f, %3.4f等等，第二个及之后的参数按顺序是填充内容。     
+常用的format占位符含义及表现展示为如下表格：     
+
+|占位符|含义    |案例   |   
+|:--- |:---   |:---  |   
+|%d   |int型变量| 'c' -> 99|   
+|%s   |String变量| |    
+|%c   |char型变量| 99 -> 'c'|   
+|%f   |浮点型变量，<br>默认小数点后六位|3.12 -> <br>3.120000|   
+|%x   |十六进制数|101(10) -> 65|   
+|%o   |八进制数|15(10) -> 17|       
+|%nd, <br>n是整数 |右对齐n位，左侧为空|  |   
+|%n.mf, <br>n,m都整数|小数点前右对齐n位，<br>左侧为空；保留m位小数|123.45(%3.3f)<br>->123.450|
+|%mnd, mn是整数|右对齐n位，左侧补'm'|101(%010d)-><br>0000000101|    
+|%mn.kf, m,n,k是整数|不做|解释|    
+|%-nd, n是整数|左对齐n位，右侧为空||      
+|类似|可|自由组合|

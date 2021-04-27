@@ -2,7 +2,7 @@
 layout:     post
 title:      Series Articles of Java Learning  -- 02
 subtitle:   Java项目实录02 -- 基于阿里云的普通增值税发票识别工具开发
-date:       2021-01-30
+date:       2021-03-31
 author:     OUC_LiuX
 header-img: img/wallpic02.jpg
 catalog: true
@@ -87,12 +87,18 @@ JSON（来自`com.alibaba.fastjson`）中的静态方法`JSON.parseObject(String
 
 从上一步得到的JSONObject类型变量`res_obj`中将结果各部分提取出来，用到合适的位置。就本项目发票API而言：   
 * 发票抬头是一个字符串变量，直接通过`res_obj.getString(key)`提取。    
+
 * 发票日期是一个字符串变量，直接通过`res_obj.getString(key)`提取。   
-不同的是，这个日期是“year-month-day”格式的字符串变量。我们不希望出现中间的小短横‘-’，于是通过`Utils`的静态方法`IntegerOnly()`进行提取结果为纯数字。由于涉及到一些有关正则匹配的共性知识，方法的具体实现在[java知识总结](https://www.ouc-liux.cn/2021/01/31/Series-Record-of-Java-Learning-04/#正则表达式去除字符串中特定值)中单独解读。    
+不同的是，这个日期是“year-month-day”格式的字符串变量。我们不希望出现中间的小短横‘-’，于是通过`Utils`的静态方法`IntegerOnly()`进行提取结果为纯数字。由于涉及到一些有关正则匹配的共性知识，方法的具体实现在[java知识总结](https://www.ouc-liux.cn/2021/01/31/Series-Record-of-Java-Learning-04/#正则表达式去除字符串中特定值)中单独解读。       
+
 * 发票总额是一个浮点型变量，所以通过`res_obj.getString(key)`提取出后，需要再通过`Double`的静态方法`Double.parseDouble(String)`将之转化为double型的 **基本数据类型** 变量。基本类型这一点很重要，`Double`还有一个静态方法`Double.valueOf(String)`返回一个Double型的 **类类型** 变量。关于Double 和 double的区别与联系依然见于[java知识总结](https://www.ouc-liux.cn/2021/01/31/Series-Record-of-Java-Learning-04/#类类型Double与基本数据类型double)中。    
+
 * 发票detail是一个`JSONArray`变量，由多个具体条目组成，每个条目以`JSONObject`表现。通过`res_obj.getJSONArray(key)`提取。    
 
-至此，内容提取完成。     
+内容提取结束。然后定义一个String类型变量作为生成的Excel文件的名字，使用`String.format()`方法填充抬头、日期、总额等发票信息对该字符串变量赋值。
 
+接下来创建一个`Generator()`对象，并调用其方法（不能是静态方法，原因存疑）`generator.generateExcel(invoice_detail, excel_name);`生成指定名字的excel表格。    
+
+最后返回状态码`return stateCode;`结束该静态方法。      
 
 
