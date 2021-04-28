@@ -80,9 +80,10 @@ github博客默认markdown页面不支持渲染数学公式，需要再每篇文
 **代码及高亮**    
 
 上面的代码以`javascript`格式高亮显示，通过    
-> \```javascript(换行)    
-> 代码内容   
-> \```   
+
+\`\`\`javascript(换行)       
+代码内容   
+\`\`\`    
 
 实现。同理，将javascript换成其他关键词，如java/cpp/bash/python等等，即可以相应语言高亮显示代码块。      
 
