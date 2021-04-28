@@ -102,3 +102,6 @@ JSON（来自`com.alibaba.fastjson`）中的静态方法`JSON.parseObject(String
 最后返回状态码`return stateCode;`结束该静态方法。      
 
 
+## 类： Generator       
+
+该类用于生成excel表格。处理excel表格需要使用`poi.hssf`库，通过      
