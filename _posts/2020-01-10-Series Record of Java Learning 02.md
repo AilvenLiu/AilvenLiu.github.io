@@ -104,4 +104,15 @@ JSON（来自`com.alibaba.fastjson`）中的静态方法`JSON.parseObject(String
 
 ## 类： Generator       
 
-该类用于生成excel表格。处理excel表格需要使用`poi.hssf`库，通过      
+该类用于生成excel表格，需要使用`poi.hssf`库：   
+```java   
+import org.apache.poi.hssf.usermodel.*;     
+```   
+
+### public 方法 generateExcel(JSONArray inputJson, String outputName)    
+```java   
+Params:    
+@
+```   
+
+该方法需要被其他对象调用，权限为public
