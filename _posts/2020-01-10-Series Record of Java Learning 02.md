@@ -65,7 +65,7 @@ Ticket2Excel
 ```java   
 List<NameValuePair> params = new ArrayList<NameValuePair>();   
 ```   
-关于接口类`List`和抽象类`AbstractList`的实现类`ArrayList`之间关系的小知识，见博客[java常见方法总结](https://www.ouc-liux.cn/2021/01/31/Series-Record-of-Java-Learning-04/)    
+关于接口类`List`和抽象类`AbstractList`的实现类`ArrayList`之间关系的小知识，见博客[java学习实录2](https://www.ouc-liux.cn/2021/03/31/Series-Record-of-Java-Learning-04/#list-%E5%92%8C-arraylist)    
 
 下一步，参照[这里](https://www.ouc-liux.cn/2021/03/31/Series-Record-of-Java-Learning-01/#%E9%9D%99%E6%80%81%E6%96%B9%E6%B3%95-submit2aliapi-string-imgpath-string-targetpath)关于图片`Base64`编码的知识对图片编码，并将相应的base64码构造为键值对加入到参数链表`params`中：   
 ```java    
@@ -89,9 +89,9 @@ JSON（来自`com.alibaba.fastjson`）中的静态方法`JSON.parseObject(String
 * 发票抬头是一个字符串变量，直接通过`res_obj.getString(key)`提取。    
 
 * 发票日期是一个字符串变量，直接通过`res_obj.getString(key)`提取。   
-不同的是，这个日期是“year-month-day”格式的字符串变量。我们不希望出现中间的小短横‘-’，于是通过`Utils`的静态方法`IntegerOnly()`进行提取结果为纯数字。由于涉及到一些有关正则匹配的共性知识，方法的具体实现在[java知识总结](https://www.ouc-liux.cn/2021/01/31/Series-Record-of-Java-Learning-04/#正则表达式去除字符串中特定值)中单独解读。       
+不同的是，这个日期是“year-month-day”格式的字符串变量。我们不希望出现中间的小短横‘-’，于是通过`Utils`的静态方法`IntegerOnly()`进行提取结果为纯数字。由于涉及到一些有关正则匹配的共性知识，方法的具体实现在[java学习实录2](https://www.ouc-liux.cn/2021/03/31/Series-Record-of-Java-Learning-04/#%E6%AD%A3%E5%88%99%E8%A1%A8%E8%BE%BE%E5%BC%8F%E5%8E%BB%E9%99%A4%E5%AD%97%E7%AC%A6%E4%B8%B2%E4%B8%AD%E7%89%B9%E5%AE%9A%E5%80%BC)中单独解读。       
 
-* 发票总额是一个浮点型变量，所以通过`res_obj.getString(key)`提取出后，需要再通过`Double`的静态方法`Double.parseDouble(String)`将之转化为double型的 **基本数据类型** 变量。基本类型这一点很重要，`Double`还有一个静态方法`Double.valueOf(String)`返回一个Double型的 **类类型** 变量。关于Double 和 double的区别与联系依然见于[java知识总结](https://www.ouc-liux.cn/2021/01/31/Series-Record-of-Java-Learning-04/#类类型Double与基本数据类型double)中。    
+* 发票总额是一个浮点型变量，所以通过`res_obj.getString(key)`提取出后，需要再通过`Double`的静态方法`Double.parseDouble(String)`将之转化为double型的 **基本数据类型** 变量。基本类型这一点很重要，`Double`还有一个静态方法`Double.valueOf(String)`返回一个Double型的 **类类型** 变量。关于Double 和 double的区别与联系依然见于[java学习实录2](https://www.ouc-liux.cn/2021/03/31/Series-Record-of-Java-Learning-04/#%E7%B1%BB%E7%B1%BB%E5%9E%8Bdouble%E4%B8%8E%E5%9F%BA%E6%9C%AC%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8Bdouble)中。    
 
 * 发票detail是一个`JSONArray`变量，由多个具体条目组成，每个条目以`JSONObject`表现。通过`res_obj.getJSONArray(key)`提取。    
 
@@ -109,10 +109,129 @@ JSON（来自`com.alibaba.fastjson`）中的静态方法`JSON.parseObject(String
 import org.apache.poi.hssf.usermodel.*;     
 ```   
 
-### public 方法 generateExcel(JSONArray inputJson, String outputName)    
+### 方法 generateExcel(JSONArray inputJson, String outputName)    
+
 ```java   
+// 该方法需要被其他对象调用，权限为public。
 Params:    
-@
+@ inputJson，    发票detail信息，json数组类型      
+@ outputName，   生成excel表格的名字
+```   
+     
+> 回忆Excel表格的组成，自顶向下为：    
+> 工作薄（Workbook） --> 页面（sheet） --> 行（row） --> 单元格（cell），   
+> 依次而**不能跨层**地，下一层是上一层的组成部分，上一层是下一层存在的基础。        
+
+那么首先构造一个工作薄对象：`HSSFWorkbook wb = new HSSFWorkbook()`；显然我们还需要且只需要一个页面（sheet），于是再给工作薄`wb`构造一个页面对象，命名为"sheet1"：`HSSFSheet sheet = wb.createSheet("sheet1")`。接下来可以再给sheet1构造一个行（row）对象作为表头：`HSSFRow row = sheet.createRow(0)`，参数零表示作为页面的第一行，这样在调用表头构造方法的时候可以直接将该对象作为参数传入。当然也可以不事先构造，只是本项目如此做了。        
+
+随后分别调用类中私有方法`this.generateHeadRow(params)`和 `this.generateBodyRow(params)`写如表头和主题单元格内容。    
+
+**写文件**：    
+填充完表格内容就要将之写入文件了，[文件读写](https://www.ouc-liux.cn/2021/03/31/Series-Record-of-Java-Learning-01/#%E9%9D%99%E6%80%81%E6%96%B9%E6%B3%95-convert2excelstring-base64-string-output)操作都要包装在    
+```java   
+try{
+    ...
+}catch(IOException e){
+    e.printStackTrace();
+}   
+```    
+语句中用以捕获可能发生的IO错误。文件读写是固定的流程：    
+```java    
+// 1. 以文件名为参 构造文件对象;
+File newExcelFile = new File(outputName);    
+
+// 2. 以文件对象为参构造文件输出流对象；     
+FileOutputStream out = new FileOutputStream(newExcelFile);    
+
+// 3. 以文件输出流为参数写入内容；    
+wb.write(out);    
+
+// 4. 关闭文件输出流。     
+out.close();     
+```
+
+
+需要考虑，表头有一些重要的项需要加红标注，单元格内容的对齐方式和字体也有要求。从而我们需要主动设置单元格的风格`HSSFCellStyle`：     
+类中定义两个`HSSFCellStyle`类型的私有全局变量`style_red`和`style_normal`分别表示加红和正常的单元格格式，通过私有方法`generateStyle`设置赋值。可以在构造函数`Generator()`或者本方法中中调用赋值方法完成赋值，总之在写单元格之前完成赋值就可以。     
+
+
+## 方法 generateStyle(HSSFWorkbook wb, short color)     
+
+```java    
+private HSSFCellStyle getnerateStyle(HSSFWorkbook wb, short color){
+    /******************************************    
+    * 方法用以返回特定的单元格格式对象，从而在填充单元格式主动为单元格设置其格式。    
+    * Params:   
+    * @ wb, HSSFWorkbook 工作薄对象     
+    * @ color, short 类型变量     
+    *     
+    * return 返回值     
+    * style, HSSFCellStyle 单元格格式 对象       
+    *******************************************/    
+
+    // 从本工作薄构造HSSF单元格格式对象，并设置对齐方式。    
+    // 是否由本工作薄的构造的单元格格式对象只能应用于本工作薄，存疑。   
+    HSSFCellStyle style = wb.createCellStyle();    
+    style.setAlignment(LEFT);  //居左    
+
+    // 从本工作薄构造HSSF字体对象，并设置字号颜色和字体等。    
+    // 是否由本工作薄构造的字体对象只适用于本工作薄，存疑；    
+    // 是否字号设置方法的参数必须要强制转换为short，存疑。
+    HSSFFont font = wb.createFont();   
+    font.setFontHeightInPoints((short) 11);   
+    // 参数传入的color, 其值为HSSFFont.COLOR_NORMAL/RED
+    font.setColor(color);    
+    font.setFontName("宋体");    
+
+    // 设置style字体为已设置好的font，并返回。    
+    style.setFont(font);
+    return style;
+}
+
+```      
+ 
+
+## 方法 enerateHeadRow(HSSFRow row)       
+
+接受已构造的表格行（第一行）对象为参数，填充表头内容：    
+```java   
+// 构造单元格对象，参数是第几列。一次定义，   
+// 后面只要改参数重新赋值继续使用就可以。   
+HSSFCell cell = row.createCell(0);   
+cell.setCellValue("*物资名称(必填)");   // 填内容    
+cell.setCellStyle(style_red);         // 设置格式     
+```    
+重复这三行内容，往后填就行，没什么好说的。    
+
+
+## 方法 generateBodyRows(Params)     
+
+```java    
+Params:   
+@ inputJson, JSONArray类型，发票内容，也即表格内容      
+@ sheet, HSSFSheet对象，表格页面。对象的值传过来是内存地址，可以直接用。   
 ```   
 
-该方法需要被其他对象调用，权限为public
+for循环开始填充：    
+```java    
+for (int i = 0; i < inputJson.size(); i ++){
+    JSONArray obj = inputJson.getJSONObject(i);
+    ......
+}
+```   
+一个for填充一行表格，由于JSONArray里的内容需要使用对象的`getJSONObject(index)`方法提取而不是直接下标`[index]`取值，从而似乎无法使用`for each`语句完成循环。    
+
+for 循环内：   
+
+`obj.getString(key)`取值，通过`Ticket2Excel.java`文件中第111-114行内容可以将API返回的原始json文件保存下来，从而查看`obj`的key值;   
+浮点数可以直接通过`obj.getDouble`提取；   
+税率是百分数，只能提取到String，但可以`replace('%', '')`将百分号去掉后再`Double.parseDouble()`转String为double，当然，还需要结果乘以0.01；    
+物资的真额（净额＋税额）通过`(税率+1.0)*净额`得到。其值一般是整数，考虑到计算机二进制计算误差，可能会出现xxx.000001或xxx.999999类似的值，于是以`(int)round(真额)`将之四舍五入并取整。    
+
+随后填充单元格：   
+```java   
+HSSFRow row = sheet.createRow(i+1);    // 构造新行    
+// index是列数，从0开始；表头有多少列，这一行就重复多少次。   
+// 当然，index和value要对应地填充。    
+row.createRow(index).setCellValue(value); 
+```

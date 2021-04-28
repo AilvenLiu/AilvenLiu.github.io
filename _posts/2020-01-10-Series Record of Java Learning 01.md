@@ -72,8 +72,8 @@ public static void main(String[] args) {
 ### 静态方法： submit2AliAPI( String imgPath, String targetPath)      
 
 将图片编码为base64提交到阿里云API，并将返回的json数据解析为excel表格。   
-```
-Params:   
+```java
+@ Params:   
 @ imgPath:      接收图片路径    
 @ targetPath:   目标表格路径
 ```   
@@ -243,7 +243,7 @@ scrollPane.setVerticalScrollBarPolicy(
 ```   
 命令意思是设置垂直滚动条策略，参数有：   
 ```java   
-params:  
+@ params:  
 @ JScrollPane.VERTICAL_SCROLLBAR_ALWAYS     // 常显示    
 @ JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED  // 当需要时显示（默认）    
 @ JScrollPane.VERTICAL_SCROLLBAR_NEVER      // 从不显示   
@@ -269,7 +269,7 @@ params:
 最下面一层panel，内容很简单，实现“开始”和“退出”两个按键。其中：    
 “开始”按键需要添加用来遍历文件、执行主类方法、并打印相关信息到文本信息域的事件监听器，“退出”按键添加退出功能的事件监听器。     
 
-遍历路径下所有非文件夹文件：    
+`for(variable: collection)`方式遍历路径下所有非文件夹文件：    
 ```java   
 File files = new File(path);        // 获取路径文件
 File[] fs = files.listFiles();      // 获取文件列表

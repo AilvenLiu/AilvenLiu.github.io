@@ -89,7 +89,7 @@ Double提取字符串中浮点数的两个静态方法：
 ## String.format()格式化输出     
 
 来自String的静态类`String.format(String, [argvs])`用于格式化填充字符串。方法的第一个参数是一个含有格式化占位符的字符串变量，如%d, %f, %3.4f等等，第二个及之后的参数按顺序是填充内容。     
-常用的format占位符含义及表现展示为如下表格：     
+常用的format占位符含义及表现展示为如下[表格](https://www.ouc-liux.cn/2021/04/27/Markdown-Grammar/)：     
 
 |占位符|含义    |案例   |   
 |:--- |:---   |:---  |   
