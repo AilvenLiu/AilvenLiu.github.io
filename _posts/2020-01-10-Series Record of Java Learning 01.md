@@ -143,7 +143,9 @@ out.write(decoder.decode(base64));
 东西南北中五部分的`Borderlayout`界面，界面表现如图所示：   
 <div align=center><img src="https://raw.githubusercontent.com/OUCliuxiang/OUCliuxiang.github.io/master/img/javaSeries/java-005.png"></div>    
 
-当然，这个GUI的 `NorthPanel`由于列宽均等显得十分不和谐，[项目实录2](https://www.ouc-liux.cn/2021/03/31/Series-Record-of-Java-Learning-02/#%E6%96%B9%E6%B3%95-createwindow)使用了一种更好的解决方案。    
+当然，这个GUI的 `NorthPanel` 由于列宽均等显得十分不和谐，[项目实录2](https://www.ouc-liux.cn/2021/03/31/Series-Record-of-Java-Learning-02/#%E6%96%B9%E6%B3%95-createwindow)使用了一种更好的解决方案。    
+
+
 ### 静态方法： creatWindow()    
 
 用于窗口布局：    
@@ -233,6 +235,7 @@ JTextAreaObject.setLineWrap(boolean);  // 默认为false，不自动换行
 JTextAreaObject.setWrapStyleWord(boolean);  //默认为true
 ```   
 设置。布尔参数为`true`意思是在单词边界处换行（每行最右侧可能留白），当设置为`false`时候在字符边界处换行，右侧不留白，但最右侧单词可能会被分成两部分显示。    
+
 另一个是需要注意的是把设置好的文本域添加到滚动条panel里面：
 ```java    
 JScrollPane scorllPane = new JScrollPane(JTextAreaObject)   

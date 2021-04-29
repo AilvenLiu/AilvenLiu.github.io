@@ -23,8 +23,10 @@ tags:
     </script>
 </head>     
 
->  写完崇教授的程序后，想趁着还熟悉开发流程，一些如GUI之类的组件也还能复用，写个发票识别工具。
->  这篇博客主要记录项目开发的流程，一些共性的问题和基本语法问题会在其他博客中详细记录。  
+> 写完崇教授的程序后，想趁着还熟悉开发流程，一些如GUI之类的组件也还能复用，写个发票识别工具。
+> 这篇博客主要记录项目开发的流程，一些共性的问题和基本语法问题会在其他博客中详细记录。    
+> 所有我们使用poi库读写生成的excel表格均需要是97-03版式`.xls`后缀的远古表格；
+> 07及以后的`.xlsx`后缀表格无法读写生成。   
 
 # 项目结构    
 ```    
@@ -239,7 +241,7 @@ row.createRow(index).setCellValue(value);
 
 ## GUI类： FileChooser     
 
-### 方法 createWindow()    
+### 静态方法 createWindow()    
 
 权限为public，由于需要项目主函数调用。   
 
@@ -253,7 +255,7 @@ frame.setVisible(true);             // 不解释
 ```    
 
 
-## 方法 createNorthPanel()     
+### 静态方法 createNorthPanel()     
 
 上部（北）面板，用于输入路径选择。一般地，我们会先取当前路径作为默认值：    
 ```java     
@@ -261,5 +263,37 @@ File direction = new File("");
 path = direction.getAbsolutePath();    // path是类全局变量。
 ```    
 需要注意的是，[项目实录1](https://www.ouc-liux.cn/2021/03/31/Series-Record-of-Java-Learning-01/#%E7%B1%BB-fielchooser-gui%E7%95%8C%E9%9D%A2)中，我们在整个`panel`上通过`new GridLayout(3, 2)`的方式创造了一个包含两行三列内容的面板，其显示效果却不尽人意。如下图，三列宽度均等十分不和谐。    
-<div align=center><img src="https://raw.githubusercontent.com/OUCliuxiang/OUCliuxiang.github.io/master/img/javaSeries/java-005.png"></div>      
 
+<div align=center><img src="https://raw.githubusercontent.com/OUCliuxiang/OUCliuxiang.github.io/master/img/javaSeries/java-007.png"></div>      
+
+于是在本项目中，我们采用另一种更灵活的布局方式：以`NorthPanel`为具有`BorderLayout布局方式的`母面板，另行构造三个两行一列的`GridLayout`布局的子面板`labelPanel`、`textPanel`和`buttonPanel`，分别`add`到母面板`NorthPanel`的`WEST`、 `CENTER` 和 `EAST`三个位置。母面板的上下Panel缺失会自动被其他部分占据；母面板的子面板宽度能够根据组件的宽度自行适应，这样得到的界面更加好看：    
+
+<div align=center><img src="https://raw.githubusercontent.com/OUCliuxiang/OUCliuxiang.github.io/master/img/javaSeries/java-008.png"></div>      
+
+该部分另一个需要注意的地方是button的添加，由于其已经在[项目实录01](https://www.ouc-liux.cn/2021/03/31/Series-Record-of-Java-Learning-01/#%E9%9D%99%E6%80%81%E6%96%B9%E6%B3%95-createbuttonstring-name-jtextfield-textfield)进行过解读，且[源码](https://github.com/OUCliuxiang/Java_learning/blob/main/Ticket2Excel/src/gui/FileChooser.java#L87)足够清晰，这里不再解读。     
+
+
+### 静态方法： createButton()     
+
+信息展示panel，需要注意的方面有自动换行和滚动条的添加；和[项目实录01](https://www.ouc-liux.cn/2021/03/31/Series-Record-of-Java-Learning-01/#%E9%9D%99%E6%80%81%E6%96%B9%E6%B3%95-createcenterpanel)一致，不再解读。     
+
+
+### 静态方法： createSouthPanel()     
+
+按键面板，包含开始按键和退出按键，并为按键添加事件监听器以响应鼠标点击事件：    
+```java   
+button.addActionListener(new ActionListener(){    
+    @Override    
+    public void actionPerformed(ActionEvent e){
+        ...code...
+    }
+})
+```   
+
+`endButton`比较简单，事件监听器内只有一行： `System.exit(0);`在系统层级完全结束进程。下面仅对`startButton`的事件监听器内容加以解读。          
+
+
+`new File(direction)`可以一次性读取路径下所有文件，之后调用`File`对象的`listFiles()`可以得到`File[]`类型的文件列表，随后`for(variable: collection)`语句遍历所有文件。具体解读见[项目实录01](https://www.ouc-liux.cn/2021/03/31/Series-Record-of-Java-Learning-01/#%E9%9D%99%E6%80%81%E6%96%B9%E6%B3%95-createsouthpanel)。    
+
+
+需要注意，在对文件合法性进行判断的时候，由于本项目还有一部对图像进行压缩的操作，而压缩后的图像会被另存为以原名+“_compress”为名称的新文件，所以有一步判断字符串是否含有某子字符（子串）的操作。[学习实录2](https://www.ouc-liux.cn/2021/03/31/Series-Record-of-Java-Learning-04/#判断字符串中是否有特定字符或子串)中总结了3种方法，这里由于已知特定子串（_compress）的具体位置（后缀长度一直，文件名串长度可`length()`方法提取），我们使用较高效的`str.startWith(subStr, offset)`方法，其参数中的offset业绩起始位置就是`str.length()-后缀长度`。  

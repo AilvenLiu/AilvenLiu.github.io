@@ -106,3 +106,54 @@ Double提取字符串中浮点数的两个静态方法：
 |%-nd, n是整数|左对齐n位，右侧为空||      
 |类似地|可以|自行组合|   
 
+
+## 文件读写     
+[文件读写]操作都要包装在    
+```java   
+try{
+    ...
+}catch(IOException e){
+    e.printStackTrace();
+}   
+```    
+语句中用以捕获可能发生的IO错误。读文件通过是固定的流程：    
+```java    
+// 1. 以文件名为参 构造文件对象;
+File newExcelFile = new File(outputName);    
+
+// 2. 以文件对象为参构造文件输出流对象；     
+FileOutputStream out = new FileOutputStream(newExcelFile);    
+
+// 3. 以文件输出流为参数写入内容；    
+wb.write(out);    
+
+// 4. 关闭文件输出流。     
+out.close();     
+```
+
+
+## 文本域JTextArea自动换行与滚动条    
+参考[项目实录01](https://www.ouc-liux.cn/2021/03/31/Series-Record-of-Java-Learning-01/#%E9%9D%99%E6%80%81%E6%96%B9%E6%B3%95-createcenterpanel)     
+
+
+## 判断字符串中是否有特定字符或子串     
+
+三种方法：    
+* startsWith()    
+* contains()    
+* indexOf()     
+
+### startsWith()    
+
+调用方法： `str.startsWith( subStr, offset);`，参数`subStr`是要匹配的字串/字符， `offset`是偏移量，俗称从哪里开始找，默认从0开始。    
+返回值是boolean，找到就是true， 没找到就是false。    
+
+### contains()    
+
+调用方法： `str.contains(subStr);`，参数`subStr`是要匹配的字串/字符。返回值是boolean，找到就是true， 没找到就是false。    
+
+### indexOf()    
+
+调用方法： `str.indexOf(subStr, offset);`，参数`subStr`是要匹配的字串/字符，`offset`是偏移量，俗称从哪里开始找，默认从0开始。    
+返回值是int，找到了就返回子串/字符第一次出现时首字符在**整个字符串**的下标（和offset是多少无关），没找到就是-1。     
+
