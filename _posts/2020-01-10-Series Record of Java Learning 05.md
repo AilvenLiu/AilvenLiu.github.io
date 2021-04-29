@@ -114,3 +114,5 @@ params:
 paintImmediately(infoPrint.getBounds());
 ```   
 原理暂不做探讨，后续有时间会进行剖析。    
+
+

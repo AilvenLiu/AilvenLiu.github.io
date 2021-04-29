@@ -107,7 +107,7 @@ Double提取字符串中浮点数的两个静态方法：
 |类似地|可以|自行组合|   
 
 
-## 文件读写     
+## 文件读写与存在性判断     
 [文件读写]操作都要包装在    
 ```java   
 try{
@@ -129,11 +129,12 @@ wb.write(out);
 
 // 4. 关闭文件输出流。     
 out.close();     
-```
+```     
 
+可以通过文件对象的`exist()`方法判断文件是否为空。文件非空，读到了内容，返回`true`，否则，建立新文件并返回`false`。    
+在`new`的同时调用方法`new File(name).exist()`也无不可。    
 
-## 文本域JTextArea自动换行与滚动条    
-参考[项目实录01](https://www.ouc-liux.cn/2021/03/31/Series-Record-of-Java-Learning-01/#%E9%9D%99%E6%80%81%E6%96%B9%E6%B3%95-createcenterpanel)     
+## 读文件与读图像
 
 
 ## 判断字符串中是否有特定字符或子串     

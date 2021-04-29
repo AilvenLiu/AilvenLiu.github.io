@@ -298,4 +298,6 @@ button.addActionListener(new ActionListener(){
 
 需要注意，在对文件合法性进行判断的时候，由于本项目还有一部对图像进行压缩的操作，而压缩后的图像会被另存为以原名+“_compress”为名称的新文件，所以有一步判断字符串是否含有某子字符（子串）的操作。[学习实录2](https://www.ouc-liux.cn/2021/03/31/Series-Record-of-Java-Learning-04/#判断字符串中是否有特定字符或子串)中总结了3种方法，这里由于已知特定子串（_compress）的具体位置（后缀长度一直，文件名串长度可`length()`方法提取），我们使用较高效的`str.startWith(subStr, offset)`方法，其参数中的offset业绩起始位置就是`str.length()-后缀长度`。    
 
-随后，调用静态方法`PicUtils.compressPicForScale(params)`方法压缩图片到指定大小，调用静态方法`Ticket2Excel.submit2AliAPI(parmas)`提交图片到API，同时接受方法返回的状态码。并打印信息到`centerPanel`的`JTextArea`中。需要注意的仍然是每次更新提交都需要做到[实时更新]
+随后，调用静态方法`PicUtils.compressPicForScale(params)`方法压缩图片到指定大小，调用静态方法`Ticket2Excel.submit2AliAPI(parmas)`提交图片到API，同时接受方法返回的状态码。并打印信息到`centerPanel`的`JTextArea`中。需要注意的仍然是每次更新提交都需要做到内容[实时刷新](https://www.ouc-liux.cn/2021/03/31/Series-Record-of-Java-Learning-05/#%E5%AE%9E%E6%97%B6%E6%9B%B4%E6%96%B0)。      
+
+
