@@ -155,7 +155,7 @@ out.close();
 类中定义两个`HSSFCellStyle`类型的私有全局变量`style_red`和`style_normal`分别表示加红和正常的单元格格式，通过私有方法`generateStyle`设置赋值。可以在构造函数`Generator()`或者本方法中中调用赋值方法完成赋值，总之在写单元格之前完成赋值就可以。     
 
 
-## 方法 generateStyle(HSSFWorkbook wb, short color)     
+### 方法 generateStyle(HSSFWorkbook wb, short color)     
 
 ```java    
 private HSSFCellStyle getnerateStyle(HSSFWorkbook wb, short color){
@@ -191,7 +191,7 @@ private HSSFCellStyle getnerateStyle(HSSFWorkbook wb, short color){
 ```      
  
 
-## 方法 enerateHeadRow(HSSFRow row)       
+### 方法 enerateHeadRow(HSSFRow row)       
 
 接受已构造的表格行（第一行）对象为参数，填充表头内容：    
 ```java   
@@ -204,7 +204,7 @@ cell.setCellStyle(style_red);         // 设置格式
 重复这三行内容，往后填就行，没什么好说的。    
 
 
-## 方法 generateBodyRows(Params)     
+### 方法 generateBodyRows(Params)     
 
 ```java    
 Params:   
@@ -234,4 +234,20 @@ HSSFRow row = sheet.createRow(i+1);    // 构造新行
 // index是列数，从0开始；表头有多少列，这一行就重复多少次。   
 // 当然，index和value要对应地填充。    
 row.createRow(index).setCellValue(value); 
-```
+```     
+
+
+## GUI类： FileChooser     
+
+### 方法 createWindow()    
+
+权限为public，由于需要项目主函数调用。   
+
+`setLayout(...)`指定窗口布局，依然是原始的东西南北中布局，参数填`new BorderLayout()`；随后构造和add各`Panel`；最后不要忘记设置[JFrame窗口属性]：     
+```java     
+frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);   //如何退出     
+frame.setSize(500, 400);            // 原始尺寸
+frame.setResizable(true);           // 不解释
+frame.setLocationRelativeTo(null);  // 窗口在屏幕居中出现
+frame.setVisible(true);             // 不解释
+```    
