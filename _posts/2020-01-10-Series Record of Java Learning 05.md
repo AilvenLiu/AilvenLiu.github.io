@@ -63,3 +63,54 @@ tags:
 
 ## 文本域自动换行、添加滚动条、实时更新      
 
+### 自动换行    
+
+`JTextArea`文本域对象`JTextAreaObject`通过调用`setLineWrap()`方法完成自动换行：   
+```java   
+JTextAreaObject.setLineWrap(boolean);  // 默认为false，不自动换行            
+```    
+当布尔参数为`false`的时候，将不自动换行；`true`激活该功能。另外需要了解的是，英文单词的换行有两种风格，可以通过：        
+```java    
+JTextAreaObject.setWrapStyleWord(boolean);  //默认为true
+```   
+设置。布尔参数为`true`意思是在单词边界处换行（每行最右侧可能留白），当设置为`false`时候在字符边界处换行，右侧不留白，但最右侧单词可能会被分成两部分显示。    
+
+
+### 滚动条    
+
+要给文本域添加滚动条，需要构造一文本域对象为参数的`JScrollPane`对象：    
+```java    
+JScrollPane scorllPane = new JScrollPane( JTextAreaObject)   
+```     
+
+滚动条默认是当文字超出范围文本域后才显示，但可以通过以下语句主动激活其常显示功能：   
+```java   
+scrollPane.setVerticalScrollBarPolicy( param);   
+```   
+命令意思是设置垂直滚动条策略，参数有：   
+```java   
+@ params:  
+@ JScrollPane.VERTICAL_SCROLLBAR_ALWAYS     // 常显示    
+@ JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED  // 当需要时显示（默认）    
+@ JScrollPane.VERTICAL_SCROLLBAR_NEVER      // 从不显示   
+```   
+
+额外的，我们还可以类似地设置水平滚动条策略：    
+```java   
+scrollPane.setHorizontalScrollBarPolicy( param);    
+```   
+参数相应地为：     
+```java   
+params:   
+@ JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS   
+@ JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED   
+@ JScrollPane.HORIZONTAL_SCROLLBAR_NEVER       
+```     
+
+### 实时更新    
+
+默认地，当Swing主线程运行时向`JTextArea`对象添加或删改内容，不会实时地刷新在屏幕上，而是等到线程结束才一并显示。调用文本域对象的`paintImmediately()`方法可以使之实时刷新：    
+```java   
+paintImmediately(infoPrint.getBounds());
+```   
+原理暂不做探讨，后续有时间会进行剖析。    
