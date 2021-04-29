@@ -290,10 +290,12 @@ button.addActionListener(new ActionListener(){
 })
 ```   
 
-`endButton`比较简单，事件监听器内只有一行： `System.exit(0);`在系统层级完全结束进程。下面仅对`startButton`的事件监听器内容加以解读。          
+`endButton`比较简单，事件监听器内容有一行： `System.exit(0);`在系统层级完全结束进程。下面仅对`startButton`的事件监听器内容加以解读。          
 
 
 `new File(direction)`可以一次性读取路径下所有文件，之后调用`File`对象的`listFiles()`可以得到`File[]`类型的文件列表，随后`for(variable: collection)`语句遍历所有文件。具体解读见[项目实录01](https://www.ouc-liux.cn/2021/03/31/Series-Record-of-Java-Learning-01/#%E9%9D%99%E6%80%81%E6%96%B9%E6%B3%95-createsouthpanel)。    
 
 
-需要注意，在对文件合法性进行判断的时候，由于本项目还有一部对图像进行压缩的操作，而压缩后的图像会被另存为以原名+“_compress”为名称的新文件，所以有一步判断字符串是否含有某子字符（子串）的操作。[学习实录2](https://www.ouc-liux.cn/2021/03/31/Series-Record-of-Java-Learning-04/#判断字符串中是否有特定字符或子串)中总结了3种方法，这里由于已知特定子串（_compress）的具体位置（后缀长度一直，文件名串长度可`length()`方法提取），我们使用较高效的`str.startWith(subStr, offset)`方法，其参数中的offset业绩起始位置就是`str.length()-后缀长度`。  
+需要注意，在对文件合法性进行判断的时候，由于本项目还有一部对图像进行压缩的操作，而压缩后的图像会被另存为以原名+“_compress”为名称的新文件，所以有一步判断字符串是否含有某子字符（子串）的操作。[学习实录2](https://www.ouc-liux.cn/2021/03/31/Series-Record-of-Java-Learning-04/#判断字符串中是否有特定字符或子串)中总结了3种方法，这里由于已知特定子串（_compress）的具体位置（后缀长度一直，文件名串长度可`length()`方法提取），我们使用较高效的`str.startWith(subStr, offset)`方法，其参数中的offset业绩起始位置就是`str.length()-后缀长度`。    
+
+随后，调用静态方法`PicUtils.compressPicForScale(params)`方法压缩图片到指定大小，调用静态方法`Ticket2Excel.submit2AliAPI(parmas)`提交图片到API，同时接受方法返回的状态码。并打印信息到`centerPanel`的`JTextArea`中。需要注意的仍然是每次更新提交都需要做到[实时更新]
