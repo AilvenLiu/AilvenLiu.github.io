@@ -166,3 +166,24 @@ int imgWidth = bim.getWidth();              // 提取图像宽度
 调用方法： `str.indexOf(subStr, offset);`，参数`subStr`是要匹配的字串/字符，`offset`是偏移量，俗称从哪里开始找，默认从0开始。    
 返回值是int，找到了就返回子串/字符第一次出现时首字符在**整个字符串**的下标（和offset是多少无关），没找到就是-1。     
 
+
+## thumbnailator压缩图片    
+详见[项目实录02](https://www.ouc-liux.cn/2021/03/31/Series-Record-of-Java-Learning-02/#%E9%9D%99%E6%80%81%E6%96%B9%E6%B3%95-commpresspicforscaleparams)和[学习实录04](https://www.ouc-liux.cn/2021/04/28/Series-Record-of-Java-Learning-06/)。    
+
+
+## 对字符串追加的五种操作    
+
+1. 直接使用“+”；
+
+2. String contact() 方法；
+
+3. StringUtils.join() 方法；
+
+4. StringBuffer append() 方法；
+
+5. StringBuilder append() 方法；   
+
+时间开销如下图：    
+
+<div align=center><img src="https://raw.githubusercontent.com/OUCliuxiang/OUCliuxiang.github.io/master/img/javaSeries/java-009.png"></div>      
+

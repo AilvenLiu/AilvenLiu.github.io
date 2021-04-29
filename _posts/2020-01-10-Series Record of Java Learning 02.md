@@ -326,7 +326,7 @@ if (StringUtils.isEmpty(srcPath) || !new File(scrPath).exist()){
 **包装在`try-catch`里的内容**：    
 以文件方式[读图像](https://www.ouc-liux.cn/2021/03/31/Series-Record-of-Java-Learning-04/#%E8%AF%BB%E6%96%87%E4%BB%B6%E4%B8%8E%E8%AF%BB%E5%9B%BE%E5%83%8F)，并通过`(int) (.length()/1024)`得到以kb为单位的图像大小，这一步非必须操作，目的是将原图像大小打印到控制台，方便查看。         
 `Thumbnails.of(srcPath).scale(1f).toFile(desPath);`将原图像以jpg形式另为目标图像路径，调用的各方法和参数暂不展开讨论，有时间回头剖析。     
-**调用compressPicCycle(desPath, desSize, accuracy)方法递归压缩。**     
+**[调用compressPicCycle(desPath, desSize, accuracy)方法递归压缩](https://www.ouc-liux.cn/2021/04/28/Series-Record-of-Java-Learning-06/)。**     
 同样的方法打印压缩后图像的尺寸，不细表，结束。     
 
 
