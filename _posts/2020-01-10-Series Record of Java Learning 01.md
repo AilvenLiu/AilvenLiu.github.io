@@ -143,6 +143,7 @@ out.write(decoder.decode(base64));
 东西南北中五部分的`Borderlayout`界面，界面表现如图所示：   
 <div align=center><img src="https://raw.githubusercontent.com/OUCliuxiang/OUCliuxiang.github.io/master/img/javaSeries/java-005.png"></div>    
 
+当然，这个GUI的 `NorthPanel`由于列宽均等显得十分不和谐，[项目实录2](https://www.ouc-liux.cn/2021/03/31/Series-Record-of-Java-Learning-02/#%E6%96%B9%E6%B3%95-createwindow)使用了一种更好的解决方案。    
 ### 静态方法： creatWindow()    
 
 用于窗口布局：    

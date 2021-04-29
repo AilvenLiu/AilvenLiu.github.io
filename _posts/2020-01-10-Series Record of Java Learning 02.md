@@ -243,7 +243,7 @@ row.createRow(index).setCellValue(value);
 
 权限为public，由于需要项目主函数调用。   
 
-`setLayout(...)`指定窗口布局，依然是原始的东西南北中布局，参数填`new BorderLayout()`；随后构造和add各`Panel`；最后不要忘记设置[JFrame窗口属性]：     
+`setLayout(...)`指定窗口布局，依然是原始的东西南北中布局，参数填`new BorderLayout()`；随后构造和add各`Panel`；最后不要忘记设置[JFrame窗口属性](https://www.ouc-liux.cn/2021/03/31/Series-Record-of-Java-Learning-05/)：     
 ```java     
 frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);   //如何退出     
 frame.setSize(500, 400);            // 原始尺寸
@@ -251,3 +251,15 @@ frame.setResizable(true);           // 不解释
 frame.setLocationRelativeTo(null);  // 窗口在屏幕居中出现
 frame.setVisible(true);             // 不解释
 ```    
+
+
+## 方法 createNorthPanel()     
+
+上部（北）面板，用于输入路径选择。一般地，我们会先取当前路径作为默认值：    
+```java     
+File direction = new File("");    
+path = direction.getAbsolutePath();    // path是类全局变量。
+```    
+需要注意的是，[项目实录1](https://www.ouc-liux.cn/2021/03/31/Series-Record-of-Java-Learning-01/#%E7%B1%BB-fielchooser-gui%E7%95%8C%E9%9D%A2)中，我们在整个`panel`上通过`new GridLayout(3, 2)`的方式创造了一个包含两行三列内容的面板，其显示效果却不尽人意。如下图，三列宽度均等十分不和谐。    
+<div align=center><img src="https://raw.githubusercontent.com/OUCliuxiang/OUCliuxiang.github.io/master/img/javaSeries/java-005.png"></div>      
+
