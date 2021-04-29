@@ -136,7 +136,14 @@ out.close();
 
 ## 读文件与读图像
 
+图像可以读取为文件对象`File img = new File(imgPath)`，但这样读出来是字节码，可以通过`img.length()`方法获取图片大小，但无法获取诸如长宽像素值类似的图像属性。要获得图像属性，需要将图像读取为`BufferedImg`对象，再通过该对象的get方法获取其属性：    
+```java   
+BufferedImg bim = ImageIO.read(imgPath);    // 读取图像为BufferedImg对象
+int imgHeight= bim.getHeight();             // 提取图像高度
+int imgWidth = bim.getWidth();              // 提取图像宽度
+```    
 
+  
 ## 判断字符串中是否有特定字符或子串     
 
 三种方法：    

@@ -296,8 +296,35 @@ button.addActionListener(new ActionListener(){
 `new File(direction)`可以一次性读取路径下所有文件，之后调用`File`对象的`listFiles()`可以得到`File[]`类型的文件列表，随后`for(variable: collection)`语句遍历所有文件。具体解读见[项目实录01](https://www.ouc-liux.cn/2021/03/31/Series-Record-of-Java-Learning-01/#%E9%9D%99%E6%80%81%E6%96%B9%E6%B3%95-createsouthpanel)。    
 
 
-需要注意，在对文件合法性进行判断的时候，由于本项目还有一部对图像进行压缩的操作，而压缩后的图像会被另存为以原名+“_compress”为名称的新文件，所以有一步判断字符串是否含有某子字符（子串）的操作。[学习实录2](https://www.ouc-liux.cn/2021/03/31/Series-Record-of-Java-Learning-04/#判断字符串中是否有特定字符或子串)中总结了3种方法，这里由于已知特定子串（_compress）的具体位置（后缀长度一直，文件名串长度可`length()`方法提取），我们使用较高效的`str.startWith(subStr, offset)`方法，其参数中的offset业绩起始位置就是`str.length()-后缀长度`。    
+需要注意，在对文件合法性进行判断的时候，由于本项目还有一部对图像进行压缩的操作，而压缩后的图像会被另存为以原名+“_compress”为名称的新文件，所以有一步判断字符串是否含有某子字符（子串）的操作。[学习实录2](https://www.ouc-liux.cn/2021/03/31/Series-Record-of-Java-Learning-04/#判断字符串中是否有特定字符或子串)中总结了3种方法，这里由于已知特定子串（_compress）的具体位置（后缀长度一直，文件名串长度可`length()`方法提取），我们使用较高效的`str.startWith(subStr, offset)`方法，其参数中的offset业绩起始位置就是`str.length() 减 后缀长度`。    
 
 随后，调用静态方法`PicUtils.compressPicForScale(params)`方法压缩图片到指定大小，调用静态方法`Ticket2Excel.submit2AliAPI(parmas)`提交图片到API，同时接受方法返回的状态码。并打印信息到`centerPanel`的`JTextArea`中。需要注意的仍然是每次更新提交都需要做到内容[实时刷新](https://www.ouc-liux.cn/2021/03/31/Series-Record-of-Java-Learning-05/#%E5%AE%9E%E6%97%B6%E6%9B%B4%E6%96%B0)。      
+
+## 类 PicUtils     
+
+通过google的`thumbnailator`库，压缩图片到指定大小。    
+
+### 静态方法 commpressPicForScale(params)     
+
+```java    
+Param:   
+@ srcPath，String类型，原图片路径     
+@ desPath，String类型，压缩后目标图片路径     
+@ desFileSize，int型， 目标图片大小，单位Kb    
+@ accuracy，double类型，迭代压缩过程中每次得到的新图像质量     
+
+return:  
+void方法，无返回值    
+```   
+
+首先进行路径合法性判断，接受的路径参数是否存在，或文件读出来是否为空：     
+```java    
+if (StringUtils.isEmpty(srcPath) || !new File(scrPath).exist()){
+    return;}
+```    
+
+**包装在`try-catch`里的内容**：    
+以文件方式[读图像]，并通过`(int) (.length()/1024)`得到以kb为单位的图像大小，这一步非必须     
+`Thumbnails.of(srcPath).scale(1f).toFile(desPath);`
 
 
