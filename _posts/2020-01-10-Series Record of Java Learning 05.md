@@ -1,6 +1,6 @@
 ---
 layout:     post
-title:      Series Articles of Java Learning  -- 04
+title:      Series Articles of Java Learning  -- 05
 subtitle:   Java学习实录03 -- 总结JFrame的小知识
 date:       2021-03-31
 author:     OUC_LiuX
