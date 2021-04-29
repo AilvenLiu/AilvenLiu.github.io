@@ -310,8 +310,8 @@ button.addActionListener(new ActionListener(){
 Param:   
 @ srcPath，String类型，原图片路径     
 @ desPath，String类型，压缩后目标图片路径     
-@ desFileSize，int型， 目标图片大小，单位Kb    
-@ accuracy，double类型，迭代压缩过程中每次得到的新图像质量     
+@ desFileSize， int型，目标图片大小，单位Kb    
+@ accuracy，double类型，迭代压缩过程中每次压缩的比例    
 
 return:  
 void方法，无返回值    
@@ -324,7 +324,40 @@ if (StringUtils.isEmpty(srcPath) || !new File(scrPath).exist()){
 ```    
 
 **包装在`try-catch`里的内容**：    
-以文件方式[读图像]，并通过`(int) (.length()/1024)`得到以kb为单位的图像大小，这一步非必须     
-`Thumbnails.of(srcPath).scale(1f).toFile(desPath);`
+以文件方式[读图像](https://www.ouc-liux.cn/2021/03/31/Series-Record-of-Java-Learning-04/#%E8%AF%BB%E6%96%87%E4%BB%B6%E4%B8%8E%E8%AF%BB%E5%9B%BE%E5%83%8F)，并通过`(int) (.length()/1024)`得到以kb为单位的图像大小，这一步非必须操作，目的是将原图像大小打印到控制台，方便查看。         
+`Thumbnails.of(srcPath).scale(1f).toFile(desPath);`将原图像以jpg形式另为目标图像路径，调用的各方法和参数暂不展开讨论，有时间回头剖析。     
+**调用compressPicCycle(desPath, desSize, accuracy)方法递归压缩。**     
+同样的方法打印压缩后图像的尺寸，不细表，结束。     
 
 
+### 静态方法 compressPicCycle(params)     
+
+```java   
+Params:   
+@ desPath，String型变量，目标图像路径    
+@ desSize，int型变量，目标图像大小，单位Kb     
+@ accuracy,double型变量，每次大小变化的比例      
+```   
+
+该方法递归运行，需要给一个跳出递归的判定条件，也即图像小于目标大小时`return`：    
+```java   
+if (srcFileSize < desSize * 1024){return;}
+```    
+其中`srcFileSize`是目标图像大小，通过读图像为`File`后取`length()`得到，默认单位是字节'b'，于是在和以“Kb”为单位的`desSize`比较时将`desSize`乘以1024。    
+
+[读图像，取宽高](https://www.ouc-liux.cn/2021/03/31/Series-Record-of-Java-Learning-04/#%E8%AF%BB%E6%96%87%E4%BB%B6%E4%B8%8E%E8%AF%BB%E5%9B%BE%E5%83%8F)
+，并设置新的压缩图像的宽高为`accuracy*取得的原宽高`。这一步找到的教程使用了大数乘法:   
+```java   
+int desWidth = new BigDecimal(srcWidth).
+    multiply(new BigDecimal(accuracy)).intValue()     
+```   
+但我觉得基本数据类型完全能hold住，不知用意何在。   
+
+灵魂的两步，首先设置本次迭代要压缩的的目标尺寸和精度比，并将压缩结果输出到相同路径；随后调用方法自身，完成递归：    
+```java   
+Thumbnails.of(desPath).size(desWidth, desHeight)
+          .outputQuality(accuracy).toFile(desPath);    
+this.compressPicCicle(desPath, desSize, accuracy);   
+```   
+
+结束

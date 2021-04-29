@@ -142,6 +142,7 @@ BufferedImg bim = ImageIO.read(imgPath);    // 读取图像为BufferedImg对象
 int imgHeight= bim.getHeight();             // 提取图像高度
 int imgWidth = bim.getWidth();              // 提取图像宽度
 ```    
+其中`BufferedImg`和`ImageIO`分别需要import `java.awt.image.BufferedImg` 和 `javax.imageio.ImageIO`。    
 
   
 ## 判断字符串中是否有特定字符或子串     
