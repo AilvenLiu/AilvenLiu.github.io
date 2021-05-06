@@ -37,7 +37,7 @@ import net.coobird.thumbnailator.Thumbnails;
  
 import org.apache.commons.lang3.StringUtils;
  
-public class PicUtils {
+public class PicUtils {      
      /**      
      * 根据指定大小和指定精度压缩图片       
      *        
@@ -51,6 +51,7 @@ public class PicUtils {
      *            精度，递归压缩的比率，建议小于0.9      
      * @return      
      */      
+     
     public static String commpressPicForScale(String srcPath, 
         String desPath, long desFileSize, double accuracy) {
         if (StringUtils.isEmpty(srcPath) || StringUtils.isEmpty(srcPath)) {
