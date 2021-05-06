@@ -38,19 +38,19 @@ import net.coobird.thumbnailator.Thumbnails;
 import org.apache.commons.lang3.StringUtils;
  
 public class PicUtils {
-     /**
-     * 根据指定大小和指定精度压缩图片
-     * 
-     * @param srcPath
-     *            源图片地址
-     * @param desPath
-     *            目标图片地址
-     * @param desFilesize
-     *            指定图片大小，单位kb
-     * @param accuracy
-     *            精度，递归压缩的比率，建议小于0.9
-     * @return
-     */
+     /**      
+     * 根据指定大小和指定精度压缩图片       
+     *        
+     * @param srcPath      
+     *            源图片地址      
+     * @param desPath      
+     *            目标图片地址      
+     * @param desFilesize      
+     *            指定图片大小，单位kb      
+     * @param accuracy      
+     *            精度，递归压缩的比率，建议小于0.9      
+     * @return      
+     */      
     public static String commpressPicForScale(String srcPath, 
         String desPath, long desFileSize, double accuracy) {
         if (StringUtils.isEmpty(srcPath) || StringUtils.isEmpty(srcPath)) {
