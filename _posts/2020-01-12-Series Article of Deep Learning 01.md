@@ -1,8 +1,8 @@
 ---
 layout:     post
-title:      Markdown Grammar
-subtitle:   一些Markdown语法记录
-date:       2021-04-27
+title:      Series Article of Deep Learning -- 01
+subtitle:   目标检测01 -- 2020海洋目标检测比赛简单记录    
+date:       2021-05-07
 author:     OUC_LiuX
 header-img: img/wallpic02.jpg
 catalog: true
@@ -86,13 +86,4 @@ github博客默认markdown页面不支持渲染数学公式，需要再每篇文
 \`\`\`    
 
 实现。同理，将javascript换成其他关键词，如java/cpp/bash/python等等，即可以相应语言高亮显示代码块。      
-
-**使用html语言插入图片**     
-
-```html    
-<div align=center><img src="https://path/to/pic.png" width=xxx height=xxx></div>      
-```     
-
-使用html语言的优势是可以主动指定图片位置和尺寸信息，比如将`center`换成`right`即可指定图像右对齐。尺寸信息可以通过`width(height)=xxx`指定，其中xxx可以是数字，也即像素，也可以是百分数，意思是缩放百分比。通常缺省只写一个，这样会按照原比例缩放。    
-github博客中图像仓库是`raw.githubusercontent.com/`，也即src中需要图像在github中存放地址的`github.com/`换成`raw.githubusercontent.com/`。      
 
