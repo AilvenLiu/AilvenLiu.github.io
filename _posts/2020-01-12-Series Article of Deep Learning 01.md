@@ -39,7 +39,7 @@ tags:
 
 ### voc转yolo    
 
-简单来说，VOC的xml格式图像和bbox尺寸是整数，该多大是多大，bbox给出的是角点坐标；yolo的txt格式则简单的多，归一化成一行就是一个目标，网上代码一大堆，但实际操作还是要结合任务的具体情况。最核心的部分就两个函数：     
+简单来说，VOC的xml格式图像和bbox尺寸是整数，该多大是多大，bbox通过角点坐标确定；yolo的规则中，bbox的长宽相对于图像长宽归一化到1.0以内，位置和尺寸通过中心点集宽高确定。转化的代码网上一找一大堆，但实际操作还是要结合任务的具体情况。最核心的部分就两个函数：     
 
 ```python    
 def convert(size, box):
@@ -100,4 +100,10 @@ def convert_annotation(rootpath, xmlname):
             out_file.write(str(cls_id) + " " + " ".join([str(a) \
                 for a in bb]) + '\n')
 
-```
+```     
+
+这东西就是轮子，轮子怎么造的就不做解读了，主要是会用。指出几个需要注意的点：    
+1. `txtpath = rootpath + '/labels'`这一行，`labels`路径需要自己事先创建，不会自动创建。     
+2. `difficult = obj.find('difficult').text`这一句，比赛数据集没有`difficult`项，事实上，我遇到的大多数数据集都没有这一项，直接注释掉即可。     
+3. 相应地，后面条件语句里面的`int(difficult)==1`这一判断也得删掉，只留一个`if cls not in classes`。    
+
