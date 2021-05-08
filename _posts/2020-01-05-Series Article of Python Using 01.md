@@ -25,4 +25,12 @@ tags:
 
 > 记录一些python编程过程中的一些小知识。     
 
-`line = f.readline()`之后判断`line`是否存在，比如现在的任务是剔除一组文件里没有内容的项
+`line = f.readline()`之后判断`line`是否存在，比如现在的任务是剔除一组文件里没有内容的项：     
+```python     
+for file in fileList:    
+    with open(file) as f:    
+        line = f.readline()
+        if not line:     
+            os.remove(filePath)
+```   
+
