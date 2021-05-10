@@ -23,7 +23,7 @@ tags:
     </script>
 </head>   
 
-> 2020年首届智能船舶检测挑战赛使用yolov5获得研究生组三等奖，简单记录一下比赛过程。      
+> 2020年首届智能船舶检测挑战赛使用yolov5获得研究生组三等奖，简单记一些目标检测任务的小知识和比赛tricks。      
 
 # 首先指出框架相关的问题     
 
@@ -102,8 +102,37 @@ def convert_annotation(rootpath, xmlname):
 
 ```     
 
-这东西就是轮子，轮子怎么造的就不做解读了，主要是会用。指出几个需要注意的点：    
+这东西就是轮子，轮子怎么造的不做解读了，主要是会用。指出几个需要注意的点：    
 1. `txtpath = rootpath + '/labels'`这一行，`labels`路径需要自己事先创建，不会自动创建。     
 2. `difficult = obj.find('difficult').text`这一句，比赛数据集没有`difficult`项，事实上，我遇到的大多数数据集都没有这一项，直接注释掉即可。     
 3. 相应地，后面条件语句里面的`int(difficult)==1`这一判断也得删掉，只留一个`if cls not in classes`。    
+
+具体的实现上，如果已有的VOC数据集本身已经分好组了（在数据比赛中，这应该是大多数情况），则遍历train和a_test路径调用函数即可。     
+
+
+### 数据集划分    
+考虑一般情况下，数据比赛给出的a_test只是用来打榜，自己还是需要另外分一个val验证集用以在训练过程中监控网络状态。下面给出已将数据按yolo要求组织后，划分数据集的代码。      
+
+```python    
+valImg = "xxx"      # 将要被划分出来的验证集图片路径      
+trainImg = "xxx"    # 目前图片路径     
+valLabel = "xxx"    # 将要被划分出来的验证集标签路径
+trainLabel = "xxx"  # 当前标签路径      
+
+files = os.listdir(trainImg)
+for f in files:
+    if random.random()<0.25:                # 这个比例随便
+        shutil.move(trainImg+f, valImg+f)
+        shutil.move(trainLabel+f.replace('jpg', 'txt'), 
+                    valLabel+f.replace('jpg', 'txt'))    
+```     
+
+### 负样本和空标签     
+
+比赛中去除了所有空标签，因为我们认为数据足够多、样本足够丰富，负样本的存在没有必要。但另一项简单的水下目标检测的任务中，由于目标和场景过于简单，且有些背景和目标过与相似，则需要添加相应的负样本。所谓负样本，就是对应于某图片的标签文件存在但为空。    
+
+#### 删除空标签    
+
+通过python读文件操作判断文件是否为空，遍历标签文件直接删除空标签文件。参照[博客](https://www.ouc-liux.cn/2021/05/07/Series-Article-of-Python-Using-01/)  
+
 
