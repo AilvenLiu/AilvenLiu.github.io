@@ -121,7 +121,7 @@ trainLabel = "xxx"  # 当前标签路径
 
 files = os.listdir(trainImg)
 for f in files:
-    if random.random()<0.25:                # 这个比例随便
+    if random.random()<0.25:       # 这个比例按需求来
         shutil.move(trainImg+f, valImg+f)
         shutil.move(trainLabel+f.replace('jpg', 'txt'), 
                     valLabel+f.replace('jpg', 'txt'))    
@@ -133,6 +133,16 @@ for f in files:
 
 #### 删除空标签    
 
-通过python读文件操作判断文件是否为空，遍历标签文件直接删除空标签文件。参照[博客](https://www.ouc-liux.cn/2021/05/07/Series-Article-of-Python-Using-01/)  
+通过python读文件操作判断文件是否为空，遍历标签文件直接删除空标签文件。参照[这篇博客](https://www.ouc-liux.cn/2021/05/07/Series-Article-of-Python-Using-01/)。    
 
+#### 添加负样本     
 
+如果是自己收集的图片，则遍历没有标签的背景图片，并通过[系统命令](https://www.ouc-liux.cn/2021/05/07/Series-Article-of-Python-Using-01/#调用系统命令)`touch`生成相应的空标签：     
+```python    
+files = os.listdir("./background/")     
+for f in files:    
+    label = f.replace("jpg", "txt")   
+    os.system("touch trainLabel/" + label)    
+```     
+
+需要注意的是，执行这一步的时候应该先行筛选出一定数量和形式的负样本图片，并加入到数据集。   
