@@ -4,7 +4,7 @@ title:      Life Recording -- 01
 subtitle:   一个壁纸网站     
 date:       2020-05-08
 author:     OUC_LiuX
-header-img: img/wallpic_02.jpg
+header-img: img/wallpic02.jpg
 catalog: true
 tags:
     - Life
