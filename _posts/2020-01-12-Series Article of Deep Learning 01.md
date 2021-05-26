@@ -161,4 +161,4 @@ for f in files:
 * 像素相加：全部噪声像素和输入图片按不同权重直接相加，超过255的部分直接砍掉。        
 * 像素替换：按一定的比例将原始图片中部分像素直接替换为噪声像素。          
 
-添加噪声的代码如[github/smartShip2020/data/dataReformance.py](https://github.com/OUCliuxiang/smartShip2020/blob/main/data/dataReinformance.py)所示。需要注意的一个点儿是，添加噪声对时间序列没有要求，可以调用python多进程工具进行并行处理，可以极大地加快处理速度。
+添加噪声的代码如[github/smartShip2020/data/dataReformance.py](https://github.com/OUCliuxiang/smartShip2020/blob/main/data/dataReinformance.py)所示。需要注意的一个点儿是，添加噪声对时间序列没有要求，可以调用python多进程工具进行并行处理，配合numba加速工具，可以极大地加快处理速度。    
