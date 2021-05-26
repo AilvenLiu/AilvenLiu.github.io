@@ -43,7 +43,7 @@ import os
 os.system("system cmd")    
 ```   
 
-## np.ndarray相关     
+## np.ndarray指定值类型     
 
 以任何方法产生或转换`np.array()`数组的时候，建议指定数组数据类型。如建造适用于图像的零数组：    
 ```python   
@@ -58,6 +58,17 @@ imgOut = np.array(imgIn/255., dtype=np.float)
 imgOut = np.uint8(imgOut*255)     
 ```    
 
+## numpy生成高斯噪声      
+
+```python    
+np.random.normal(mean, std, shape)
+```    
+如果是用于给图像加噪声，则图像以np.array表示为imgArr后，各参数可有：    
+`mean = imgArr.mean()`；     
+`std = imgArr.std()`；     
+`shape = imgArr.shape`。     
+
+
 ## numpy限定数组的值范围      
 
 图像作为数组执行加噪声操作后，值可能会突破0--255，使用`uint8`类型会报错。此时需要将值强制限定在0--255的范围。     
@@ -66,6 +77,10 @@ imgOut = np.clip(imgOut, 0.0, 1.0)
 # 这里是因为前面将图像数组转换成浮点类型方便添加高斯噪声，     
 # clip函数的min, max 参数可以是浮点或整型。     
 ```   
+
+
+## concurrent.futures 并发加速     
+
 
 
 
@@ -96,3 +111,32 @@ def pepperSalt(imgIn):
 3. **Numba只支持了Python原生函数和部分NumPy函数，** 对如opencv等其他库函数则无法加速，会报warning甚至error。     
 
 
+
+## python3中的zip()函数     
+
+zip() 函数用于将可迭代的对象作为参数，将对象中对应的元素打包成一个个元组，然后返回由这些元组组成的列表。    
+在 python 3 中为了减少内存，zip() 返回的是一个对象。如需展示列表，需手动 list() 转换。
+
+
+```python    
+>>> a = [1,2,3]
+>>> b = [4,5,6]
+>>> c = [4,5,6,7,8]
+>>> zipped = zip(a,b)     # 打包为元组的列表    
+>>> print(zipped)         
+<zip at zip at 0x......>  # 返回一串地址，由于zip的返回值是一个对象      
+>>> print(*zipped)      
+(1, 4) (2, 5) (3, 6)      # 返回打包的值，非列表形式。    
+# 注意，由于已经通过*符号将zipped的值提取出来了，zipped对应的地址内容现在为空    
+>>> print(list(zipped))     
+[]                          # zipped已空     
+
+
+>>> zipped = zip(a,c)              # 元素个数与最短的列表一致    
+>>> print(list(zipped))     
+[(1, 4), (2, 5), (3, 6)]            # 返回列表     
+# 注意，由于已经通过list将zipped的值提取出来了，zipped对应的地址内容现在为空
+>>> print(*zipped)     
+                          # zipped已空     
+>>>     
+```    
