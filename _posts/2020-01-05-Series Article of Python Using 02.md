@@ -1,6 +1,6 @@
 ---
 layout:     post
-title:      Series Article of Python -- 02
+title:      Series Article of Python Using -- 02
 subtitle:   Python实录02 -- 汇总python-opencv知识        
 date:       2021-05-25
 author:     OUC_LiuX

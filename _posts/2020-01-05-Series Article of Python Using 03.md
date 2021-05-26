@@ -1,6 +1,6 @@
 ---
 layout:     post
-title:      Series Article of Python -- 03
+title:      Series Article of Python Using -- 03
 subtitle:   Python实录03 -- concurrent.futures实现多线程/多进程加速           
 date:       2021-05-25
 author:     OUC_LiuX
@@ -53,5 +53,20 @@ with ThreadPoolExecutor(max_workers=1) as executor:
 future能够使用done()方法判断该任务是否结束，done()方法是不阻塞的，使用result()方法可以获取任务的返回值，这个方法是阻塞的。但是`submit(func, argvs[])`方法只能进行单个任务，用并发多个任务，需要使用map与as_completed。     
 
 ### map方法      
+
+依然以数据比赛中[图片添加噪声](https://www.ouc-liux.cn/2021/05/07/Series-Article-of-Deep-Learning-01/#%E6%B7%BB%E5%8A%A0%E5%99%AA%E5%A3%B0)部分为例：     
+```python    
+if __name__ == "__main__":
+    img_root = "./data/images/train/"
+    txt_root = "./data/labels/train/"
+    img_list = os.listdir(img_root)
+
+    with concurrent.futures.ThreadPoolExecutor() as executor:
+        for img, info in zip(img_list, executor.map(main, img_list)):
+            print(info)    
+```     
+这里有三个需要注意的点：    
+1. Executor.map()方法往往须要配合zip打包函数执行。      
+2. zip的使用参照
 
 
