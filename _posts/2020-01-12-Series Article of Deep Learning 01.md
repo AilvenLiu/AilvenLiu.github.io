@@ -37,7 +37,7 @@ tags:
 
 所谓数据比赛，一半以上的成绩在于数据集的处理。     
 
-### voc转yolo    
+### voc转yolo（小目标清洗）    
 
 简单来说，VOC的xml格式图像和bbox尺寸是整数，该多大是多大，bbox通过角点坐标确定；yolo的规则中，bbox的长宽相对于图像长宽归一化到1.0以内，位置和尺寸通过中心点集宽高确定。转化的代码网上一找一大堆，但实际操作还是要结合任务的具体情况。最核心的部分就两个函数：     
 
@@ -106,6 +106,7 @@ def convert_annotation(rootpath, xmlname):
 1. `txtpath = rootpath + '/labels'`这一行，`labels`路径需要自己事先创建，不会自动创建。     
 2. `difficult = obj.find('difficult').text`这一句，比赛数据集没有`difficult`项，事实上，我遇到的大多数数据集都没有这一项，直接注释掉即可。     
 3. 相应地，后面条件语句里面的`int(difficult)==1`这一判断也得删掉，只留一个`if cls not in classes`。    
+4. 有些数据集，比如这次比赛用的数据集，标注是有问题的。存在很多误标的ground truth，猜测是标注数据的学生手一抖，就点了俩点儿，成了一个ground truth。这种情况可以在读xml文件的时候通过bbox和weight/hight把长宽/像素值或其相对整体图像的比例小于某个值的目标筛掉，不进入转yolo的过程。     
 
 具体的实现上，如果已有的VOC数据集本身已经分好组了（在数据比赛中，这应该是大多数情况），则遍历train和a_test路径调用函数即可。     
 
@@ -157,5 +158,7 @@ for f in files:
 * 叠加噪声：将另一幅图片的（部分）像素值按一定比例和权重叠加到目标图片。         
 
 **两种添加方式**：      
-* 像素相加：全部噪声像素和输入图片按不同权重    
-* 像素替换：     
+* 像素相加：全部噪声像素和输入图片按不同权重直接相加，超过255的部分直接砍掉。        
+* 像素替换：按一定的比例将原始图片中部分像素直接替换为噪声像素。          
+
+添加噪声的代码如[github/smartShip2020/data/dataReformance.py](https://github.com/OUCliuxiang/smartShip2020/blob/main/data/dataReinformance.py)所示。需要注意的一个点儿是，添加噪声对时间序列没有要求，可以调用python多进程工具进行并行处理，可以极大地加快处理速度。
