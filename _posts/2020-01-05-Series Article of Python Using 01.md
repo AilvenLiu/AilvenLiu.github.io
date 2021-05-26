@@ -1,6 +1,6 @@
 ---
 layout:     post
-title:      Series Article of Python -- 01
+title:      Series Article of Python Using -- 01
 subtitle:   Python实录01 -- 汇总一些小知识         
 date:       2021-05-07
 author:     OUC_LiuX
