@@ -104,3 +104,9 @@ $ ls *txt
 
 如果机器端口号不是默认的22，则必须通过**大写的 P** ： `-P port`指定端口号。
 
+
+## Ubuntu 一个任务窗口开启多个terminal子页     
+
+前几天遇到有用过不少时间Ubuntu的人问我是怎么做到的，所以这应该不是个很常识的东西。    
+`ctrl + alt + T`打开terminal，`ctrl + shitf + T`新建terminal 子页。    
+

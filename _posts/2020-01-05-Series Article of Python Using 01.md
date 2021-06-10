@@ -43,6 +43,15 @@ import os
 os.system("system cmd")    
 ```   
 
+## python标准错误输出   
+
+```python
+import sys
+sys.stderr.write(string)
+# 打印至命令行
+```
+
+
 ## np.ndarray指定值类型     
 
 以任何方法产生或转换`np.array()`数组的时候，建议指定数组数据类型。如建造适用于图像的零数组：    
