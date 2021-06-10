@@ -2,7 +2,7 @@
 layout:     post
 title:      Series Article of Python Using -- 02
 subtitle:   Python实录02 -- 汇总python-opencv知识        
-date:       2021-05-25
+date:       2021-05-07
 author:     OUC_LiuX
 header-img: img/wallpic02.jpg
 catalog: true
