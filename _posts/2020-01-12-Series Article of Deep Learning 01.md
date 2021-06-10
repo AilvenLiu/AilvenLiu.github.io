@@ -134,11 +134,11 @@ for f in files:
 
 #### 删除空标签    
 
-通过python读文件操作判断文件是否为空，遍历标签文件直接删除空标签文件。参照[这篇博客](https://www.ouc-liux.cn/2021/05/07/Series-Article-of-Python-Using-01/#%E5%88%A4%E6%96%AD%E6%96%87%E4%BB%B6%E6%98%AF%E5%90%A6%E4%B8%BA%E7%A9%BA)。    
+通过python读文件操作判断文件是否为空，遍历标签文件直接删除空标签文件。参照[Python实录01](https://www.ouc-liux.cn/2021/05/07/Series-Article-of-Python-Using-01/#%E5%88%A4%E6%96%AD%E6%96%87%E4%BB%B6%E6%98%AF%E5%90%A6%E4%B8%BA%E7%A9%BA)。    
 
 #### 添加负样本     
 
-如果是自己收集的图片，则遍历没有标签的背景图片，并通过[系统命令](https://www.ouc-liux.cn/2021/05/07/Series-Article-of-Python-Using-01/#%E8%B0%83%E7%94%A8%E7%B3%BB%E7%BB%9F%E5%91%BD%E4%BB%A4)`touch`生成相应的空标签：     
+如果是自己收集的图片，则遍历没有标签的背景图片，并通过[系统命令](https://www.ouc-liux.cn/2021/05/07/Series-Article-of-Python-Using-01/#%E8%B0%83%E7%94%A8%E7%B3%BB%E7%BB%9F%E5%91%BD%E4%BB%A4) `touch` 生成相应的空标签：     
 ```python    
 files = os.listdir("./background/")     
 for f in files:    
@@ -162,3 +162,4 @@ for f in files:
 * 像素替换：按一定的比例将原始图片中部分像素直接替换为噪声像素。          
 
 添加噪声的代码如[github/smartShip2020/data/dataReformance.py](https://github.com/OUCliuxiang/smartShip2020/blob/main/data/dataReinformance.py)所示。需要注意的一个点儿是，添加噪声对时间序列没有要求，可以调用python多进程工具进行并行处理，配合numba加速工具，可以极大地加快处理速度。    
+
