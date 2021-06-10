@@ -67,6 +67,7 @@ if __name__ == "__main__":
 ```     
 这里有三个需要注意的点：    
 1. 虽然不是必须，Executor.map()方法往往与zip打包函数配合使用。      
-2. zip的使用参照
+2. zip的使用参照[Python实录01](https://www.ouc-liux.cn/2021/05/07/Series-Article-of-Python-Using-01/#python3%E4%B8%AD%E7%9A%84zip%E5%87%BD%E6%95%B0)。     
+3. 
 
 
