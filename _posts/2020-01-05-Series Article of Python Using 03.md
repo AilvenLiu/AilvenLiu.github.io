@@ -61,13 +61,24 @@ if __name__ == "__main__":
     txt_root = "./data/labels/train/"
     img_list = os.listdir(img_root)
 
+    # version within zip
     with concurrent.futures.ThreadPoolExecutor(max_workers) as executor:
         for img, info in zip(img_list, executor.map(func, img_list)):
-            print(info)    
+            print(info)
+    
+    # version without zip
+    with concurrent.futures.ThreadPoolExecutor(max_workers) as executor: 
+        executor.map(func, img_list)    
 ```     
 这里有三个需要注意的点：    
-1. 虽然不是必须，Executor.map()方法往往与zip打包函数配合使用。      
-2. zip的使用参照[Python实录01](https://www.ouc-liux.cn/2021/05/07/Series-Article-of-Python-Using-01/#python3%E4%B8%AD%E7%9A%84zip%E5%87%BD%E6%95%B0)。     
-3. 
+1. `map`方法第二个参数应当是列表`list`，列表的长度是`func`被调用的次数，列表的item是每次加入到`func`的参数。特别的，在map中加入到`func`的参数只能是单个，但item可以是高维的。
+2. 虽然不是必须，Executor.map()方法往往与zip打包函数配合使用，这样便于打印信息。zip的使用参照[Python实录01](https://www.ouc-liux.cn/2021/05/07/Series-Article-of-Python-Using-01/#python3%E4%B8%AD%E7%9A%84zip%E5%87%BD%E6%95%B0)。     
+3. 可以任意指定的`max_workers`，但建议使之不大于cpu核数。     
 
 
+
+## 进程池处理器ProcessPoolExecutor( int max_workers)    
+
+调用方法和ThreadPoolExecutor()一致，需要注意的有两点：    
+1. 调用过程一定要在`__name__=="__main__:"`内部。     
+2. 对于CPU频繁的操作（方法、函数），ProcessPoolExecutor的效率更高。这是由于GIL锁的存在使得多个线程只能调用一个cpu，GIL锁此处不展开。
