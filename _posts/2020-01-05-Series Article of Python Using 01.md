@@ -90,6 +90,7 @@ imgOut = np.clip(imgOut, 0.0, 1.0)
 
 ## concurrent.futures 并发加速     
 
+本部分内容较多较重要，在[Python实录03](https://www.ouc-liux.cn/2021/05/07/Series-Article-of-Python-Using-03/)中详细展开。
 
 
 
