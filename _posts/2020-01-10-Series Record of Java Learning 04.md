@@ -43,7 +43,7 @@ ArrayList alist = new ArrayList();  // 3
 ```    
 
 上面三行代码中，**1** 是可行的用法，这个语句创建了一个ArrayList实现类的对象后把它上溯到了List接口。此时它就是一个List对象了，有些ArrayList类具有的，但是List接口没有的属性和方法，它就不能再用了。   
-而**3** 创建的实现类ArrayList的对象则保留了ArrayList的所有属性和方法。   
+**3** 创建的实现类ArrayList的对象则保留了ArrayList的所有属性和方法。   
 **2** 是错误的写法，由于接口类List无法具体实现为对象，该句无法执行。    
 
 
