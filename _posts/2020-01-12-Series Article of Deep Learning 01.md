@@ -163,3 +163,59 @@ for f in files:
 
 添加噪声的代码如[github/smartShip2020/data/dataReformance.py](https://github.com/OUCliuxiang/smartShip2020/blob/main/data/dataReinformance.py)所示。需要注意的一个点儿是，添加噪声对时间序列没有要求，可以调用python多进程工具进行并行处理，配合numba加速工具，可以极大地加快处理速度。    
 
+### 数据集布置和yaml指向      
+
+划分好的数据集应当保持图片和label名称对应，且应当分开放置。数据集可以，并且也建议和代码分开放置。比如一般地，代码应当在`/home`路径所在的ssd盘，而数据集应当放置在`/data`所在的机械盘。    
+在`/path/of/data`路径下分别建立`images/`和`labels/`子路径（ **必须要遵循这个名称** ）用于存放图片和标签文件，两个子路径再分别建立对应的`train/, val/`等次级子路径，用于存放训练集和验证集。    
+
+跑`train.py`的时候，有个需要指定的超参数`--data`。该参数指向的是一个yaml文件，文件里写明了数据及的分布和组织：    
+
+```yaml
+train: ./data/images/train/ 
+val: ./data/images/test_a/
+test: ./data/images/test_b/
+# number of classes
+
+nc: 6
+
+# class names
+names: ['liner', 'container ship', 'bulk carrier', 'island reef', 'sailboat', 'other ship']
+```
+
+以上是本次比赛所使用的数据集yaml文件，文件里指明了：   
+1. 训练图片位于`./data/images/train/`路径；不必指明`label`存放的路径，程序会自行根据图片路径去寻找对应`/path/of/data/`路径下的`labels`。   
+2. 验证集和测试集图片的路径；路径下可以不设图片，但路径应当存在，否则跑`test.py`的时候会报错。当然也可以改`test.py`文件，时间有限，我没有去寻找报错语句。   
+3. NumberOfClasses，类别数目。有几类写几类即可，不用像YOLOv3一样在类别过少的时候手动增大预测类别数。特别的，当 `nc = 1` 的时候，损失函数应当是有变化的，此处不予讨论。   
+4. 各类类别名称，应当和`voc2yolo.py`内的类别名称列表一致。      
+
+
+## 模型文件     
+
+训练的时候需要指定一个`--cfg`参数，也即训练使用的模型是什么样的。     
+u版框架使用`yaml`格式文件存储和描述网络模型，非常简单易懂人性化。由于面对不同的任务和场景可能对模型进行一些自定义的修改，所以对检测模型的`yaml`格式表现做简单了解还是有必要的。     
+
+
+
+
+
+## 训练      
+
+训练没什么好讲的，只是参数的设置而已。yolov5的训练超参很多，此处择其要者做些介绍。     
+
+### --weights     
+
+预训练权重路径。默认的是`yolov5s.pt`，如果不指定该参数的话会默认指向`yolov5s.pt`。于是如果是从头训练，不使用预训练模型的话，应当使之指空：     
+```bash
+python train.py --weights '' [argvs ...]
+```
+
+注意到这个参数的名字是`weights`是复数形式。事实上，u版框架的确提供了 *Ensemble learning* 机制，但一般认为 *Ensemble learning* 是独立训练多个弱学习器，在 *inference* 阶段才组合成一个强学习器。训练的时候能不能指定多个 weights ，如果指定了会发生什么，都没有尝试，同时也不建议尝试。        
+
+
+### --cfg     
+模型文件
+
+
+### 超参数（文件）
+
+u版yolov5默认的`data/`路径下有两个超参设置文件
