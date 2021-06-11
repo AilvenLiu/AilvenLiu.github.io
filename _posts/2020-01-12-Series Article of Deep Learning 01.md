@@ -189,13 +189,24 @@ names: ['liner', 'container ship', 'bulk carrier', 'island reef', 'sailboat', 'o
 4. 各类类别名称，应当和`voc2yolo.py`内的类别名称列表一致。      
 
 
-## 模型文件     
+## 模型yaml文件     
 
 训练的时候需要指定一个`--cfg`参数，也即训练使用的模型是什么样的。     
-yolo框架基本都使用`yaml`格式文件存储和描述网络模型，非常简单易懂人性化。由于面对不同的任务和场景可能对模型进行一些自定义的修改，所以对检测模型的`yaml`格式表现做简单了解还是有必要的。     
+yolo框架基本都使用`yaml`格式文件存储和描述网络模型，非常简单易懂人性化。由于面对不同的任务和场景可能对模型进行一些自定义的修改，所以对检测模型的`yaml`格式表现做简单了解还是有必要的。首先给出一个yolov5网络整体图示如下。     
 <div align=center><img src="https://raw.githubusercontent.com/OUCliuxiang/OUCliuxiang.github.io/master/img/deepL/deepLearning01.png"></div>   
 
+接下来是对应的以yolov5s小模型为例的`yaml`文件解析。     
 
+### parameters      
+
+```yaml   
+# parameters
+nc: 80  # number of classes
+depth_multiple: 0.33  # model depth multiple
+width_multiple: 0.50  # layer channel multiple
+```    
+对于普通的网络需求，只改这一部分就够了。
+其中`nc`是网络`softmax`层实际输出的类别数，`depth_multiple`是深度scale参数，
 
 
 ## 训练      
