@@ -192,8 +192,8 @@ names: ['liner', 'container ship', 'bulk carrier', 'island reef', 'sailboat', 'o
 ## 模型文件     
 
 训练的时候需要指定一个`--cfg`参数，也即训练使用的模型是什么样的。     
-u版框架使用`yaml`格式文件存储和描述网络模型，非常简单易懂人性化。由于面对不同的任务和场景可能对模型进行一些自定义的修改，所以对检测模型的`yaml`格式表现做简单了解还是有必要的。     
-
+yolo框架基本都使用`yaml`格式文件存储和描述网络模型，非常简单易懂人性化。由于面对不同的任务和场景可能对模型进行一些自定义的修改，所以对检测模型的`yaml`格式表现做简单了解还是有必要的。     
+<div align=center><img src="https://raw.githubusercontent.com/OUCliuxiang/OUCliuxiang.github.io/master/img/deepL/deepLearning01.png"></div>   
 
 
 
