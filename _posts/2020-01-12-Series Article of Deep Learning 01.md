@@ -239,7 +239,40 @@ backbone:
    [-1, 3, BottleneckCSP, [1024, False]],  # 9
   ]
 ```
-先看注释行 `# [from, number, module, args]`
+先看注释行 `# [from, number, module, args]`，对应的就是下方每一行的四个组成单元：    
+1. `from`。来自哪儿，也即当前层输入来自哪一层。-1表示前一层，-2表示前两层，具体的数值则表示**第几行**，注意，虽然存在`number`参数用来表示某模块堆叠了多少层。事实上计算from及每行后面注释采用的层计数方式依然是第几行。      
+2. `number`。该模块重复堆叠了多少层。一般的，具有一致输入输出特征维度的模块，往往具有大于一的`number`参数，也即往往会反复堆叠好多层。`depth_multiple`调节的主要部分就是这个数值。    
+3. `module`。模块类型，根据`./models/common.py`中的定义解析。    
+4. `args`。模块的具体参数，如第五层卷积`Conv`模块的`[512， 3， 2]`，当`width_multiple = 0.5`时，表示“输入通道为128（根据上一层），输出通道为256，卷积核尺寸3 $\times$ 3，步长为2”的卷积模块。      
+
+### head    
+
+```yaml     
+# YOLOv5 head
+head:
+  [[-1, 1, Conv, [512, 1, 1]],
+   [-1, 1, nn.Upsample, [None, 2, 'nearest']],
+   [[-1, 6], 1, Concat, [1]],  # cat backbone P4
+   [-1, 3, BottleneckCSP, [512, False]],  # 13
+
+   [-1, 1, Conv, [256, 1, 1]],
+   [-1, 1, nn.Upsample, [None, 2, 'nearest']],
+   [[-1, 4], 1, Concat, [1]],  # cat backbone P3
+   [-1, 3, BottleneckCSP, [256, False]],  # 17 (P3/8-small)
+
+   [-1, 1, Conv, [256, 3, 2]],
+   [[-1, 14], 1, Concat, [1]],  # cat head P4
+   [-1, 3, BottleneckCSP, [512, False]],  # 20 (P4/16-medium)
+
+   [-1, 1, Conv, [512, 3, 2]],
+   [[-1, 10], 1, Concat, [1]],  # cat head P5
+   [-1, 3, BottleneckCSP, [1024, False]],  # 23 (P5/32-large)
+
+   [[17, 20, 23], 1, Detect, [nc, anchors]],  # Detect(P3, P4, P5)
+  ]
+```     
+
+参数设置和`backbone`一样，注意几个concat层和检测层。到这里整体的网络结构就出来了，很显然是个 “下采样 --> 上采样 --> 下采样” 的经典监测网络 `N` 型结构。  
 
 
 ## 训练      
