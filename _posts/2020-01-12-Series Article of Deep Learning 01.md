@@ -104,7 +104,7 @@ def convert_annotation(rootpath, xmlname):
 
 这东西就是轮子，轮子怎么造的不做解读了，主要是会用。指出几个需要注意的点：    
 1. `txtpath = rootpath + '/labels'`这一行，`labels`路径需要自己事先创建，不会自动创建。     
-2. `difficult = obj.find('difficult').text`这一句，比赛数据集没有`difficult`项，事实上，我遇到的大多数数据集都没有这一项，直接注释掉即可。     
+2. `difficult = obj.find('difficult').text`这一句；比赛数据集没有`difficult`项，事实上，我遇到的大多数数据集都没有这一项，直接注释掉即可。     
 3. 相应地，后面条件语句里面的`int(difficult)==1`这一判断也得删掉，只留一个`if cls not in classes`。    
 4. 有些数据集，比如这次比赛用的数据集，标注是有问题的。存在很多误标的ground truth，猜测是标注数据的学生手一抖，就点了俩点儿，成了一个ground truth。这种情况可以在读xml文件的时候通过bbox和weight/hight把长宽/像素值或其相对整体图像的比例小于某个值的目标筛掉，不进入转yolo的过程。     
 
@@ -205,8 +205,41 @@ nc: 80  # number of classes
 depth_multiple: 0.33  # model depth multiple
 width_multiple: 0.50  # layer channel multiple
 ```    
-对于普通的网络需求，只改这一部分就够了。
-其中`nc`是网络`softmax`层实际输出的类别数，`depth_multiple`是深度scale参数，
+对于普通需求的网络scale变化，只改这一部分就够了。其中     
+1. `nc`是网络`softmax`层实际输出的类别数，有多少类别就填多少。    
+2. `depth_multiple`是深度scale参数，按比例控制深度，也就是可堆叠层的堆叠数量。    
+3. `width_multiple`是宽度scale参数，按比例控制宽度，也就是每层的的神经元数量。    
+
+### anchors   
+
+```yaml   
+# anchors
+anchors:
+  - [10,13, 16,30, 33,23]  # P3/8
+  - [30,61, 62,45, 59,119]  # P4/16
+  - [116,90, 156,198, 373,326]  # P5/32
+```     
+跟检测层对应就行，不需要过多关注，u版v5在训练过程中会自动给出k-means得到的最佳anchors。    
+
+### backbone    
+
+```yaml 
+# YOLOv5 backbone
+backbone:
+  # [from, number, module, args]
+  [[-1, 1, Focus, [64, 3]],  # 0-P1/2
+   [-1, 1, Conv, [128, 3, 2]],  # 1-P2/4
+   [-1, 3, BottleneckCSP, [128]],
+   [-1, 1, Conv, [256, 3, 2]],  # 3-P3/8
+   [-1, 9, BottleneckCSP, [256]],
+   [-1, 1, Conv, [512, 3, 2]],  # 5-P4/16
+   [-1, 9, BottleneckCSP, [512]],
+   [-1, 1, Conv, [1024, 3, 2]],  # 7-P5/32
+   [-1, 1, SPP, [1024, [5, 9, 13]]],
+   [-1, 3, BottleneckCSP, [1024, False]],  # 9
+  ]
+```
+先看注释行 `# [from, number, module, args]`
 
 
 ## 训练      
