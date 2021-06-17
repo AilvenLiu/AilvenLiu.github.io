@@ -48,7 +48,9 @@ def main(imgIn):
 with ThreadPoolExecutor(max_workers=1) as executor:    
     future = executor.submit(main, img)
 # submit(func, argvs[])方法接收第一个参数为需要调用的方法（名），      
+
 # 其后的可选参数为func需要传入接收的形参。    
+
 ```   
 `future`能够使用`done()`方法判断该任务是否结束，`done()`方法是不阻塞的；使用`result()`方法可以获取任务的返回值，这个方法是阻塞的。以上一句话不重要，重要的是`submit(func, argvs[])`方法只能进行单个任务，常用的并发多个任务，需要使用`map`与`as_completed`。     
 
@@ -61,12 +63,14 @@ if __name__ == "__main__":
     txt_root = "./data/labels/train/"
     img_list = os.listdir(img_root)
 
-    # version within zip
+    # version within zip       
+
     with concurrent.futures.ThreadPoolExecutor(max_workers) as executor:
         for img, info in zip(img_list, executor.map(func, img_list)):
             print(info)
     
-    # version without zip
+    # version without zip      
+    
     with concurrent.futures.ThreadPoolExecutor(max_workers) as executor: 
         executor.map(func, img_list)    
 ```     

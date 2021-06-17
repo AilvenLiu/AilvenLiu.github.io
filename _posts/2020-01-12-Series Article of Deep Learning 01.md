@@ -1,7 +1,7 @@
 ---
 layout:     post
 title:      Series Article of Deep Learning -- 01
-subtitle:   目标检测01 -- 2020海智能船舶检测挑战赛实录    
+subtitle:   目标检测01 -- 2020智能船舶检测挑战赛实录    
 date:       2021-05-07
 author:     OUC_LiuX
 header-img: img/wallpic02.jpg
@@ -69,7 +69,8 @@ def convert_annotation(rootpath, xmlname):
     with open(xmlfile, "r", encoding='UTF-8') as in_file:
       txtname = xmlname[:-4]+'.txt'
       print(txtname)
-      txtpath = rootpath + '/labels'  #生成的.txt文件会被保存在labels目录下
+      txtpath = rootpath + '/labels'  #生成的.txt文件会被保存在labels目录下     
+
       if not os.path.exists(txtpath):
         os.makedirs(txtpath)
       txtfile = os.path.join(txtpath,txtname)
@@ -81,10 +82,12 @@ def convert_annotation(rootpath, xmlname):
         h = int(size.find('height').text)
         out_file.truncate()
         for obj in root.iter('object'):
-            # difficult = obj.find('difficult').text
+            # difficult = obj.find('difficult').text        
+
             cls = obj.find('name').text
             if cls not in classes: 
-            # if cls not in classes or int(difficult)==1:
+            # if cls not in classes or int(difficult)==1:        
+
                 continue
             cls_id = classes.index(cls)
             xmlbox = obj.find('bndbox')
@@ -116,13 +119,17 @@ def convert_annotation(rootpath, xmlname):
 
 ```python    
 valImg = "xxx"      # 将要被划分出来的验证集图片路径      
+
 trainImg = "xxx"    # 目前图片路径     
+
 valLabel = "xxx"    # 将要被划分出来的验证集标签路径
+
 trainLabel = "xxx"  # 当前标签路径      
 
 files = os.listdir(trainImg)
 for f in files:
-    if random.random()<0.25:       # 这个比例按需求来
+    if random.random()<0.25:       # 这个比例按需求来      
+        
         shutil.move(trainImg+f, valImg+f)
         shutil.move(trainLabel+f.replace('jpg', 'txt'), 
                     valLabel+f.replace('jpg', 'txt'))    
@@ -401,7 +408,7 @@ python train.py --weights '' [argvs ...]
 
 
 ### --cfg     
-模型文件
+模型路径。一般是位于 `./models/` 路径下的 `yaml` 文件。模型文件的具体理解参照 **模型解读** 章节。  
 
 
 ### 超参数（文件）
