@@ -439,7 +439,7 @@ python train.py --weights '' --[other argvs ...]
 
 ### --noautoanchor     
 
-不自动更新 `anchors` ，不加该参数默认是自动更新的 。除非对自己设置的 `anchors`有执念，不要加入该参数停掉自动更新，总之别管它。      
+不自动更新 `anchors` ，不加该参数默认是自动更新的 。除非对自己设置的 `anchors` 有执念，不要加入该参数停掉自动更新，总之别管它。      
 
 ### --evolve     
 
@@ -465,6 +465,33 @@ python train.py --weights '' --[other argvs ...]
 
 ### --adam     
 
-加入该参数，使用 `adam` 优化算法。无数论文和比赛都在吹 `adam` 算法多有效，然而我使用的时候，无论数据集和学习率等参数怎样设置，`adam` 都能被 `SGD` 甩出两条街。不知道是不是我打开的方式不对，总之，不建议加入该参数。      
+加入该参数，使用 `adam` 优化算法。无数论文和比赛都在吹 `adam` 算法多有效，然而我使用的时候，无论数据集和学习率等参数怎样设置，`adam` 都被 `SGD` 甩出两条街。不知道是不是我打开的方式不对。总之，不建议加入该参数。      
+
+### --sync-bn     
+
+同步batch-norm，多卡 DDP mode 分布式训练时使用。DDP模式分布式训练的内容在后面，但，实测这个选项好像没什么用，或者有点儿用，用处不大。     
+
+### others     
+
+其他的参数无关紧要，或非常紧要；不用动，或不要动。     
+
+### 多卡训练的正确打开方式 DDP     
+
+u版yolov5提供了两种[多卡数据并行](https://github.com/ultralytic/yolov5/issues/475)的方式：      
+
+* 数据并行（DP，DataParallel Mode）， **（ Not Recommended）**：      
+  ```bash    
+  $ python train.py --[argvs]   --device 0,1     
+  ```     
+  据说跟单卡训练差别不大，值得注意的是此时的`--batch-size`参数，仍然是`minibatch-size`，是从默认的 64 的 `Total-batch-size` divide 出来的。     
 
 
+* 分布式数据并行（DDP, DistributedDataParallel Mode），**（ Recommended）**：    
+  ```bash     
+  $ python -m torch.distributed.launch --nproc_per_node 2 train.py --batch-size 64 --[argvs]  --device 0,1    
+  ```     
+  这就有意思了，采用`pytorch`原生的分布式训练方式，`-nproc_per_mode` 参数代表训练使用的 GPU 个数，后面也可以使用 `--device` 参数指定具体编号 GPU。在此例中，使用编号为 0,1 的两块GPU进行分布式训练。      
+  [issue](https://github.com/ultralytic/yolov5/issues/475)中提到，0号卡往往会承担更高的显存使用。那我要是不指定零号卡呢？没尝试过，我的机器只有两块卡。     
+  此时的 `--batch-size` 成为了 `Total-batch-size`，指定的该`--batch-size`会被平均 divide 到各个 GPU ，于是 issue 中要求其必为训练所使用 GPU 个数， 也即 `-nproc_per_node` 参数值的整数倍。     
+
+  ## 结束     
