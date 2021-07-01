@@ -109,7 +109,7 @@ def convert_annotation(rootpath, xmlname):
 1. `txtpath = rootpath + '/labels'`这一行，`labels`路径需要自己事先创建，不会自动创建。     
 2. `difficult = obj.find('difficult').text`这一句；比赛数据集没有`difficult`项，事实上，我遇到的大多数数据集都没有这一项，直接注释掉即可。     
 3. 相应地，后面条件语句里面的`int(difficult)==1`这一判断也得删掉，只留一个`if cls not in classes`。    
-4. 有些数据集，比如这次比赛用的数据集，标注是有问题的。存在很多误标的ground truth，猜测是标注数据的学生手一抖，就点了俩点儿，成了一个ground truth。这种情况可以在读xml文件的时候通过bbox和weight/hight把长宽/像素值或其相对整体图像的比例小于某个值的目标筛掉，不进入转yolo的过程。     
+4. 有些数据集，比如这次比赛用的数据集，标注是有问题的。存在很多误标的 ground truth，猜测是标注数据的学生手一抖，就点了俩点儿，成了一个 ground truth。这种情况可以在读 xml 文件的时候通过 `bbox` 和 `weight/hight` 把长宽/像素值或其相对整体图像的比例小于某个值的目标筛掉，不进入转yolo的过程。     
 
 具体的实现上，如果已有的VOC数据集本身已经分好组了（在数据比赛中，这应该是大多数情况），则遍历train和a_test路径调用函数即可。     
 
