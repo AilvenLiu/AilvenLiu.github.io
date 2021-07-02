@@ -48,7 +48,11 @@ class Mish(nn.Module):
 `Mish` 是 yolov5 中 `BottleneckCSP` 和 `BottleneckSSP` 使用的激活函数，注意，常规卷积 `Conv` 模块没有使用 `Mish`。该激活函数出自论文[Mish: A Self Regularized Non-Monotonic Activation Function](https://arxiv.org/pdf/1908.08681.pdf)，由 `softplus` 和双曲正切 `tanh` 组成：$Mish(x) = tanh( softplus(x))$ 。回顾一下双曲正切 tanh 的定义：    
 $tanh(x) = \frac{sinh(x)}{cosh(x)} = \frac{e^x - e^{-x}}{e^x + e^{-x}},$
 $\ \ \ sinh(x) = \frac{e^x - e^{-x}}{2}, \ \ \ \  cosh(x) = \frac{e^x + e^{-x}}{2}$     
-github page 中双美元符号 `$$` 包裹的公式块无法渲染，只能用单美元符号 `$` 包裹的行内公式凑活一下，不好看。  
+github page 中双美元符号 `$$` 包裹的公式块无法渲染，只能用单美元符号 `$` 包裹的行内公式凑活一下，不好看。    
+$$
+\frac{test}{Equation}
+$$
+
 tanh关于原点对称，其值限定在 [-1, 1] 范围，且在一定范围内接近线性变换。   
 
 softplus 是一种由指对数函数组成的激活函数： $softplus(x)=log(1+e^x)$ ，其大于零的部分斜率接近 1 ，小于零的部分值向 0 逼近，近似 ReLU 却十分光滑。值得注意的是，在 [`torch` 的实现](https://pytorch.org/docs/stable/generated/torch.nn.Softplus.html)中，额外给了该函数一个参数 $\beta$ ，公式就变成了：$softplus(x)=\frac{1}{\beta}log(1+e^{\beta\cdot x})$。但是，该参数默认是 1。   
