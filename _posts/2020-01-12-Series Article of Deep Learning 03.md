@@ -25,13 +25,35 @@ tags:
 
 > yolov5还是有一些有意思的东西的，做一个简单的解析，给自己看。      
 
-## yolov5网络结构图    
+## 概述         
 
+先放一张网络图镇宅。     
 <div align=center><img src="https://raw.githubusercontent.com/OUCliuxiang/OUCliuxiang.github.io/master/img/deepL/deepLearning01.png"></div>     
 
-其中 `BackBone` 阶段主要包括 `Focus, Conv, BottleneckCSP, SPP` 等几个模块， `Head` 阶段主要包括 `BottleneckCSP, Conv, nn.Upsample, Concat, nn.Conv2d, Detect` 等几个模块。其中 `nn.xxx` 来自 `torch.nn`， 是 pytorch 的原生模块，其他的则在 `models/commons.py` 文件中定义。      
+图中 `BackBone` 阶段主要包括 `Focus, Conv, BottleneckCSP, SPP` 等几个模块， `Head` 阶段主要包括 `BottleneckCSP, Conv, nn.Upsample, Concat, nn.Conv2d, Detect` 等几个模块。其中 `nn.xxx` 来自 `torch.nn`， 是 pytorch 的原生模块，其他的则在 `models/commons.py` 文件中定义。      
  
-`models/commons.py` 中还定义了许多其他模块，可能是别的地方用的吧？一并进行解析。下面一个个儿的来。    
+`models/commons.py` 中还定义了许多其他模块，可能是别的地方用的吧？一并进行解析。下面按照 `models/commons.py` 中的顺序一个个儿来。   
+
+### 目录     
+
+给个目录，万一有人看呢。        
+1. Mish      
+2. Conv     
+3. BottleneckCSP    
+4. BottleneckCSP2    
+5. VoVSP       
+6. SPP      
+7. SPPCSP       
+8. MP    
+9. Focus       
+10. Concat     
+11. NMS      
+12. autoShape      
+13. Flatten       
+14. Classify      
+15. Detect      
+
+
 
 
 ## Mish     
@@ -63,12 +85,12 @@ softplus 是一种由指对数函数组成的激活函数： $softplus(x)=log(1+
 
 ## Conv    
 
-```python 
-class Conv(nn.Module):
-    # Standard convolution     
-    
+```python    
+# Standard convolution      
+
+class Conv(nn.Module):     
     def __init__(self, c1, c2, k=1, s=1, p=None, g=1, act=True):     
-    # ch_in, ch_out, kernel, stride, padding, groups      
+    # ch_in, ch_out, kernel, stride, padding, groups       
 
         super(Conv, self).__init__()
         self.conv = nn.Conv2d(c1, c2, k, s, autopad(k, p), groups=g, bias=False)
@@ -82,6 +104,9 @@ class Conv(nn.Module):
         return self.act(self.conv(x))
 ```      
 
+代码来看，yolov5 中定义的 `Conv` 类就是 `nn.Conv2d( [argvs ...])` 类的简单封装。默认使用 `bn` 层，当然，注意 `bn` 层的参数是 `c2 = channel_output` 。通过 `bool` 类型参数 `act` 确定是否使用激活层，如果其值为默认值 `act = True` ，则激活函数为 `nn.Hardswich()`：    
+<div align=center><img src="https://raw.githubusercontent.com/OUCliuxiang/OUCliuxiang.github.io/master/img/deepL/deepLearning03-Hardswish.png"></div>    
+破东西。根据[pytorch Documents](https://pytorch.org/docs/stable/generated/torch.nn.Hardswish.html)
 
 
 ## Focus    
