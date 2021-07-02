@@ -45,7 +45,8 @@ class Mish(nn.Module):
         return x
 ```    
 
-`Mish` 是 yolov5 使用的激活函数，出自论文[Mish: A Self Regularized Non-Monotonic Activation Function](https://arxiv.org/pdf/1908.08681.pdf)，由 `softplus` 和双曲正切 `tanh` 组成：$Mish(x) = tanh( softplus(x))$ 。回顾一下双曲正切 tanh 的定义：    
+`Mish` 是 yolov5 中 `BottleneckCSP` 和 `BottleneckSSP` 使用的激活函数，注意，常规卷积 `Conv` 模块没有使用 `Mish`。该激活函数出自论文[Mish: A Self Regularized Non-Monotonic Activation Function](https://arxiv.org/pdf/1908.08681.pdf)，由 `softplus` 和双曲正切 `tanh` 组成：$Mish(x) = tanh( softplus(x))$ 。回顾一下双曲正切 tanh 的定义：    
+
 $$  
 tanh(x) = \frac{sinh(x)}{cosh(x)} = \frac{e^x - e^{-x}}{e^x + e^{-x}}, \\  
 sinh(x) = \frac{e^x - e^{-x}}{2}, \ \ \ \  cosh(x) = \frac{e^x + e^{-x}}{2}
@@ -59,6 +60,7 @@ softplus 是一种由指对数函数组成的激活函数： $softplus(x)=log(1+
 
 
 ## Conv    
+
 ```python 
 class Conv(nn.Module):
     # Standard convolution     
@@ -76,7 +78,9 @@ class Conv(nn.Module):
 
     def fuseforward(self, x):
         return self.act(self.conv(x))
-```
+```      
+
+
 
 ## Focus    
 
