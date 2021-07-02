@@ -40,18 +40,43 @@ tags:
 class Mish(nn.Module):
     def __init__(self):
         super().__init__()
-    def for
+    def forward(self, x):
+        x = x * torch.tanh( F.softplus(x))
+        return x
 ```    
 
+`Mish` 是 yolov5 使用的激活函数，出自论文[Mish: A Self Regularized Non-Monotonic Activation Function](https://arxiv.org/pdf/1908.08681.pdf)，由 `softplus` 和双曲正切 `tanh` 组成：$Mish(x) = tanh( softplus(x))$ 。回顾一下双曲正切 tanh 的定义：    
+$$  
+tanh(x) = \frac{sinh(x)}{cosh(x)} = \frac{e^x - e^{-x}}{e^x + e^{-x}}, \\  
+sinh(x) = \frac{e^x - e^{-x}}{2}, \ \ \ \  cosh(x) = \frac{e^x + e^{-x}}{2}
+$$  
+tanh关于原点对称，其值限定在 [-1, 1] 范围，且在一定范围内接近线性变换。   
 
+softplus 是一种由指对数函数组成的激活函数： $softplus(x)=log(1+e^x)$ ，其大于零的部分斜率接近 1 ，小于零的部分值向 0 逼近，近似 ReLU 却十分光滑。值得注意的是，在 [`torch` 的实现](https://pytorch.org/docs/stable/generated/torch.nn.Softplus.html)中，额外给了该函数一个参数 $\beta$ ，公式就变成了：$softplus(x)=\frac{1}{\beta}log(1+e^{\beta\cdot x})$。但是，该参数默认是 1。   
 
-`Mish` 是yolov5 使用的激活函数，出自论文[Mish: A Self Regularized Non-Monotonic Activation Function](https://arxiv.org/pdf/1908.08681.pdf)。论文中给出的函数曲线和一二阶导数曲线如下图，     
+论文中给出的 Mish 及其他各相关函数曲线和一二阶导数曲线如下图，     
 <div align=center><img src="https://raw.githubusercontent.com/OUCliuxiang/OUCliuxiang.github.io/master/img/deepL/deepLearning02-Mish.png"></div>      
 
-可以看出 Mish 的曲线和
 
 ## Conv    
+```python 
+class Conv(nn.Module):
+    # Standard convolution     
+    
+    def __init__(self, c1, c2, k=1, s=1, p=None, g=1, act=True):     
+    # ch_in, ch_out, kernel, stride, padding, groups      
 
+        super(Conv, self).__init__()
+        self.conv = nn.Conv2d(c1, c2, k, s, autopad(k, p), groups=g, bias=False)
+        self.bn = nn.BatchNorm2d(c2)
+        self.act = nn.Hardswish() if act else nn.Identity()
+
+    def forward(self, x):
+        return self.act(self.bn(self.conv(x)))
+
+    def fuseforward(self, x):
+        return self.act(self.conv(x))
+```
 
 ## Focus    
 
