@@ -104,10 +104,25 @@ class Conv(nn.Module):
         return self.act(self.conv(x))
 ```      
 
-代码来看，yolov5 中定义的 `Conv` 类就是 `nn.Conv2d( [argvs ...])` 类的简单封装。默认使用 `bn` 层，当然，注意 `bn` 层的参数是 `c2 = channel_output` 。通过 `bool` 类型参数 `act` 确定是否使用激活层，如果其值为默认值 `act = True` ，则激活函数为 `nn.Hardswich()`：    
+代码来看，yolov5 中定义的 `Conv` 类就是 `nn.Conv2d( [argvs ...])` 类的简单封装。默认使用 `bn` 层，当然，注意 `bn` 层的参数是 `c2 = channel_output` 。通过 `bool` 类型参数 `act` 确定是否使用激活层，当期值为 `act = False` ，使用 `nn.Indentity()` 做激活函数，也即不激活；如果其值为默认值 `act = True` ，则激活函数为 `nn.Hardswich()`：    
 <div align=center><img src="https://raw.githubusercontent.com/OUCliuxiang/OUCliuxiang.github.io/master/img/deepL/deepLearning03-Hardswish.png"></div>        
 
-破东西。根据[pytorch Documents](https://pytorch.org/docs/stable/generated/torch.nn.Hardswish.html)
+破东西。根据[pytorch Documents](https://pytorch.org/docs/stable/generated/torch.nn.Hardswish.html)，该激活函数出自 [MobileNetV3](https://arxiv.org/pdf/1905.02244.pdf)，臭名昭著的负优化网络。怪不得使用原生yolov5跑检测的时候结果总是不尽人意。这里，使用的时候要改，改成经过时间检验的激活函数。    
+
+`Conv` 默认的卷积核是 1 ，也即使用 $1\times 1$卷积。指定了分组卷积参数 $g$ ，但其默认参数为 $g=1$ ，反正就是不分组；当然，可以自己另行指定 $g$ 参数改为使用分组卷积。由于 `pytorch` 原生的 `nn.Conv2d()` 卷积无法通过 `padding=same` 这一类的参数指定 padding 值（可见 pytorch [官方文档](https://pytorch.org/docs/stable/generated/torch.nn.Conv2d.html)），`Conv` 使用了自定义函数 `autopad(k, p=None)` 指定 `padding` 值。    
+
+`common.py` 中还基于 `Conv` 实现了 `DepthWise Convolution` ，但不知道在哪儿使用的。    
+### autopad    
+```python    
+def autopad(k, p=None):  # kernel, padding     
+
+    # Pad to 'same'     
+
+    if p is None:
+        p = k // 2 if isinstance(k, int) else [x // 2 for x in k]  
+    return p
+```    
+用来实现 `nn.Conv2d` 中 `padding=same` 的函数。
 
 
 ## Focus    
