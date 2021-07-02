@@ -119,10 +119,10 @@ def autopad(k, p=None):  # kernel, padding
     # Pad to 'same'     
 
     if p is None:
-        p = k // 2 if isinstance(k, int) else [x // 2 for x in k]  
+        p = k // 2 if isinstance(k, int) else [x // 2 for x in k]   
     return p
 ```    
-用来实现 `nn.Conv2d` 中 `padding=same` 的函数。
+用来实现 `nn.Conv2d` 中 `padding=same` 的函数。该函数的实现建立在（虽然没有指出，但通常是）步长 `s=1`的基础上，此时有 $p=\frac{k}{2}$。由于卷积核长度 $k$ 通常是奇数，而 python 中的 `/` 操作处理两个整数之间的除法时会产生浮点数，从而使用 `//` 操作符将除法结果想下取整。
 
 
 ## Focus    
