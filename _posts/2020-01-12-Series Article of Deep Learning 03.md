@@ -70,21 +70,16 @@ class Mish(nn.Module):
 `Mish` 是 yolov5 中 `BottleneckCSP` 和 `BottleneckSSP` 使用的激活函数，注意，常规卷积 `Conv` 模块没有使用 `Mish`。该激活函数出自论文[Mish: A Self Regularized Non-Monotonic Activation Function](https://arxiv.org/pdf/1908.08681.pdf)，由 `softplus` 和双曲正切 `tanh` 组成：$Mish(x) = tanh( softplus(x))$ 。回顾一下双曲正切 tanh 的定义：    
 $tanh(x) = \frac{sinh(x)}{cosh(x)} = \frac{e^x - e^{-x}}{e^x + e^{-x}},$
 $\ \ \ sinh(x) = \frac{e^x - e^{-x}}{2}, \ \ \ \  cosh(x) = \frac{e^x + e^{-x}}{2}$     
-github page 中双美元符号 `$$` 包裹的公式块无法渲染，只能用单美元符号 `$` 包裹的行内公式凑活一下，不好看。    
-$$
-\frac{test}{Equation}
-$$
-
+github page 中双美元符号 `$$` 包裹的公式块无法渲染，只能用单美元符号 `$` 包裹的行内公式凑活一下，就是不太好看。    
 tanh关于原点对称，其值限定在 [-1, 1] 范围，且在一定范围内接近线性变换。   
 
-softplus 是一种由指对数函数组成的激活函数： $softplus(x)=log(1+e^x)$ ，其大于零的部分斜率接近 1 ，小于零的部分值向 0 逼近，近似 ReLU 却十分光滑。值得注意的是，在 [`torch` 的实现](https://pytorch.org/docs/stable/generated/torch.nn.Softplus.html)中，额外给了该函数一个参数 $\beta$ ，公式就变成了：$softplus(x)=\frac{1}{\beta}log(1+e^{\beta\cdot x})$。但是，该参数默认是 1。   
+softplus 是一种由指对数函数组成的激活函数： $softplus(x)=log(1+e^x)$ ，其大于零的部分斜率接近 1 ，小于零的部分值向 0 逼近，近似 ReLU 却十分光滑。值得注意的是，在 [pytorch 的实现](https://pytorch.org/docs/stable/generated/torch.nn.Softplus.html) 中，额外给了该函数一个参数 $\beta$ ，公式就变成了：$softplus(x)=\frac{1}{\beta}log(1+e^{\beta\cdot x})$。但是，该参数默认是 1。   
 
 论文中给出的 Mish 及其他各相关函数曲线和一二阶导数曲线如下图，     
 <div align=center><img src="https://raw.githubusercontent.com/OUCliuxiang/OUCliuxiang.github.io/master/img/deepL/deepLearning02-Mish.png"></div>      
 
 
 ## Conv    
-
 ```python    
 # Standard convolution      
 
@@ -105,13 +100,14 @@ class Conv(nn.Module):
 ```      
 
 代码来看，yolov5 中定义的 `Conv` 类就是 `nn.Conv2d( [argvs ...])` 类的简单封装。默认使用 `bn` 层，当然，注意 `bn` 层的参数是 `c2 = channel_output` 。通过 `bool` 类型参数 `act` 确定是否使用激活层，当期值为 `act = False` ，使用 `nn.Indentity()` 做激活函数，也即不激活；如果其值为默认值 `act = True` ，则激活函数为 `nn.Hardswich()`：    
-<div align=center><img src="https://raw.githubusercontent.com/OUCliuxiang/OUCliuxiang.github.io/master/img/deepL/deepLearning03-Hardswish.png"></div>        
+<div align=center><img src="https://raw.githubusercontent.com/OUCliuxiang/OUCliuxiang.github.io/master/img/deepL/deepLearning003-Hardswish.png"></div>        
 
-破东西。根据[pytorch Documents](https://pytorch.org/docs/stable/generated/torch.nn.Hardswish.html)，该激活函数出自 [MobileNetV3](https://arxiv.org/pdf/1905.02244.pdf)，臭名昭著的负优化网络。怪不得使用原生yolov5跑检测的时候结果总是不尽人意。这里，使用的时候要改，改成经过时间检验的激活函数。    
+破东西。根据[pytorch Documents](https://pytorch.org/docs/stable/generated/torch.nn.Hardswish.html)，该激活函数出自 [MobileNetV3](https://arxiv.org/pdf/1905.02244.pdf)，臭名昭著的负优化网络。怪不得使用原生yolov5跑检测的时候结果总是不尽人意。这里，使用的时候要改，改成经过时间检验的激活函数，ReLU, LeakyReLU, Mish之类的。    
 
-`Conv` 默认的卷积核是 1 ，也即使用 $1\times 1$卷积。指定了分组卷积参数 $g$ ，但其默认参数为 $g=1$ ，反正就是不分组；当然，可以自己另行指定 $g$ 参数改为使用分组卷积。由于 `pytorch` 原生的 `nn.Conv2d()` 卷积无法通过 `padding=same` 这一类的参数指定 padding 值（可见 pytorch [官方文档](https://pytorch.org/docs/stable/generated/torch.nn.Conv2d.html)），`Conv` 使用了自定义函数 `autopad(k, p=None)` 指定 `padding` 值。    
+`Conv` 默认的卷积核是 1 ，也即使用 $1\times 1$卷积。指定了分组卷积参数 $g$ ，但其默认参数为 $g=1$ ，反正就是不分组；当然，可以自己另行指定 $g$ 参数改为使用分组卷积。由于 `pytorch` 原生的 `nn.Conv2d()` 卷积无法通过 `padding=same` 这一类的参数指定 padding 值（见 pytorch [官方文档](https://pytorch.org/docs/stable/generated/torch.nn.Conv2d.html)），`Conv` 使用了自定义函数 `autopad(k, p=None)` 指定 `padding` 值。    
 
 `common.py` 中还基于 `Conv` 实现了 `DepthWise Convolution` ，但不知道在哪儿使用的。    
+
 ### autopad    
 ```python    
 def autopad(k, p=None):  # kernel, padding     
@@ -122,7 +118,15 @@ def autopad(k, p=None):  # kernel, padding
         p = k // 2 if isinstance(k, int) else [x // 2 for x in k]   
     return p
 ```    
-用来实现 `nn.Conv2d` 中 `padding=same` 的函数。该函数的实现建立在（虽然没有指出，但通常是）步长 `s=1`的基础上，此时有 $p=\frac{k}{2}$。由于卷积核长度 $k$ 通常是奇数，而 python 中的 `/` 操作处理两个整数之间的除法时会产生浮点数，从而使用 `//` 操作符将除法结果想下取整。
+用来实现 `nn.Conv2d` 中 `padding=same` 的函数。该函数的实现建立在（虽然没有指出，但通常是）步长 `s=1`的基础上，此时有 $p=\frac{k}{2}$。由于卷积核长度 $k$ 通常是奇数，而 python 中的 `/` 操作处理两个整数之间的除法时会产生浮点数，从而使用 `//` 操作符将除法结果向下取整。   
+此外该函数对原始给定的卷积核长宽值 `k` 进行了一次是否为整型的类型判断 `isinstance(k, int)`，当其非整型则以列表形式返回相应的值。这是由于虽然极其罕见，但 `kernel` 的长宽是被允许不一致的。然而，在什么情况下才会用到长宽不一致的 `kernel` ，反正我是没遇到过。最后但是，根据 pytorch Documents 中有关 Conv2d 模块的[源码及注释](https://pytorch.org/docs/stable/_modules/torch/nn/modules/conv.html#Conv2d)，`k` 参数可接受的值是 `int` 或 `tuple`， 返回一个列表是什么意思？      
+
+### DWConv   
+```python    
+def DWConv(c1, c2, k=1, s=1, act=True):
+    # Depthwise convolution
+    return Conv(c1, c2, k, s, g=math.gcd(c1, c2), act=act)
+```
 
 
 ## Focus    

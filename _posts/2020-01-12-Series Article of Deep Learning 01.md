@@ -1,7 +1,7 @@
 ---
 layout:     post
 title:      Series Article of Deep Learning -- 01
-subtitle:   目标检测01 -- 2020智能船舶检测挑战赛实录    
+subtitle:   目标检测01 -- 目标检测比赛技巧&yolov5的基本使用和结构理解    
 date:       2021-05-07
 author:     OUC_LiuX
 header-img: img/wallpic02.jpg
