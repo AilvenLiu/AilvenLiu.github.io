@@ -104,7 +104,7 @@ class Conv(nn.Module):
 
 破东西。根据[pytorch Documents](https://pytorch.org/docs/stable/generated/torch.nn.Hardswish.html)，该激活函数出自 [MobileNetV3](https://arxiv.org/pdf/1905.02244.pdf)，臭名昭著的负优化网络。怪不得使用原生yolov5跑检测的时候结果总是不尽人意。这里，使用的时候要改，改成经过时间检验的激活函数，ReLU, LeakyReLU, Mish之类的。    
 
-`Conv` 默认的卷积核是 1 ，yaml 文件中调用 `Conv` 模块时指定了 `k=3`， 也即使用常规的 $3\times 3$卷积。指定了分组卷积参数 $g$ ，但其默认参数为 $g=1$ ，反正就是不分组；当然，可以自己另行指定 $g$ 参数改为使用分组卷积。由于 `pytorch` 原生的 `nn.Conv2d()` 卷积无法通过 `padding=same` 这一类的参数指定 padding 值（见 pytorch [官方文档](https://pytorch.org/docs/stable/generated/torch.nn.Conv2d.html)），`Conv` 使用了自定义函数 `autopad(k, p=None)` 指定 `padding` 值。    
+`Conv` 默认的卷积核是 1 ，yaml 文件中调用 `Conv` 模块时指定了 `k=3`， 也即使用常规的 $3\times 3$卷积。指定了分组卷积参数 $g$ ，但其默认参数为 $g=1$ ，反正就是不分组；当然，可以自己另行指定 $g$ 参数改为使用分组卷积；`common.py`中也另外实现了 `Depthwise Convolution` 函数。由于 `pytorch` 原生的 `nn.Conv2d()` 卷积无法通过 `padding=same` 这一类的参数指定 padding 值（见 pytorch [官方文档](https://pytorch.org/docs/stable/generated/torch.nn.Conv2d.html)），`Conv` 使用了自定义函数 `autopad(k, p=None)` 指定 `padding` 值。    
 
 `common.py` 中还基于 `Conv` 实现了 `DepthWise Convolution` ，但不知道在哪儿使用的。    
 
