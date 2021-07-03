@@ -179,7 +179,7 @@ class BottleneckCSP(nn.Module):
 该结构中的 CSP 全称是 Cross Stage Partial 出自论文[CSPNet](https://openaccess.thecvf.com/content_CVPRW_2020/papers/w28/Wang_CSPNet_A_New_Backbone_That_Can_Enhance_Learning_Capability_of_CVPRW_2020_paper.pdf)。其结构大致是正常的卷积或其他模块外面再加一个并行的卷积，两个支路的输出 concat 后再通过（通常是）卷积融合特征。论文原文中以ResNet为例给出了示意图如下：   
 <div align=center><img src="https://raw.githubusercontent.com/OUCliuxiang/OUCliuxiang.github.io/master/img/deepL/deepLearning004-CSP.png" width=50%></div>        
 
-BottleneckCSP 则相应的是将上图中 Residual block 残差快结构替换为上一部分的 Bottleneck 结构
+BottleneckCSP 则相应的是将上图中 Residual block 残差块结构替换为上一部分的 Bottleneck 结构
 
 ## Focus    
 
