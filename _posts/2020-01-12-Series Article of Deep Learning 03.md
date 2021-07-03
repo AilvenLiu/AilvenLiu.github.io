@@ -104,7 +104,7 @@ class Conv(nn.Module):
 
 破东西。根据[pytorch Documents](https://pytorch.org/docs/stable/generated/torch.nn.Hardswish.html)，该激活函数出自 [MobileNetV3](https://arxiv.org/pdf/1905.02244.pdf)，臭名昭著的负优化网络。怪不得使用原生yolov5跑检测的时候结果总是不尽人意。这里，使用的时候要改，改成经过时间检验的激活函数，ReLU, LeakyReLU, Mish之类的。    
 
-`Conv` 默认的卷积核是 1 ，也即使用 $1\times 1$卷积。指定了分组卷积参数 $g$ ，但其默认参数为 $g=1$ ，反正就是不分组；当然，可以自己另行指定 $g$ 参数改为使用分组卷积。由于 `pytorch` 原生的 `nn.Conv2d()` 卷积无法通过 `padding=same` 这一类的参数指定 padding 值（见 pytorch [官方文档](https://pytorch.org/docs/stable/generated/torch.nn.Conv2d.html)），`Conv` 使用了自定义函数 `autopad(k, p=None)` 指定 `padding` 值。    
+`Conv` 默认的卷积核是 1 ，yaml 文件中调用 `Conv` 模块时指定了 `k=3`， 也即使用常规的 $3\times 3$卷积。指定了分组卷积参数 $g$ ，但其默认参数为 $g=1$ ，反正就是不分组；当然，可以自己另行指定 $g$ 参数改为使用分组卷积。由于 `pytorch` 原生的 `nn.Conv2d()` 卷积无法通过 `padding=same` 这一类的参数指定 padding 值（见 pytorch [官方文档](https://pytorch.org/docs/stable/generated/torch.nn.Conv2d.html)），`Conv` 使用了自定义函数 `autopad(k, p=None)` 指定 `padding` 值。    
 
 `common.py` 中还基于 `Conv` 实现了 `DepthWise Convolution` ，但不知道在哪儿使用的。    
 
@@ -118,7 +118,7 @@ def autopad(k, p=None):  # kernel, padding
         p = k // 2 if isinstance(k, int) else [x // 2 for x in k]   
     return p
 ```    
-用来实现 `nn.Conv2d` 中 `padding=same` 的函数。该函数的实现建立在（虽然没有指出，但通常是）步长 `s=1`的基础上，此时有 $p=\frac{k}{2}$。由于卷积核长度 $k$ 通常是奇数，而 python 中的 `/` 操作处理两个整数之间的除法时会产生浮点数，从而使用 `//` 操作符将除法结果向下取整。   
+用来实现 `nn.Conv2d` 中 `padding=same` 的函数。由 $d_{out}=\frac{d_{in} + 2p - k}{s}$ ，当指定 $p=\frac{k}{2}$ 时，特征图尺寸是否折半则完全取决于步长参数。各网络yaml 文件中 yolov5 系列网络通常使用 `Conv` 实现下采样功能，于是可见各 yaml 文件中都指定 `Conv` 的步长为 2（此处指向对yolov5的[模型解读博客](https://www.ouc-liux.cn/2021/05/07/Series-Article-of-Deep-Learning-01/#%E6%A8%A1%E5%9E%8B%E8%A7%A3%E8%AF%BB)）。由于卷积核长度 $k$ 通常是奇数，而 python 中的 `/` 操作处理两个整数之间的除法时会产生浮点数，从而使用 `//` 操作符将除法结果向下取整。   
 此外该函数对原始给定的卷积核长宽值 `k` 进行了一次是否为整型的类型判断 `isinstance(k, int)`，当其非整型则以列表形式返回相应的值。这是由于虽然极其罕见，但 `kernel` 的长宽是被允许不一致的。然而，在什么情况下才会用到长宽不一致的 `kernel` ，反正我是没遇到过。最后但是，根据 pytorch Documents 中有关 Conv2d 模块的[源码及注释](https://pytorch.org/docs/stable/_modules/torch/nn/modules/conv.html#Conv2d)，`k` 参数可接受的值是 `int` 或 `tuple`， 返回一个列表是什么意思？      
 
 ### DWConv   
@@ -127,6 +127,7 @@ def DWConv(c1, c2, k=1, s=1, act=True):
     # Depthwise convolution
     return Conv(c1, c2, k, s, g=math.gcd(c1, c2), act=act)
 ```
+由 [MobileNetV1](https://arxiv.org/pdf/1704.04861.pdf)，当分组卷积的分组数量等于输入卷积核的通道数，也即 `g = c_in` 使得每个卷积核的尺寸变为 $1\times K\times K$，此时的分组卷积称作 `DepthWise Convolution`。yolov5上的这个实现，应当是考虑到更一般的情况：满足 `g = c_in` 的 `g` 是否能同时满足 $\frac{c\_out}{g}\in N^*$。为避免分组数不能被输出通道数整除的情况发生，采取一种折中的方法：取输入输出通道的最大公约数作为分组数 $g = gcd(c\_in, c\_out)$。但是这样是否还能叫做 `DepthWise Convolution`，暂且存疑吧。    
 
 
 ## Focus    
