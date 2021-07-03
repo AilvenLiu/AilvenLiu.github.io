@@ -108,7 +108,7 @@ class Conv(nn.Module):
 
 `common.py` 中还基于 `Conv` 实现了 `DepthWise Convolution` ，但不知道在哪儿使用的。    
 
-### autopad    
+#### autopad    
 ```python    
 def autopad(k, p=None):  # kernel, padding     
 
@@ -121,13 +121,62 @@ def autopad(k, p=None):  # kernel, padding
 用来实现 `nn.Conv2d` 中 `padding=same` 的函数。由 $d_{out}=\frac{d_{in} + 2p - k}{s}$ ，当指定 $p=\frac{k}{2}$ 时，特征图尺寸是否折半则完全取决于步长参数。各网络yaml 文件中 yolov5 系列网络通常使用 `Conv` 实现下采样功能，于是可见各 yaml 文件中都指定 `Conv` 的步长为 2（此处指向对yolov5的[模型解读博客](https://www.ouc-liux.cn/2021/05/07/Series-Article-of-Deep-Learning-01/#%E6%A8%A1%E5%9E%8B%E8%A7%A3%E8%AF%BB)）。由于卷积核长度 $k$ 通常是奇数，而 python 中的 `/` 操作处理两个整数之间的除法时会产生浮点数，从而使用 `//` 操作符将除法结果向下取整。   
 此外该函数对原始给定的卷积核长宽值 `k` 进行了一次是否为整型的类型判断 `isinstance(k, int)`，当其非整型则以列表形式返回相应的值。这是由于虽然极其罕见，但 `kernel` 的长宽是被允许不一致的。然而，在什么情况下才会用到长宽不一致的 `kernel` ，反正我是没遇到过。最后但是，根据 pytorch Documents 中有关 Conv2d 模块的[源码及注释](https://pytorch.org/docs/stable/_modules/torch/nn/modules/conv.html#Conv2d)，`k` 参数可接受的值是 `int` 或 `tuple`， 返回一个列表是什么意思？      
 
-### DWConv   
+#### DWConv   
 ```python    
 def DWConv(c1, c2, k=1, s=1, act=True):
     # Depthwise convolution
     return Conv(c1, c2, k, s, g=math.gcd(c1, c2), act=act)
 ```
 由 [MobileNetV1](https://arxiv.org/pdf/1704.04861.pdf)，当分组卷积的分组数量等于输入卷积核的通道数，也即 `g = c_in` 使得每个卷积核的尺寸变为 $1\times K\times K$，此时的分组卷积称作 `DepthWise Convolution`。yolov5上的这个实现，应当是考虑到更一般的情况：满足 `g = c_in` 的 `g` 是否能同时满足 $\frac{c\_out}{g}\in N^*$。为避免分组数不能被输出通道数整除的情况发生，采取一种折中的方法：取输入输出通道的最大公约数作为分组数 $g = gcd(c\_in, c\_out)$。但是这样是否还能叫做 `DepthWise Convolution`，暂且存疑吧。    
+
+
+## Bottleneck     
+
+```python  
+class Bottleneck(nn.Module):
+    # Standard bottleneck      
+
+    def __init__(self, c1, c2, shortcut=True, g=1, e=0.5):     
+    # ch_in, ch_out, shortcut, groups, expansion      
+
+        super(Bottleneck, self).__init__()
+        c_ = int(c2 * e)  # hidden channels       
+
+        self.cv1 = Conv(c1, c_, 1, 1)
+        self.cv2 = Conv(c_, c2, 3, 1, g=g)
+        self.add = shortcut and c1 == c2
+
+    def forward(self, x):
+        return x + self.cv2(self.cv1(x)) if self.add else self.cv2(self.cv1(x))
+```    
+
+Bottleneck 模块应该也是出自 MobileNetV2，由有两个 `Conv` 卷积和一个 `shortcut` 组成。其中第一个卷积为 $1 \times 1$ 卷积，并通过一个 expansion 参数（通常是小于一的）减少特征图通道数。后面一个正常的 $3\times 3$ 卷积恢复特征图通道数至原来（或其他指定的）水平。若此时输出的特征通道数与输入到该模块的原始特征通道数量相同，c_in = c_out，则可以通过一个 `shortcut` 结构进行残差连接。一些解读中称之为“沙漏型”结构。后面解读完 `BottleneckCSP/BottleneckCSP2`后再补上结构示意图吧。另外需要提到的是，虽然这里给出了实现，但我是真没找到整个yolov5中哪儿用到了这个结构。   
+
+## BottleneckCSP    
+
+```python     
+class BottleneckCSP(nn.Module):
+    def __init__(self, c1, c2, n=1, shortcut=True, g=1, e=0.5):      
+    # ch_in, ch_out, number, shortcut, groups, expansion      
+
+        super(BottleneckCSP, self).__init__()
+        c_ = int(c2 * e)  # hidden channels     
+        self.cv1 = Conv(c1, c_, 1, 1)
+        self.cv2 = nn.Conv2d(c1, c_, 1, 1, bias=False)
+        self.cv3 = nn.Conv2d(c_, c_, 1, 1, bias=False)
+        self.cv4 = Conv(2 * c_, c2, 1, 1)
+        self.bn = nn.BatchNorm2d(2 * c_)  # applied to cat(cv2, cv3)     
+        self.act = Mish()
+        self.m = nn.Sequential(*[Bottleneck(c_, c_, shortcut, g, e=1.0) for _ in range(n)])
+
+    def forward(self, x):
+        y1 = self.cv3(self.m(self.cv1(x)))
+        y2 = self.cv2(x)
+        return self.cv4(self.act(self.bn(torch.cat((y1, y2), dim=1))))
+```    
+
+该结构中的 CSP 全称是 Cross Stage Partial 出自论文[CSPNet](https://openaccess.thecvf.com/content_CVPRW_2020/papers/w28/Wang_CSPNet_A_New_Backbone_That_Can_Enhance_Learning_Capability_of_CVPRW_2020_paper.pdf)。其结构大致是正常的卷积或其他模块外面再加一个并行的卷积，两个支路的输出 concat 后再通过（通常是）卷积融合特征。论文原文中以ResNet为例给出了示意图如下：   
+<div align=center><img src="https://raw.githubusercontent.com/OUCliuxiang/OUCliuxiang.github.io/master/img/deepL/deepLearning004-CSP.png"></div>        
 
 
 ## Focus    
