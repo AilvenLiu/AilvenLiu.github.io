@@ -179,7 +179,7 @@ class BottleneckCSP(nn.Module):
 ```    
 
 该结构中的 CSP 全称是 Cross Stage Partial 出自论文[CSPNet](https://openaccess.thecvf.com/content_CVPRW_2020/papers/w28/Wang_CSPNet_A_New_Backbone_That_Can_Enhance_Learning_Capability_of_CVPRW_2020_paper.pdf)。其结构大致是正常的卷积或其他模块外面再加一个并行的卷积，两个支路的输出 concat 后再通过（通常是）卷积融合特征。论文原文中以ResNet为例给出了示意图如下：   
-<div align=center><img src="https://raw.githubusercontent.com/OUCliuxiang/OUCliuxiang.github.io/master/img/deepL/deepLearning004-CSP.png" width=50%></div>        
+<div align=center><img src="https://raw.githubusercontent.com/OUCliuxiang/OUCliuxiang.github.io/master/img/deepL/deepLearning004-CSP.png" width=400></div>        
 
 BottleneckCSP 则相应的是将上图中 Residual block 残差块结构替换为上一部分介绍的 Bottleneck 结构。其整体结构如下图：      
 <div align=center><img src="https://raw.githubusercontent.com/OUCliuxiang/OUCliuxiang.github.io/master/img/deepL/deepLearning006-BottleneckCSP.png" width=400></div>        
@@ -294,5 +294,32 @@ class SPPCSP(nn.Module):
 <div align=center><img src="https://raw.githubusercontent.com/OUCliuxiang/OUCliuxiang.github.io/master/img/deepL/deepLearning009-SPPCSP.png" width=400></div>        
 
 
+## MP    
+```python    
+class MP(nn.Module):
+    # Spatial pyramid pooling layer used in YOLOv3-SPP      
+
+    def __init__(self, k=2):
+        super(MP, self).__init__()
+        self.m = nn.MaxPool2d(kernel_size=k, stride=k)
+
+    def forward(self, x):
+        return self.m(x)
+```    
+默认 `k=2, s=2` 的最大池化，没什么说的。     
+
+
 ## Focus    
 
+```python    
+class Focus(nn.Module):
+    # Focus wh information into c-space
+    def __init__(self, c1, c2, k=1, s=1, p=None, g=1, act=True):  # ch_in, ch_out, kernel, stride, padding, groups
+        super(Focus, self).__init__()
+        self.conv = Conv(c1 * 4, c2, k, s, p, g, act)
+
+    def forward(self, x):  # x(b,c,w,h) -> y(b,4c,w/2,h/2)
+        return self.conv(torch.cat([x[..., ::2, ::2], x[..., 1::2, ::2], x[..., ::2, 1::2], x[..., 1::2, 1::2]], 1))
+```   
+
+这东西就好玩儿了
