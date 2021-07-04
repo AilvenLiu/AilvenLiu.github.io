@@ -184,8 +184,10 @@ class BottleneckCSP(nn.Module):
 BottleneckCSP 则相应的是将上图中 Residual block 残差块结构替换为上一部分介绍的 Bottleneck 结构。其整体结构如下图：      
 <div align=center><img src="https://raw.githubusercontent.com/OUCliuxiang/OUCliuxiang.github.io/master/img/deepL/deepLearning006-BottleneckCSP.png" width=400></div>        
     
-这里应该还要注意，虽然 `BottleneckCSP` 模块构建 `Bottleneck` 的时候使用 `for _ in n` 的语句进行重复构建，但通常，使用默认值 `n = 1`。
+这里应该还要注意，虽然 `BottleneckCSP` 模块构建 `Bottleneck` 的时候使用 `for _ in n` 的语句进行重复构建，但通常，使用默认值 `n = 1`。且 yaml 文件中的 args 参数跟这里的 n
+没有关系，当时我误以为是 n ，实际上 args 参数应该是输出通道数 `c2`。而输入通道数则自动解析为上一层的输出。      
 
+`cat` 也要注意，为什么在 `dim=1` 维度上进行 cat？ 一张特征图的通道维度，直觉应该是 0 或 2，此处不细究，记下吧。
 
 ## BottleneckCSP2      
 
@@ -213,7 +215,29 @@ class BottleneckCSP2(nn.Module):
 也是一个CSP结构。CSP还是比较灵活的，只要符合外层再加一并行的卷积分支都可以叫做CSP。这个结构相比于上一个 BottleneckCSP，相对矮胖，画一下他的结构图如下：     
 <div align=center><img src="https://raw.githubusercontent.com/OUCliuxiang/OUCliuxiang.github.io/master/img/deepL/deepLearning007-BottleneckCSP2.png" width=400></div>        
 
-由代码和结构图可以看出
+由代码和结构图可以看出，这个 BottleneckCSP2 相比上一个 BottleneckCSP 主干网络少了上下两个 Conv 模块，又在分支前先做了一次 Conv 。且由于模块一开始就设定了 `c_ = c2` ，整个BottleneckCSP结构中隐层特征图通道数没有减少，在完成分支合并的 concat 操作后特征图通道数变成了 `2×c_`，随后的最后一个 Conv 操作才又使特征通道数降回到 `c_ = c2`。 从而，描述其为一个相对矮胖的 BottleneckCSP 模块。
+
+
+## VoVCSP      
+```python    
+class VoVCSP(nn.Module):
+    def __init__(self, c1, c2, n=1, shortcut=True, g=1, e=0.5):     
+    # ch_in, ch_out, number, shortcut, groups, expansion       
+
+        super(VoVCSP, self).__init__()
+        c_ = int(c2)  # hidden channels       
+
+        self.cv1 = Conv(c1//2, c_//2, 3, 1)
+        self.cv2 = Conv(c_//2, c_//2, 3, 1)
+        self.cv3 = Conv(c_, c2, 1, 1)
+
+    def forward(self, x):
+        _, x1 = x.chunk(2, dim=1)
+        x1 = self.cv1(x1)
+        x2 = self.cv2(x1)
+        return self.cv3(torch.cat((x1,x2), dim=1))
+```      
+
 
 ## Focus    
 
