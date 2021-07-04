@@ -238,6 +238,61 @@ class VoVCSP(nn.Module):
         return self.cv3(torch.cat((x1,x2), dim=1))
 ```      
 
+这个模块是真的迷。
+首先看 `forward` 前向传播，chunk（torch的反 `cat` 操作）分割后，两个并行的卷积分支竟然是一样的，那剩下的一半特征就直接不要了吗？
+随后看两个并行的卷积分支自身， `cv1` 和 `cv2` ，输入通道数竟然不一样，一个 `c1//2` ，一个 `c_(=c2)//2` ，虽然，我们知道通常情况下有 `c1 = c2` ，但，你这样定义，过分了吧。    
+好在，没找到这个模块在哪儿用到，应该是没有实际使用。
+
+
+## SPP    
+
+```python    
+class SPP(nn.Module):
+    # Spatial pyramid pooling layer used in YOLOv3-SPP       
+
+    def __init__(self, c1, c2, k=(5, 9, 13)):
+        super(SPP, self).__init__()
+        c_ = c1 // 2  # hidden channels      
+
+        self.cv1 = Conv(c1, c_, 1, 1)
+        self.cv2 = Conv(c_ * (len(k) + 1), c2, 1, 1)
+        self.m = nn.ModuleList([nn.MaxPool2d(kernel_size=x, stride=1, padding=x // 2) for x in k])
+
+    def forward(self, x):
+        x = self.cv1(x)
+        return self.cv2(torch.cat([x] + [m(x) for m in self.m], 1)) 
+```        
+空间金字塔池化操作，出自何凯明2014年的工作[Spatial Pyramid Pooling in Deep Convolutional Networks for Visual Recognition](https://arxiv.org/pdf/1406.4729.pdf)，此处的使用意图和原作中解决图片尺寸不一而导致最终全连接层长度不一的意图不一样。用法相似但也不一样。此处是使用不同尺寸的 `pooling` 结合各尺寸相应的 padding 得到新的相同尺寸特征图，与原特征图 concat 后进行其他处理。当然，此处的实现同样在 pooling 前后封装了 Conv 模块。更形象一点儿的，看下图吧。           
+<div align=center><img src="https://raw.githubusercontent.com/OUCliuxiang/OUCliuxiang.github.io/master/img/deepL/deepLearning008-SPP.png" width=400></div>    
+
+## SPPCSP    
+```python
+class SPPCSP(nn.Module):
+    # CSP SPP https://github.com/WongKinYiu/CrossStagePartialNetworks
+    def __init__(self, c1, c2, n=1, shortcut=False, g=1, e=0.5, k=(5, 9, 13)):
+        super(SPPCSP, self).__init__()
+        c_ = int(2 * c2 * e)  # hidden channels
+        self.cv1 = Conv(c1, c_, 1, 1)
+        self.cv2 = nn.Conv2d(c1, c_, 1, 1, bias=False)
+        self.cv3 = Conv(c_, c_, 3, 1)
+        self.cv4 = Conv(c_, c_, 1, 1)
+        self.m = nn.ModuleList([nn.MaxPool2d(kernel_size=x, stride=1, padding=x // 2) for x in k])
+        self.cv5 = Conv(4 * c_, c_, 1, 1)
+        self.cv6 = Conv(c_, c_, 3, 1)
+        self.bn = nn.BatchNorm2d(2 * c_) 
+        self.act = Mish()
+        self.cv7 = Conv(2 * c_, c2, 1, 1)
+
+    def forward(self, x):
+        x1 = self.cv4(self.cv3(self.cv1(x)))
+        y1 = self.cv6(self.cv5(torch.cat([x1] + [m(x1) for m in self.m], 1)))
+        y2 = self.cv2(x)
+        return self.cv7(self.act(self.bn(torch.cat((y1, y2), dim=1))))
+```
+看得出来作者挺喜欢用 CSP 结构的， 一个池化操作都能上CSP。
+同样也没什么好说的，直接看图。     
+<div align=center><img src="https://raw.githubusercontent.com/OUCliuxiang/OUCliuxiang.github.io/master/img/deepL/deepLearning009-SPPCSP.png" width=400></div>        
+
 
 ## Focus    
 
