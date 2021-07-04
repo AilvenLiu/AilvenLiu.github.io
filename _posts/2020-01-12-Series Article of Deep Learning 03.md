@@ -184,6 +184,35 @@ class BottleneckCSP(nn.Module):
 BottleneckCSP 则相应的是将上图中 Residual block 残差块结构替换为上一部分介绍的 Bottleneck 结构。其整体结构如下图：      
 <div align=center><img src="https://raw.githubusercontent.com/OUCliuxiang/OUCliuxiang.github.io/master/img/deepL/deepLearning006-BottleneckCSP.png" width=400></div>        
     
+这里应该还要注意，虽然 `BottleneckCSP` 模块构建 `Bottleneck` 的时候使用 `for _ in n` 的语句进行重复构建，但通常，使用默认值 `n = 1`。
+
+
+## BottleneckCSP2      
+
+```python   
+class BottleneckCSP2(nn.Module):
+    def __init__(self, c1, c2, n=1, shortcut=False, g=1, e=0.5):     
+    # ch_in, ch_out, number, shortcut, groups, expansion       
+
+        super(BottleneckCSP2, self).__init__()
+        c_ = int(c2)  # hidden channels      
+
+        self.cv1 = Conv(c1, c_, 1, 1)
+        self.cv2 = nn.Conv2d(c_, c_, 1, 1, bias=False)
+        self.cv3 = Conv(2 * c_, c2, 1, 1)
+        self.bn = nn.BatchNorm2d(2 * c_) 
+        self.act = Mish()
+        self.m = nn.Sequential(*[Bottleneck(c_, c_, shortcut, g, e=1.0) for _ in range(n)])
+
+    def forward(self, x):
+        x1 = self.cv1(x)
+        y1 = self.m(x1)
+        y2 = self.cv2(x1)
+        return self.cv3(self.act(self.bn(torch.cat((y1, y2), dim=1))))
+```
+也是一个CSP结构。CSP还是比较灵活的，只要符合外层再加一并行的卷积分支都可以叫做CSP。这个结构相比于上一个 BottleneckCSP，相对矮胖，画一下他的结构图如下：     
+<div align=center><img src="https://raw.githubusercontent.com/OUCliuxiang/OUCliuxiang.github.io/master/img/deepL/deepLearning007-BottleneckCSP2.png" width=400></div>        
+
 
 
 ## Focus    
