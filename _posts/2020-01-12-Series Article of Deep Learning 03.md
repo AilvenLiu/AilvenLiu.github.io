@@ -213,7 +213,7 @@ class BottleneckCSP2(nn.Module):
 也是一个CSP结构。CSP还是比较灵活的，只要符合外层再加一并行的卷积分支都可以叫做CSP。这个结构相比于上一个 BottleneckCSP，相对矮胖，画一下他的结构图如下：     
 <div align=center><img src="https://raw.githubusercontent.com/OUCliuxiang/OUCliuxiang.github.io/master/img/deepL/deepLearning007-BottleneckCSP2.png" width=400></div>        
 
-
+由代码和结构图可以看出
 
 ## Focus    
 
