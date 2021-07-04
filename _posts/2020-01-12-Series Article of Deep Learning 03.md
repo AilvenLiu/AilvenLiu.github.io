@@ -151,7 +151,7 @@ class Bottleneck(nn.Module):
 ```    
 
 Bottleneck 模块应该也是出自 MobileNetV2，由有两个 `Conv` 卷积和一个 `shortcut` 组成。其中第一个卷积为 $1 \times 1$ 卷积，并通过一个 expansion 参数（通常是小于 1 的）减少特征图通道数。后面一个正常的 $3\times 3$ 卷积恢复特征图通道数至原来（或其他指定的）水平。若此时输出的特征通道数与输入到该模块的原始特征通道数量相同，c_in = c_out，则可以通过一个 `shortcut` 结构进行残差连接。其架构如下图，由于中间一层特征图通道数往往小于输入输出层，一些解读中称之为“沙漏型”结构。   
-<div align=center><img src="https://raw.githubusercontent.com/OUCliuxiang/OUCliuxiang.github.io/master/img/deepL/deepLearning005-Bottleneck.png" width=200></div>         
+<div align=center><img src="https://raw.githubusercontent.com/OUCliuxiang/OUCliuxiang.github.io/master/img/deepL/deepLearning005-Bottleneck.png" width=300></div>         
 
 ## BottleneckCSP    
 
@@ -162,11 +162,13 @@ class BottleneckCSP(nn.Module):
 
         super(BottleneckCSP, self).__init__()
         c_ = int(c2 * e)  # hidden channels     
+
         self.cv1 = Conv(c1, c_, 1, 1)
         self.cv2 = nn.Conv2d(c1, c_, 1, 1, bias=False)
         self.cv3 = nn.Conv2d(c_, c_, 1, 1, bias=False)
         self.cv4 = Conv(2 * c_, c2, 1, 1)
-        self.bn = nn.BatchNorm2d(2 * c_)  # applied to cat(cv2, cv3)     
+        self.bn = nn.BatchNorm2d(2 * c_)  # applied to cat(cv2, cv3)      
+
         self.act = Mish()
         self.m = nn.Sequential(*[Bottleneck(c_, c_, shortcut, g, e=1.0) for _ in range(n)])
 
@@ -179,7 +181,10 @@ class BottleneckCSP(nn.Module):
 该结构中的 CSP 全称是 Cross Stage Partial 出自论文[CSPNet](https://openaccess.thecvf.com/content_CVPRW_2020/papers/w28/Wang_CSPNet_A_New_Backbone_That_Can_Enhance_Learning_Capability_of_CVPRW_2020_paper.pdf)。其结构大致是正常的卷积或其他模块外面再加一个并行的卷积，两个支路的输出 concat 后再通过（通常是）卷积融合特征。论文原文中以ResNet为例给出了示意图如下：   
 <div align=center><img src="https://raw.githubusercontent.com/OUCliuxiang/OUCliuxiang.github.io/master/img/deepL/deepLearning004-CSP.png" width=50%></div>        
 
-BottleneckCSP 则相应的是将上图中 Residual block 残差块结构替换为上一部分的 Bottleneck 结构
+BottleneckCSP 则相应的是将上图中 Residual block 残差块结构替换为上一部分介绍的 Bottleneck 结构。其整体结构如下图：      
+<div align=center><img src="https://raw.githubusercontent.com/OUCliuxiang/OUCliuxiang.github.io/master/img/deepL/deepLearning006-BottleneckCSP.png" width=400></div>        
+    
+
 
 ## Focus    
 
