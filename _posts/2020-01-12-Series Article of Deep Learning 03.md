@@ -365,6 +365,20 @@ class NMS(nn.Module):
 也没什么说的，就是把 `utils.general` 中的 `non_max_suppression` 做个封装。但是没见哪儿用了这个模块，在 `train.py` ，`test.py` ，和 `detect.py` 中都是直接调用了 `non_max_suppresion` 模块。   
 
 
+## Flatten    
+```python    
+class Flatten(nn.Module):
+    # Use after nn.AdaptiveAvgPool2d(1) to remove last 2 dimensions      
+
+    @staticmethod
+    def forward(x):
+        return x.view(x.size(0), -1)
+```
+很简单的一个Flatten，对 pytorch 原生的 `view()` 函数进行了封装。值得注意的地方有三点：   
+1. 该类的前馈方法 forward 被修饰伪静态方法，可以直接 `Flatten(xxx)` 调用而无需实例化类为具体对象。    
+2. 需要先 `nn.AdaptiveAvgPool2d(1)` 使特征图张量的长款尺寸将为 1 。
+3. 只是一个Flatten，没有全连接运算。    
+
 ## Classify      
 
 ```python    
@@ -383,7 +397,83 @@ class Classify(nn.Module):
 
     def forward(self, x):
         z = torch.cat([self.aap(y) for y in (x if isinstance(x, list) else [x])], 1)  # cat if list     
-        
+
         return self.flat(self.conv(z))  # flatten to x(b,c2)
 ```      
 
+分类层。
+`z = xxxxx` 这一行很有意思，有意思主要在对输入 x 的类型做了一次判断，判断其是否是 list 类型。事实上，x 应当是输入到 Classify 层的特征图，那么无论是否有 `Batch` 这一维度，它都应当是完纯的 `tensor` 类型嘛，怎么可能是 `list` 呢？
+虽然，判断语句写的是如果不是 list 则强行 `[x]` 转换为 list。然后在channel维度 concat，你这，concat 了个寂寞吗？ 
+还是说，强行转 list 这个过程是将 tensor 的 batch 维度转成了 list 的 item ? 
+我试了一下，也不是啊，强行 list 只是在 tensor 的最外面裹了一层 [] 而已嘛。有点儿迷。    
+随后 $1\times 1$ 卷积改变一下维度接  Flatten 展平。     
+
+但你一个分类层，不封装 activation ，过分了吧？     
+
+
+## Detect     
+
+```python    
+class Detect(nn.Module):
+    stride = None  # strides computed during build      
+
+    export = False  # onnx export       
+
+
+    def __init__(self, nc=80, anchors=(), ch=()):  # detection layer      
+
+        super(Detect, self).__init__()
+        self.nc = nc  # number of classes     
+
+        self.no = nc + 5  # number of outputs per anchor    
+
+        self.nl = len(anchors)  # number of detection layers        
+
+        self.na = len(anchors[0]) // 2  # number of anchors      
+
+        self.grid = [torch.zeros(1)] * self.nl  # init grid      
+
+        a = torch.tensor(anchors).float().view(self.nl, -1, 2)
+        self.register_buffer('anchors', a)  # shape(nl,na,2)       
+
+        self.register_buffer('anchor_grid', a.clone().view(self.nl, 1, -1, 1, 1, 2))  # shape(nl,1,na,1,1,2)       
+
+        self.m = nn.ModuleList(nn.Conv2d(x, self.no * self.na, 1) for x in ch)  # output conv      
+
+
+    def forward(self, x):
+        # x = x.copy()  # for profiling       
+
+        z = []  # inference output       
+
+        self.training |= self.export
+        for i in range(self.nl):
+            x[i] = self.m[i](x[i])  # conv     
+
+            bs, _, ny, nx = x[i].shape     
+            # x(bs,255,20,20) to x(bs,3,20,20,85)        
+
+            x[i] = x[i].view(bs, self.na, self.no, ny, nx).permute(0, 1, 3, 4, 2).contiguous()
+
+            if not self.training:  # inference       
+
+                if self.grid[i].shape[2:4] != x[i].shape[2:4]:
+                    self.grid[i] = self._make_grid(nx, ny).to(x[i].device)
+
+                y = x[i].sigmoid()
+                y[..., 0:2] = (y[..., 0:2] * 2. - 0.5 + self.grid[i].to(x[i].device)) * self.stride[i]  # xy      
+
+                y[..., 2:4] = (y[..., 2:4] * 2) ** 2 * self.anchor_grid[i]  # wh     
+                
+                z.append(y.view(bs, -1, self.no))
+
+        return x if self.training else (torch.cat(z, 1), x)
+
+    @staticmethod
+    def _make_grid(nx=20, ny=20):
+        yv, xv = torch.meshgrid([torch.arange(ny), torch.arange(nx)])
+        return torch.stack((xv, yv), 2).view((1, 1, ny, nx, 2)).float()
+```
+
+出现在 yaml 文件的检测网络的最后一层的检测层。
+最开始两个变量不用管，`export` 还是要注意一下的，这个yolov5整的挺人性化，可以很方便地转成 onnx ，转 onnx 的时候需要用到 `export.py` 这个文件，和此处的 `export` 有关，但这个值得具体含义可以暂且不论。     
