@@ -48,16 +48,13 @@ tags:
 9. Focus       
 10. Concat     
 11. NMS      
-12. autoShape      
-13. Flatten       
+12. autoShape （略过）          
+13. Flatten （略过）      
 14. Classify      
 15. Detect      
 
 
-
-
 ## Mish     
-
 ```python     
 class Mish(nn.Module):
     def __init__(self):
@@ -322,10 +319,71 @@ class Focus(nn.Module):
         self.conv = Conv(c1 * 4, c2, k, s, p, g, act)
 
     def forward(self, x):  # x(b,c,w,h) -> y(b,4c,w/2,h/2)      
-    
+
         return self.conv(torch.cat([x[..., ::2, ::2], x[..., 1::2, ::2], x[..., ::2, 1::2], x[..., 1::2, 1::2]], 1))
 ```   
 
 这东西就好玩儿了。Focus 的本意其实是将一张特征图（通常是整个网络的输入）四等分后再摞起来，从而减少后续的卷积计算量，实际上它也做到了。但唯一疑惑的地方，按照代码来看，进行切分的是特征图的后两个维度，也即第 0 维应当确认是 channel 维度，可是最后进行 concat 的时候依然在 dim = 1 维度。这样的话，四个[n, w, h] 的张量 concat 后不就成了 [n, 4w, h] 了吗？
 破东西，很迷。但思想是比较好的：    
 <div align=center><img src="https://raw.githubusercontent.com/OUCliuxiang/OUCliuxiang.github.io/master/img/deepL/deepLearning010-Focus.png" width=400></div>    
+
+
+## Concat    
+```python    
+class Concat(nn.Module):
+    # Concatenate a list of tensors along dimension      
+
+    def __init__(self, dimension=1):
+        super(Concat, self).__init__()
+        self.d = dimension
+
+    def forward(self, x):
+        return torch.cat(x, self.d)     
+```
+没什么说的，就是把 `torch.cat` 做个指定 `dim=1` 的封装。这个 `dim = 1`，我靠，什么屁东西。你的 channel 维到底是0还是1？莫非送入网络计算的时候 batch 算单独的一个维度？       
+
+
+## NMS    
+```python    
+class NMS(nn.Module):
+    # Non-Maximum Suppression (NMS) module      
+
+    conf = 0.25  # confidence threshold      
+
+    iou = 0.45  # IoU threshold     
+
+    classes = None  # (optional list) filter by class     
+
+ 
+    def __init__(self):
+        super(NMS, self).__init__()
+
+    def forward(self, x):
+        return non_max_suppression(x[0], conf_thres=self.conf, iou_thres=self.iou, classes=self.classes)
+```   
+
+也没什么说的，就是把 `utils.general` 中的 `non_max_suppression` 做个封装。但是没见哪儿用了这个模块，在 `train.py` ，`test.py` ，和 `detect.py` 中都是直接调用了 `non_max_suppresion` 模块。   
+
+
+## Classify      
+
+```python    
+class Classify(nn.Module):
+    # Classification head, i.e. x(b,c1,20,20) to x(b,c2)      
+
+    def __init__(self, c1, c2, k=1, s=1, p=None, g=1):      
+    # ch_in, ch_out, kernel, stride, padding, groups     
+
+        super(Classify, self).__init__()
+        self.aap = nn.AdaptiveAvgPool2d(1)  # to x(b,c1,1,1)       
+
+        self.conv = nn.Conv2d(c1, c2, k, s, autopad(k, p), groups=g, bias=False)  # to x(b,c2,1,1)        
+
+        self.flat = Flatten()
+
+    def forward(self, x):
+        z = torch.cat([self.aap(y) for y in (x if isinstance(x, list) else [x])], 1)  # cat if list     
+        
+        return self.flat(self.conv(z))  # flatten to x(b,c2)
+```      
+
