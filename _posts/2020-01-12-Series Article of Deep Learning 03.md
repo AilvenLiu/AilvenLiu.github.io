@@ -322,4 +322,6 @@ class Focus(nn.Module):
         return self.conv(torch.cat([x[..., ::2, ::2], x[..., 1::2, ::2], x[..., ::2, 1::2], x[..., 1::2, 1::2]], 1))
 ```   
 
-这东西就好玩儿了
+这东西就好玩儿了。Focus 的本意其实是将一张特征图（通常是整个网络的输入）四等分后再摞起来，从而减少后续的卷积计算量，实际上它也做到了。但唯一疑惑的地方，按照代码来看，进行切分的是特征图的后两个维度，也即第 0 维应当确认是 channel 维度，可是最后进行 concat 的时候依然在 dim = 1 维度。这样的话，四个[n, w, h] 的张量 concat 后不就成了 [n, 4w, h] 了吗？
+破东西，很迷。但思想是比较好的：    
+<div align=center><img src="https://raw.githubusercontent.com/OUCliuxiang/OUCliuxiang.github.io/master/img/deepL/deepLearning010-Focus.png" width=400></div>    
