@@ -476,4 +476,14 @@ class Detect(nn.Module):
 ```
 
 出现在 yaml 文件的检测网络的最后一层的检测层。
-最开始两个变量不用管，`export` 还是要注意一下的，这个yolov5整的挺人性化，可以很方便地转成 onnx ，转 onnx 的时候需要用到 `export.py` 这个文件，和此处的 `export` 有关，但这个值得具体含义可以暂且不论。     
+最开始两个变量不用管，`export` 还是要注意一下的。
+这个yolov5整的挺人性化，可以很方便地转成 onnx 。转 onnx 的时候需要用到 `export.py` 这个文件，和此处的 `export` 有关，但这个值得具体含义可以暂且不论。     
+
+从 `__init__` 开始一行行地看。
+开始一堆 `self.xx` 指定原始诸参：     
+1. `self.nc = nc` ，指定检测的类别数，有多少就是多少。     
+2. `self.no = nc + 5` ，指定每个 anchor 的输出元素数量。一般就是 n+5 ，n 是针对每个类别的 softmax 输出，5 包括了四个定位元素（中心点及宽高）和一个置信度 conf。    
+3. `self.nl = len(anchors)` ，检测层数量，对应的是 yaml 文件里有几行 anchors 。按照这里的写法，应当是将 anchors 解析为一个二维列表。       
+4. `self.na = len(anchors[0] // 2)` ， 注释上写的是 “ number of anchors ”，但这个意思是，每个检测层的 anchors 数量？     
+5. `self.grid = [torch.zeros(1)] * self.nl` ，注释写的是 “ init grid ” 初始化检测网格。啥意思？   
+有点儿费脑子，时间不够了，先留着，有时间了回头再更新
