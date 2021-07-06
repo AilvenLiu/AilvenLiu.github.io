@@ -166,3 +166,9 @@ None                          # zipped已空
 
 >>>     
 ```    
+
+## numpy 和 torch 中的 zeros_like      
+
+`zeros_like( array/tensor)` 函数 like 的不只有原 array/tensor 的 shape， type 也会 like。此处一定要注意。   
+如果需要一个特定数据元素构成的 array 或 tensor ，如 float 类型的 tensor: ft 转 int8 类型，应当使用 `ft = ft.to(torch.int8)` 类似语句加以指定和转换。     
+
