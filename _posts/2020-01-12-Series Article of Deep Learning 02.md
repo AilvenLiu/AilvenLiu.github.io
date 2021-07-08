@@ -2,7 +2,7 @@
 layout:     post
 title:      Series Article of Deep Learning -- 02
 subtitle:   目标检测02 -- yolov5诸模块简易解析     
-date:       2021-05-07
+date:       2021-07-05
 author:     OUC_LiuX
 header-img: img/wallpic02.jpg
 catalog: true
