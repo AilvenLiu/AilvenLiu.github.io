@@ -4,7 +4,7 @@ title:      Series Article of UbuntuOS -- 05
 subtitle:   linux中正则表达的一点儿小知识     
 date:       2020-05-08
 author:     OUC_LiuX
-header-img: img/wallpic_02.jpg
+header-img: img/wallpic02.jpg
 catalog: true
 tags:
     - Ubuntu OS

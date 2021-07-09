@@ -3,7 +3,7 @@ layout:     post
 title:      Series Articles of Ubuntu OS usage -- 03
 subtitle:   Ubuntu16.04LTS下teamviewer14反馈商业用途的解决办法
 date:       2020-01-03
-author:     OUC\_LiuX
+author:     OUC_LiuX
 header-img: img/wallpic02.jpg
 catalog: true
 tags:

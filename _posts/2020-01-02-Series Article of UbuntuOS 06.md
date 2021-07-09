@@ -4,7 +4,7 @@ title:      Series Article of UbuntuOS -- 06
 subtitle:   vim 中的分栏显示          
 date:       2020-05-08
 author:     OUC_LiuX
-header-img: img/wallpic_02.jpg
+header-img: img/wallpic02.jpg
 catalog: true
 tags:
     - Ubuntu OS    
