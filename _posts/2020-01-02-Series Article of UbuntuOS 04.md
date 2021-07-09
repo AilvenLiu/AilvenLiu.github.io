@@ -2,7 +2,7 @@
 layout:     post
 title:      Series Article of UbuntuOS -- 04 
 subtitle:   一些常用的有用的linux命令     
-date:       2020-05-07
+date:       2021-05-07
 author:     OUC_LiuX
 header-img: img/wallpic02.jpg
 catalog: true

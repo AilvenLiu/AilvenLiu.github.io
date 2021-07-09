@@ -2,7 +2,7 @@
 layout:     post
 title:      Series Article of UbuntuOS -- 07 
 subtitle:   vim 中的查找和替换          
-date:       2020-05-08
+date:       2027-07-09
 author:     OUC_LiuX
 header-img: img/wallpic02.jpg
 catalog: true
