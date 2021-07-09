@@ -7,7 +7,8 @@ author:     OUC_LiuX
 header-img: img/wallpic_02.jpg
 catalog: true
 tags:
-    - Ubuntu OS
+    - Ubuntu OS    
+    - vim    
 ---
 
 vim 用习惯了还是挺舒服的。前几天有人问我下面这个界面是怎么做到的：     
