@@ -110,3 +110,12 @@ $ ls *txt
 前几天遇到有用过不少时间Ubuntu的人问我是怎么做到的，所以这应该不是个很常识的东西。    
 `ctrl + alt + T`打开terminal，`ctrl + shitf + T`新建terminal 子页。    
 
+## 进程查看工具 ps   
+
+一个查找相关进程的常用的指令：     
+```bash     
+ps -ef | grep keywork
+```      
+其中 管道操作符和文本查找工具分别可见博客 和  。
+关于 `ps -ef`：     
+`ps` 是 linux 中非常强大的进程查看工具，其中 `-e` 为显示所有进程， `-f` 为全格式显示。    
