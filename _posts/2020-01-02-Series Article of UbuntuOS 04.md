@@ -116,6 +116,6 @@ $ ls *txt
 ```bash     
 ps -ef | grep keywork
 ```      
-其中 管道操作符和文本查找工具分别可见博客 和  。
+其中 管道操作符和文本查找工具分别可见博客 [一些常用的有用的linux命令](https://www.ouc-liux.cn/2021/05/07/Series-Article-of-UbuntuOS-04/) 和 [grep 文本搜索和 sed 文本替换](https://www.ouc-liux.cn/2021/07/21/Series-Article-of-UbuntuOS-09/)。     
 关于 `ps -ef`：     
 `ps` 是 linux 中非常强大的进程查看工具，其中 `-e` 为显示所有进程， `-f` 为全格式显示。    

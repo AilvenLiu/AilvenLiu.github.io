@@ -1,7 +1,7 @@
 ---
 layout:     post
 title:      Series Article of UbuntuOS -- 08
-subtitle:   文件描述符、管道（|）和重定向（>）          
+subtitle:   文件描述符、管道和重定向           
 date:       2021-07-20
 author:     OUC_LiuX
 header-img: img/wallpic02.jpg
@@ -35,7 +35,6 @@ $ command [argvs...] > 文件、设备、或文件描述符
   显然应该得到一个执行成功的结果（stdout）和一个执行不成功的结果（stderr），又由于 stdout 和 stderr 都是屏幕，于是在屏幕上有：    
   ```bash     
   ls: cannot access 'feed': No such file or directory # stderr     
-        
   feed.xml # stdout      
   ```    
 
@@ -64,5 +63,34 @@ $ command [argvs...] > 文件、设备、或文件描述符
 ```bash     
 $ command [argv... with stdout/stderr] >example.log 2>&1  
 ```     
-这一行命令里 `>&` 是一个整体，倒过来写 `&>` 的意思也一样，后面接文件描述符的编号；其实这样看来 `&` 的意思更像是一个转义符号。比如 `>&1` 就是重定向到文件描述符为 1 的标准输出 `stdout` ，`>&2` 就是重定向到标准错误 `stderr`；相对地，如果缺少了 `&` ，比如 `>1` ，则代表重定向到
-   
+意思是将标准错误和标准输出都重定向到 `example.log` 这个文件，但是它和 `1>example.log 2>example.log`还不一样。    
+具体而言，这一行命令里 `>&` 是一个整体，倒过来写 `&>` 的意思也一样，后面接文件描述符的编号；其实这样看来 `&` 的意思更像是一个转义符号。比如 `>&1` 就是重定向到文件描述符为 1 的标准输出 `stdout` ，`>&2` 就是重定向到标准错误 `stderr`；相对地，如果缺少了 `&` ，比如 `>1` ，则代表重定向到当前路径下文件名为 1 的常规文件。     
+* **顺序问题**        
+  `2>&1` 指令是有顺序要求的，具体而言，对于以下两行指令中的顺序：      
+  ```bash     
+  $ ls feed.xml feed >examples.log 2>&1      
+  $ ls feed.xml feed 2>&1 >examples.log      
+  ```     
+  第一行的意思是，先将标准输出 `stdout` 重定向到文件 examples.log，此时文件 examples.log 就是程序的标准输出。随后将标准错误 `stderr` 重定向到标准输出 `stdout`，也就是文件 examples.log 。      
+  第二行的意思是，先将标准错误 `stderr` 重定向到标准输出 `stdout`，此时会产生一个 `stdout` 的拷贝作为 `stderr` 接受标准错误信息，但程序原本的标准输出仍然在铆定在原本的 `/dev/stdout` 没有改变， （**此处，比较难理解，多读两遍**），因此第二步的标准输出重定向依然只是将程序原本的标准输出信息重定向到文件 examples.log，却不影响原本的标准错误，也就是 stdout 的拷贝。 
+
+## 管道操作符与多命令执行     
+
+管道操作符（|）可以用来执行多命令，多条指令的执行不一定依赖于管道操作符。列举如下表：     
+|操作符|格式|作用|
+|:---:|:---:|:---:|    
+|;|cmd1;cmd2|多条命令顺序执行，之间没有逻辑关系|     
+|&&|cmd1&&cmd2|逻辑与，前一个命令成功执行后再执行下一个命令|
+|\|\||cmd1\|\|cmd2|逻辑或，前一个指令执行失败后执行下一命令|
+|\||cmd1\|cmd2| 管道，前一个命令的标准输出 `stdout` 作为下一命令的输入|     
+
+管道命令要求比较严格：    
+一是管道左侧命令一定且只能要产生标准输出 `stdout`；     
+二是管道右侧命令一定要能接受标准输入流 `stdin`。    
+管道操作符的右侧命令常常是 `grep` ，用于对左侧的标准输出进行筛选。比如常用的进程查找：    
+```bash     
+$ ps -ef | grep keyword         
+```     
+`ps -ef` 的标准输出是全格式的所有进程，管道右侧紧跟 `grep keyword` 将管道左侧的标准输出中带有关键词 keyword 的项筛选出来。     
+
+关于 `ps -ef` 命令见博客[一些常用的有用的linux命令](https://www.ouc-liux.cn/2021/05/07/Series-Article-of-UbuntuOS-04/) ； 关于 `grep` 命令见博客 [grep 文本搜索和 sed 文本替换](https://www.ouc-liux.cn/2021/07/21/Series-Article-of-UbuntuOS-09/)
