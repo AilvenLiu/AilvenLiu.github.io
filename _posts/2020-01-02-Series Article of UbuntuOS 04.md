@@ -119,3 +119,18 @@ ps -ef | grep keywork
 其中 管道操作符和文本查找工具分别可见博客 [一些常用的有用的linux命令](https://www.ouc-liux.cn/2021/05/07/Series-Article-of-UbuntuOS-04/) 和 [grep 文本搜索和 sed 文本替换](https://www.ouc-liux.cn/2021/07/21/Series-Article-of-UbuntuOS-09/)。     
 关于 `ps -ef`：     
 `ps` 是 linux 中非常强大的进程查看工具，其中 `-e` 为显示所有进程， `-f` 为全格式显示。    
+
+## cd - 在两个常用路径之间切换
+
+需要在两个不同路径之间频繁来回切换的时候，可以通过 `cd -` 省去输入路径的麻烦。    
+
+## mkdir -p 建立多级路径      
+
+需要建立多级目录的时候，可以      
+```shell     
+$ mkdir path1 && cd path1 && mkdir path2 && cd path2 && ...
+```      
+这样做，但毕竟比较麻烦。于是可以使用参数 `-p`：     
+```shell    
+$ mkdir -p path1/path2/path3/....
+```     
