@@ -69,9 +69,9 @@ grep 最大的特性是接受正则表达。下面依照《Linux Shell 脚步攻
     next line.    
     ```    
 
-8. 使用 `-c` 参数统计包含匹配字符串的行数（不是次数）：    
+8. 使用 `-c` 参数统计包含匹配字符串的行数（**不是次数**）：    
     ```shell     
-    $ echo -e "pattern1, pattern2\npatern03\nptern" | grep -c "pattern"
+    $ echo -e "pattern1, pattern2\npaern03\nptern" | grep -c "pattern"
     1
     ```    
-    显然由于只有第一行包含了两个"pattern"，于是输出为 1 。
+    显然由于只有第一行包含了两个"pattern"，于是输出为 1 。       
