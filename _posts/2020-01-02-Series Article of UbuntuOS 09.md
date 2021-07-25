@@ -75,3 +75,28 @@ grep 最大的特性是接受正则表达。下面依照《Linux Shell 脚步攻
     1
     ```    
     显然由于只有第一行包含了两个"pattern"，于是输出为 1 。       
+
+9. 使用 `wc` 命令统计匹配字符串出现的**次数**：     
+    `wc` 命令的使用见 [一些常用的有用的linux命令 ](https://www.ouc-liux.cn/2021/05/07/Series-Article-of-UbuntuOS-04/#wc-%E5%91%BD%E4%BB%A4%E7%BB%9F%E8%AE%A1%E6%96%87%E4%BB%B6%E5%AD%97%E6%95%B0%E8%A1%8C%E6%95%B0%E5%AD%97%E8%8A%82%E6%95%B0)。    
+    具体思路是使用 `-o` 参数将匹配到的字符串逐行打印为标准输出，并通过管道作为标准输入送如 `wc` 命令的执行序列：      
+    ```shell    
+    $ echo -e "1, 2. 3\n4,5\n6\n78" | grep -o -E "[0-9]" | wc -l    
+    8
+    ```     
+
+10. 使用 `-n` 参数打印包含匹配字符串的行号：     
+    ```shell    
+    $ echo -e "line1\nline2\nline_3\nline_4" | grep -n _     
+    3:line_3     
+    4:line_4
+    ```    
+
+11. 使用 `-l` 参数寻找匹配文本位于哪一个文件：     
+    ```shell    
+    $ grep -l string sed_test1.txt grep_test*     
+    sed_test1.txt     
+    $ grep -l pattern sed_test1.txt grep_test*     
+    grep_test1.txt     
+    grep_test2.txt
+    ```    
+
