@@ -169,4 +169,12 @@ $ echo -e "1,2,3\n4,5\n6"
 1,2,3
 4,5
 6
-```
+```    
+
+## 使用 somethind{a, b} 实现更便捷的 cp   
+
+已知 some{string1, string2, string3} 会扩展成 somestring1 somestring2 somestring3 （没有逗号，是空格），于是拷贝一份仅改变后缀名的文件作为备份则如：    
+```shell      
+$ cp filename.{py, bak}
+```      
+

@@ -57,26 +57,34 @@ grep 最大的特性是接受正则表达。下面依照《Linux Shell 脚步攻
     ```    
     匹配 filename 中的任意单词。尝试了几个案例，正则表达式不在双引号之内似乎不行。    
 
-6. 使用 `-o` 参数只打印文件匹配到的文本部分：     
+6. 使用 `-e` 参数匹配多个模式：     
+    跟上一个一定分清楚，参数大小写敏感：      
+    ```shell     
+    $ echo "this is a line of text" | grep -e line -e text -o    
+    line    
+    text
+    ```
+
+7. 使用 `-o` 参数只打印文件匹配到的文本部分：     
     ```shell     
     $ echo this is a line. | grep -o -E "[a-z]+\."
     line.    
     ```
 
-7. 使用 `-v` 参数打印匹配行之外的所有行：   
+8. 使用 `-v` 参数打印匹配行之外的所有行：   
     ```shell   
     $ echo -e "this is a word.\nnext line." | grep -v "word"     
     next line.    
     ```    
 
-8. 使用 `-c` 参数统计包含匹配字符串的行数（**不是次数**）：    
+9. 使用 `-c` 参数统计包含匹配字符串的行数（**不是次数**）：    
     ```shell     
     $ echo -e "pattern1, pattern2\npaern03\nptern" | grep -c "pattern"
     1
     ```    
     显然由于只有第一行包含了两个"pattern"，于是输出为 1 。       
 
-9. 使用 `wc` 命令统计匹配字符串出现的**次数**：     
+10. 使用 `wc` 命令统计匹配字符串出现的**次数**：     
     `wc` 命令的使用见 [一些常用的有用的linux命令 ](https://www.ouc-liux.cn/2021/05/07/Series-Article-of-UbuntuOS-04/#wc-%E5%91%BD%E4%BB%A4%E7%BB%9F%E8%AE%A1%E6%96%87%E4%BB%B6%E5%AD%97%E6%95%B0%E8%A1%8C%E6%95%B0%E5%AD%97%E8%8A%82%E6%95%B0)。    
     具体思路是使用 `-o` 参数将匹配到的字符串逐行打印为标准输出，并通过管道作为标准输入送如 `wc` 命令的执行序列：      
     ```shell    
@@ -84,19 +92,45 @@ grep 最大的特性是接受正则表达。下面依照《Linux Shell 脚步攻
     8
     ```     
 
-10. 使用 `-n` 参数打印包含匹配字符串的行号：     
+11. 使用 `-n` 参数打印包含匹配字符串的行号：     
     ```shell    
     $ echo -e "line1\nline2\nline_3\nline_4" | grep -n _     
     3:line_3     
     4:line_4
     ```    
 
-11. 使用 `-l` 参数寻找匹配文本位于哪一个文件：     
+12. 使用 `-l` 参数寻找匹配文本位于哪一个文件：     
     ```shell    
     $ grep -l string sed_test1.txt grep_test*     
     sed_test1.txt     
     $ grep -l pattern sed_test1.txt grep_test*     
     grep_test1.txt     
-    grep_test2.txt
+    grep_test2.txt  
     ```    
+13. 使用 `-i` 参数进行大小写不敏感搜索：     
+    grep 默认大小写敏感，可以使用 `-i` 参数忽略大小写：     
+    ```shell       
+    $ echo "HellO WoRlD" | grep "hello world"    
+    ( print nothing )     
+    $ echo "HellO WoRlD" | gerp -i "hello world"    
+    HellO WoRlD
+    ```    
+ 
+###  进阶用法     
+
+1. 使用 `-R/-r` 参数在多级路进行径递归搜索。
+    根据路径包含内容的多少，耗时长短不一。如果路径下文件及文本量过大，时耗可能非常长。比如在 `./yolov5` 路径下搜索字符串 "train("：    
+    ```shell    
+    $ time grep -r -n "train(" ./yolov5/    
+    ./yolov5/train.py:38:def train(hyp, opt, device, tb_writer=None, wandb=None):     
+    ./yolov5/train.py:223:        model.train()     
+    ./yolov5/train.py:482:        train(hyp, opt, device, tb_writer, wandb)     
+    ./yolov5/train.py:556:            results = train(hyp.copy(), opt, device)      
+    ./yolov5/models/yolo.py:273:    model.train()    
+    
+    real    10m39.265s     
+    user    0m44.356s     
+    sys     0m17.693s    
+    ```    
+
 
