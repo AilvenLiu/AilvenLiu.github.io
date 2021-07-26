@@ -117,20 +117,62 @@ grep 最大的特性是接受正则表达。下面依照《Linux Shell 脚步攻
     ```    
  
 ###  进阶用法     
+使用 `-R/-r` 参数在多级路进行径递归搜索。   
+根据路径包含内容的多少，耗时长短不一。如果路径下文件及文本量过大，时耗可能非常长。比如在 `./yolov5` 路径下搜索字符串 "train("：    
+```shell    
+$ time grep -r -n "train(" ./yolov5/    
+./yolov5/train.py:38:def train(hyp, opt, device, tb_writer=None, wandb=None):     
+./yolov5/train.py:223:          model.train()     
+./yolov5/train.py:482:          train(hyp, opt, device, tb_writer, wandb)     
+./yolov5/train.py:556:          results = train(hyp.copy(), opt, device)      
+./yolov5/models/yolo.py:273:    model.train()    
 
-1. 使用 `-R/-r` 参数在多级路进行径递归搜索。
-    根据路径包含内容的多少，耗时长短不一。如果路径下文件及文本量过大，时耗可能非常长。比如在 `./yolov5` 路径下搜索字符串 "train("：    
-    ```shell    
-    $ time grep -r -n "train(" ./yolov5/    
-    ./yolov5/train.py:38:def train(hyp, opt, device, tb_writer=None, wandb=None):     
-    ./yolov5/train.py:223:        model.train()     
-    ./yolov5/train.py:482:        train(hyp, opt, device, tb_writer, wandb)     
-    ./yolov5/train.py:556:            results = train(hyp.copy(), opt, device)      
-    ./yolov5/models/yolo.py:273:    model.train()    
-    
-    real    10m39.265s     
-    user    0m44.356s     
-    sys     0m17.693s    
-    ```    
+real    10m39.265s     
+user    0m44.356s     
+sys     0m17.693s    
+```    
 
+## 使用 sed 进行文本替换      
 
+sed 是流编辑器（stream editor） 的缩写，我看来这个东西最大的优势就是允许正则表达。使用sed 进行文本替换非常方便高效。     
+
+### 替换文本或来自标准输入的字符串。     
+```shell
+$ cat sed_test1.txt       
+replace_stringed      
+edreplace_string      
+replace_string      
+edreplace_stringed     
+$ 
+$ sed "s/string/str/" sed_test1.txt     
+replace_stred    
+edreplace_str    
+replace_str     
+edreplace_stred    
+$ echo "patterntest" | sed "s/pattern/replace_string/"    
+replace_stringtest
+```      
+需要注意，默认情况下 sed 只会将替换后的文本打印到标准输出流而不会保存。
+
+### 替换并保存       
+使用 `-i` 参数在替换的同时保存文件。
+```shell       
+$ sed -i "s/string/str/" sed_test1.txt     
+$ cat sed_test1.txt    
+replace_stred   
+edreplace_str   
+replace_str   
+edreplace_stred    
+```
+`-i` 参数应当是将原本打印到屏幕上的标准输出重定向到文件，于是一定要从文件中读取内容，否则会报错：   
+```shell     
+$ echo "patterntest" | sed -i "s/pattern/replace_string/"
+sed: no input files
+```    
+
+### 全部替换与部分替换     
+上面两部分的例子实际上是寻找并替换每行第一个被匹配的模式，如果要替换全部内容，需要在命令尾部添加参数 `g`：    
+```shell    
+$ sed "s/pattern/repace_string/g" file
+```    
+改后缀意味着对每行每一处进行替换。如果要求
