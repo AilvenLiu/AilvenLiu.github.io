@@ -29,4 +29,12 @@ tags:
    ```    
    启动软件，当然将软件加到 dock 上最好了。界面如下：   
    <div align=center><img src="https://raw.githubusercontent.com/OUCliuxiang/OUCliuxiang.github.io/master/img/raspi/raspi01.png"></div>    
+   然后选择 sd 卡， 选择镜像。
+   <div align=center><img src="https://raw.githubusercontent.com/OUCliuxiang/OUCliuxiang.github.io/master/img/raspi/raspi02.png"></div>
+   <div align=center><img src="https://raw.githubusercontent.com/OUCliuxiang/OUCliuxiang.github.io/master/img/raspi/raspi03.png"></div>    
+
+   镜像一定要从 `Use custom` 这一项中，选择下载好的镜像，如果选择 第一项 Raspberry Pi OS (32-bit) 这一项，会重新从网络下载，但下载源不在大陆，在墙外面，下载过程很费时间的。    
+   点击 Write，输入 sudo 密码即可。大概等待十几分钟吧。    
+
    
+
