@@ -175,4 +175,21 @@ sed: no input files
 ```shell    
 $ sed "s/pattern/repace_string/g" file
 ```    
-改后缀意味着对每行每一处进行替换。如果要求
+该后缀意味着对每行每一处进行替换。如果要求从第 N 项开始进行替换，则应使用 `Ng` 参数：      
+```shell    
+$ echo thisthisthisthis | sed "s/this/THIS/"
+THISthisthisthis    
+$ echo thisthisthisthis | sed "s/this/THIS/g"
+THISTHISTHISTHIS    
+$ echo thisthisthisthis | sed "s/this/THIS/2g"
+thisTHISTHISTHIS    
+$ echo thisthisthisthis | sed "s/this/THIS/4g"
+thisthisthisTHIS    
+```       
+
+### 移除行     
+`/pattern/d` 可以移除包含匹配模式的行。比如当我们知道空白行中行尾标记 `$` 紧跟着行首标记 `^` ，就下面一行命令删除文本中的空行：    
+```shell    
+$ sed "/$^/d" file     
+```    
+
