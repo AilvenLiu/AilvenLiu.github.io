@@ -187,6 +187,26 @@ $ echo thisthisthisthis | sed "s/this/THIS/4g"
 thisthisthisTHIS    
 ```       
 
+### 指定行替换    
+
+事实上，"s/pattern/replace_string/" 这种用法是全文执行操作，更直观一点解释如：   
+```shell     
+$ echo -e "this1his\nthis2this\nthis3this\nthis4this" | sed "s/this/THIS/"
+THIS1his
+THIS2this
+THIS3this
+THIS4this
+```      
+如果要指定执行替换操作的行，在 `s` 前添加行范围数值：    
+```shell     
+$ echo -e "this1his\nthis2this\nthis3this\nthis4this" | sed "2,4s/this/THIS/"
+this1his
+THIS2this
+THIS3this
+THIS4this
+```      
+该指令的意思既是制定执行范围为第 2 到 4 行。     
+
 ### 移除行     
 `/pattern/d` 可以移除包含匹配模式的行。比如当我们知道空白行中行尾标记 `$` 紧跟着行首标记 `^` ，就下面一行命令删除文本中的空行：    
 ```shell    
