@@ -2,7 +2,7 @@
 layout:     post
 title:      Life Recording -- 02 
 subtitle:   Firefox 的国际板和国内版     
-date:       2020-07-28
+date:       2021-07-28
 author:     OUC_LiuX
 header-img: img/wallpic02.jpg
 catalog: true
