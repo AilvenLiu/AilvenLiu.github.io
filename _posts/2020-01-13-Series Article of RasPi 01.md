@@ -84,7 +84,24 @@ deb http://mirrors.tuna.tsinghua.edu.cn/raspberrypi/ buster main ui
 ```shell    
 sudo apt-get update
 ```
-更新源   
+更新源。   
+
+
+## 修改默认 python 路径    
+树莓派4B 默认安装了 Python2 以及 Python3 。首先查看默认 Python 版本：      
+`python --version`     
+查看安装的python路径:      
+`whereis python`       
+查看python默认链接的路径:      
+`which python`     
+删除原来python链接文件:    
+`sudo rm /usr/bin/python`      
+建立新的python链接指向:     
+`sudo ln -s /usr/bin/python3.7 /usr/bin/python`      
+把路径/usr/bin加入环境变量中:     
+`PATH=/usr/bin:$PATH`      
+重新打开 terminal 或 `source ~/.bashrc` 查看python版本。     
+
 
 ## 超频升压    
 
@@ -103,4 +120,5 @@ over_voltage=6
 意思既是将最大频率提升到2.0 GHz，将最高电压提升 6*0.025 伏特。     
 
 `force_turbo` 这一项如果置 1，虽然允许进一步提升电压，但会改变芯片中的保险结构。既有可能导致板子损坏。    
+
 
