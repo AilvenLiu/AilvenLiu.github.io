@@ -1,6 +1,6 @@
 ---
 layout:     post
-title:      Series Article of RasPi -- 01
+title:      Series Article of RasPi -- 02
 subtitle:   树莓派使用实录02 -- NCS2神经计算棒配置              
 date:       2021-07-28
 author:     OUC_LiuX
