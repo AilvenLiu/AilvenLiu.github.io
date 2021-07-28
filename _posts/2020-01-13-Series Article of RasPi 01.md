@@ -34,8 +34,8 @@ tags:
    <div align=center><img src="https://raw.githubusercontent.com/OUCliuxiang/OUCliuxiang.github.io/master/img/raspi/raspi03.png"></div>    
 
    镜像一定要从 `Use custom` 这一项中，选择下载好的镜像，如果选择 第一项 Raspberry Pi OS (32-bit) 这一项，会重新从网络下载，但下载源不在大陆，在墙外面，下载过程很费时间的。    
-   点击 Write，输入 sudo 密码即可。大概等待十几分钟吧。    
+   点击 Write，输入 sudo 密码即可。大概等待十几分钟吧。
 
 
 ## 无屏幕配置wifi 和 ssh 
-自身     
+资深 linux 用户不习惯使用桌面，于是此处介绍如何在无桌面的情况下配置 wifi 和 ssh 远程连接。     
