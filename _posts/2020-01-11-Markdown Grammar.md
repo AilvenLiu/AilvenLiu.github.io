@@ -99,3 +99,15 @@ github博客默认markdown页面不支持渲染数学公式，需要再每篇文
 使用html语言的优势是可以主动指定图片位置和尺寸信息，比如将`center`换成`right`即可指定图像右对齐。尺寸信息可以通过`width(height)=xxx`指定，其中xxx可以是数字，也即像素，也可以是百分数，意思是缩放百分比。通常缺省只写一个，这样会按照原比例缩放。    
 github博客中图像仓库是`raw.githubusercontent.com/`，也即src中需要图像在github中存放地址的`github.com/`换成`raw.githubusercontent.com/`。      
 
+
+
+**上下左右箭头**     
+
+很少用，通常用于代指方向键：      
+$\uparrow$： 数学表达式单 \$ 内部使用语法：  `\uparraw`；     
+
+$\downarrow$： 数学表达式单 \$ 内部使用语法：  `\downarraw`；      
+
+$\leftarrow$： 数学表达式单 \$ 内部使用语法：  `\leftarraw`；       
+
+$\rightarrow$： 数学表达式单 \$ 内部使用语法：  `\rightarraw`。      
