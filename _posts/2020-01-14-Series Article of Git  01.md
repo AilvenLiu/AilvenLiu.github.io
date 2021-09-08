@@ -1,7 +1,7 @@
 ---
 layout:     post
 title:      Series Article of Git -- 01
-subtitle:   Support for password authentication was removed on ...  以及免密配置        
+subtitle:   Support for password authentication was removed on ... 以及免密配置        
 date:       2021-09-08
 author:     OUC_LiuX
 header-img: img/wallpic02.jpg
@@ -54,4 +54,45 @@ $ Password for 'https://github.com' : give your personal access token here
 ```    
 
 
-实际上就是在验证过程中用 PAT 代替了密码
+实际上就是在验证过程中用 PAT 代替了密码，如果继续使用 PAT 验证，反而更麻烦。于是建议使用 ssh 免密登录：     
+
+**生成公钥**        
+Ubuntu 下       
+```bash     
+$ ls -al ~/.ssh
+```      
+如果之前配置过免密，会列出：
+
+     id_rsa (私钥)——这个不能泄露
+
+     id_rsa.pub（公钥）
+如果已经长时间不用，建议删掉重新搞。    
+如果没有配过，那么就进入第二步：      
+
+```bash     
+$ ssh-keygen -t rsa -b 4096 -C "email_name@email.com"
+```     
+接着会提示这个公钥私钥的保存路径-建议直接回车就好（默认目录里）。      
+接着提示输入私钥密码passphrase， 如果不想使用私钥登录的话，私钥密码为空，直接回车。    
+生成成功后，把  id_rsa.pub 拷贝到 github  新建的 SSH keys 中。内容格式形如：     
+"git-rsa xxx...xxx your@email.address"      
+
+<div align=center><img src="https://raw.githubusercontent.com/OUCliuxiang/OUCliuxiang.github.io/master/img/git/git01.png"></div>        
+
+配置好后，需要git操作的项目得使用 SSH clone：      
+<div align=center><img src="https://raw.githubusercontent.com/OUCliuxiang/OUCliuxiang.github.io/master/img/git/git02.png"></div>        
+
+如果项目已经在本地，且地址为 http 形式，需要更新其 url 地址，方法有三种：     
+1. 命令修改      
+   ```bash      
+   git remote origin set-url [url]     
+   ```      
+2. 先删后加      
+   ```bash           
+   git remote rm origin     
+   git remote add origin [url]      
+   ```      
+3. 直接修改config文件 （实测，可行）
+   项目路径下进入 `.git` 子路径，找到 `config` 文件。    
+   编辑该配置文件，把原 `url` 项的 https 地址替换成新的 ssh 即可。    
+之后可免密码 git push/pull。
