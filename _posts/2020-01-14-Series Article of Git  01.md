@@ -1,51 +1,57 @@
 ---
 layout:     post
-title:      Series Article of RasPi -- 02
-subtitle:   树莓派使用实录02 -- NCS2神经计算棒配置              
-date:       2021-07-28
+title:      Series Article of Git -- 01
+subtitle:   Support for password authentication was removed on ...  以及免密配置        
+date:       2021-09-08
 author:     OUC_LiuX
 header-img: img/wallpic02.jpg
 catalog: true
 tags:
-    - RasPi   
+    - Git     
+    - Github   
 ---     
 
-依照 OpenVino 官网关于 [OpenVino for Raspbian OS](https://docs.openvinotoolkit.org/latest/openvino_docs_install_guides_installing_openvino_raspbian.html) 的文档进行安装配置。    
+一个多月没更新博客，今天（8thSep2021）再次更新的时候，使用 `git push` 提交报错：     
+```    
+remote: Support for password authentication was removed on August 13, 2021. Please use a personal access token instead.       
+remote: Please see https://github.blog/2020-12-15-token-authentication-requirements-for-git-operations/ for more information.
+```      
+这是因为自2021年8月13号开始，github的接入规则发生了变化。解决方案转载自 [stackoverflow](https://stackoverflow.com/questions/68775869/support-for-password-authentication-was-removed-please-use-a-personal-access-to)：      
 
-### 准备工作    
-在[官方仓库](https://storage.openvinotoolkit.org/repositories/openvino/packages/)下载工具包，用于 raspberryPI 的工具包是这种形式：    
-l_openvino_toolkit_runtime_raspbian_p_\<version\>.tgz       
+From August 13, 2021, GitHub is no longer accepting account passwords when authenticating Git operations. You need to add a PAT (Personal Access Token) instead, and you can follow the below method to add a PAT on your system.      
 
-进入树莓派系统，解压缩工具压缩包并安装 cmake ：    
-```shell
-$ tar -xf l_openvino_toolkit_runtime_raspbian_p_<version>.tgz    
-$ sudo apt-get install cmake      
+## Create Personal Access Token on GitHub     
+From your GitHub account, go to      
+**Settings => Developer Settings => Personal Access Token => Generate New Token (Give your password) => Fillup the form => click Generate token => Copy the generated Token**,      
+
+it will be something like ghp_sFhFsSHhTzMDreGRLjmks4Tzuzgthdvfsrta     
+Mine is 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      
+
+
+
+## Add PAT    
+
+### For WinOS     
+Go to Credential Manager from Control Panel => Windows Credentials => find git:https://github.com => Edit => On Password replace with with your GitHub Personal Access Token => You are Done.     
+
+If you don’t find git:https://github.com => Click on Add a generic credential => Internet address will be git:https://github.com and you need to type in your username and password will be your GitHub Personal Access Token => Click Ok and you are done.      
+
+### For Linux-based OS     
+
+For Linux, you need to configure the local GIT client with a username and email address.      
+```bash     
+$ git config --global user.name "your_github_username"      
+$ git config --global user.email "your_github_email"     
+$ git config -l     
 ```     
+Once GIT is configured, we can begin using it to access GitHub. Example:      
 
-### 配置环境路径并配置 usb 规则     
-执行以下命令，自动对 `setupvars.sh` 文件做修改并运行：     
-```shell   
-$ sed -i "s|<INSTALLDIR>|$(pwd)/l_openvino_toolkit_runtime_raspbian_p_2019.3.334|"       
-l_openvino_toolkit_runtime_raspbian_p_2019.3.334/bin/setupvars.sh     
-```
-
-编辑 `~/.bashrc`，在最后一行加入下方内容并执行 `source ~/.bashrc` 或重启 terminal 将 setupvars.sh 加入永久配置环境：     
-```
-source /home/pi/Downloads/l_openvino_toolkit_runtime_raspbian_p_2019.3.334/bin/setupvars.sh
-```        
-
-成功配置的标志是新打开的 terminal 会自动打印出以下内容：     
-```    
-[setupvars.sh] OpenVINO environment initialized
-```    
-
-使用以下命令将当前的 Linux 用户添加到该 users 组：     
-```shell     
-$ sudo usermod -a -G users "$(whoami)"     
-```    
-执行以下命令配置 usb 规则：     
-```shell     
-$ sh l_openvino_toolkit_runtime_raspbian_p_2019.3.334/install_dependencies/install_NCS_udev_rules.sh
+```bash     
+$ git clone https://github.com/YOUR-USERNAME/YOUR-REPOSITORY       
+> Cloning into `Spoon-Knife`...      
+$ Username for 'https://github.com' : username     
+$ Password for 'https://github.com' : give your personal access token here     
 ```    
 
 
+实际上就是在验证过程中用 PAT 代替了密码
