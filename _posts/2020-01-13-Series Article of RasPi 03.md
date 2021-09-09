@@ -121,6 +121,271 @@ return x if self.training else torch.cat(z, 1)
 
 ### onnx --> openvino     
 OpenVino 的模型文件叫IR，实际上分为三个文件：`weights.bin`, `weights.mapping`, `weights.xml`，应该是 bin 文件存储了权重， xml 文件存储了模型图，mapping 就不知道了，似乎也没用到。      
-win + visual studio 安装 OpenVino 的话，需要装一个 cmake。装吧，早晚用得到的。以及需要 visual studio 2019 版本。其余的，按照 OpenVino 官网关于 win 安装的[教程](https://docs.openvinotoolkit.org/latest/openvino_docs_install_guides_installing_openvino_windows.html)来就好了。如果出现问题，再看一遍教程，要仔细看。      
+win + visual studio 安装 OpenVino 的话，需要装一个 cmake。装吧，早晚用得到的。需要 visual studio 2019 版本。OpenVino 版本简易且强烈建议同 Raspi 上的版本保持一致。其余的，按照 OpenVino 官网关于 win 安装的[教程](https://docs.openvinotoolkit.org/latest/openvino_docs_install_guides_installing_openvino_windows.html)来就好了。如果出现问题，再看一遍教程，要仔细看。      
 安装好，就可以转换模型了。      
-将 onnx 模型
+
+1. 将 onnx 模型 copy 到 win 机器上。      
+2. 打开 cmd ，如果在 conda 环境中安装的 OpenVino，进入到相应 conda 环境；如果裸奔，此一步可略过。     
+3. 启动环境。进入到 `path/of/IntelSWTools/openvino` 路径，执行命令：     
+   ```cmd     
+   > bin\\setupvars.bat     
+   ```    
+   于是 openvino 安装成功切环境成功启动成功的标志是 cmd 打印出：     
+   ```cmd     
+   Python <version>       
+   [setupvars.bat] OpenVINO environment initialized       
+   ```      
+   这里的子路径 `openvino` 实际上是同级自路径 `openvino_<version>` 的软连接，所以进入这两个自路径是等效的。      
+4. 安装依赖。从上一步继续进入到 `deployment_tools/model_optimize/` 自路径    
+   ```cmd     
+   > pip install -r requirements_onnx.txt      
+   ```     
+   以上三步一般不会出问题。如果出问题，google 解决吧，我没出，也不知道会遇到什么问题。     
+5. 模型转化。保持上一步的路径不变，执行代码：      
+   ```cmd      
+   > python mo.py --input_model path/to/weights.onnx --output_dir path/to/output/ --input_shape [1,3,shape,shape] --data_type FP16     
+   ```     
+   建议就半精度 FP16，尝试 INT8 的时候好像是报错还是最终结果起飞，反正试过，没用。    
+   转换成功会给信息，且 `path/to/output` 路径下会出现 `weights.bin`, `weights.mapping`, `weights.xml` 三个文件。     
+
+
+## 模型测试      
+
+以下是在 RasPi + NCS2 上实际部署时的代码，runnable。     
+```python    
+from __future__ import print_function
+
+import logging as log
+import os
+# os.system("/home/pi/Downloads/l_openvino_toolkit_runtime_raspbian_p_2020.4.287/bin/setupvars.sh")
+import time
+# time.sleep(20)
+
+import pathlib
+import json
+import cv2
+import numpy as np
+from openvino.inference_engine import IENetwork, IECore
+import torch
+import torchvision
+import os
+import serial
+import math
+import shutil
+
+font = cv2.FONT_HERSHEY_SIMPLEX
+
+
+def xywh2xyxy(x):
+    """
+    processing with numpy-ndarray is required, for segmentation 
+    fault will be caused when using torch tensor.
+    """
+    # Convert nx4 boxes from [x, y, w, h] to [x1, y1, x2, y2] where xy1=top-left, xy2=bottom-right
+    # y = torch.zeros_like(x) if isinstance(
+    #     x, torch.Tensor) else np.zeros_like(x)
+    x=x.numpy()
+    y=np.zeros_like(x)
+    y[:, 0] = x[:, 0] - x[:, 2] / 2.  # top left x
+    y[:, 1] = x[:, 1] - x[:, 3] / 2.  # top left y
+    y[:, 2] = x[:, 0] + x[:, 2] / 2.  # bottom right x
+    y[:, 3] = x[:, 1] + x[:, 3] / 2.  # bottom right y
+    return torch.from_numpy(y)
+
+
+def non_max_suppression(prediction, conf_thres=0.1, iou_thres=0.6, \
+                        classes=None, agnostic=False):
+    """Performs Non-Maximum Suppression (NMS) on inference results
+
+    Returns:
+         detections with shape: nx6 (x1, y1, x2, y2, conf, cls)
+    """
+    prediction = torch.from_numpy(prediction)
+    # print(prediction.shape)
+    if prediction.dtype is torch.float16:
+        prediction = prediction.float()  # to FP32
+
+    nc = prediction[0].shape[1] - 5  # number of classes
+    xc = prediction[..., 4] > conf_thres  # candidates
+    # Settings
+    # (pixels) minimum and maximum box width and height
+    min_wh, max_wh = 2, 4096
+    max_det = 300  # maximum number of detections per image
+    time_limit = 10.0  # seconds to quit after
+    redundant = True  # require redundant detections
+    multi_label = nc > 1  # multiple labels per box (adds 0.5ms/img)
+
+    t = time.time()
+    output = [0] * prediction.shape[0]
+    for xi, x in enumerate(prediction):  # image index, image inference
+        # Apply constraints
+        # x[((x[..., 2:4] < min_wh) | (x[..., 2:4] > max_wh)).any(1), 4] = 0  # width-height
+        x = x[xc[xi]]  # confidence
+
+        # If none remain process next image
+        if not x.shape[0]:
+            continue
+
+        # Compute conf
+        x[:, 5:] *= x[:, 4:5]  # conf = obj_conf * cls_conf
+
+        # !!!!!!!!!!!!!!!!!
+        # !!! BUG BELOW !!!
+        # !!!!!!!!!!!!!!!!!
+        # Box (center x, center y, width, height) to (x1, y1, x2, y2)
+        box = xywh2xyxy(x[:, :4]) # torch tensor is forbidded
+        # Detections matrix nx6 (xyxy, conf, cls)
+        if multi_label:
+            i, j = (x[:, 5:] > conf_thres).nonzero(as_tuple=False).T
+            x = torch.cat((box[i], x[i, j + 5, None], j[:, None].float()), 1)
+        else:  # best class only
+            conf, j = x[:, 5:].max(1, keepdim=True)
+            x = torch.cat((box, conf, j.float()), 1)[
+                conf.view(-1) > conf_thres]
+
+        # Filter by class
+        if classes:
+            x = x[(x[:, 5:6] == torch.tensor(classes, device=x.device)).any(1)]
+
+        # Apply finite constraint
+        # if not torch.isfinite(x).all():
+        #     x = x[torch.isfinite(x).all(1)]
+
+        # If none remain process next image
+        n = x.shape[0]  # number of boxes
+        if not n:
+            continue
+
+        # Sort by confidence
+        x = x[x[:, 4].argsort(descending=True)]
+        
+        # Batched NMS
+        c = x[:, 5:6] * (0 if agnostic else max_wh)  # classes
+        # boxes (offset by class), scores
+        boxes, scores = x[:, :4] + c, x[:, 4]
+        i = torchvision.ops.boxes.nms(boxes, scores, iou_thres)
+        if i.shape[0] > max_det:  # limit detections
+            i = i[:max_det]
+
+        output[xi] = x[i]
+        if (time.time() - t) > time_limit:
+            break  # time limit exceeded
+
+    return output
+
+
+device = 'MYRIAD'
+# device = 'CPU'
+input_h, input_w, input_c, input_n = (192, 192, 3, 1)
+log.basicConfig(level=log.DEBUG)
+
+# For objection detection task, replace your target labels here.
+label_id_map = ["circle", 'square']
+exec_net = None
+
+
+def init(model_xml):
+    if not os.path.isfile(model_xml):
+        log.error(f'{model_xml} does not exist')
+        return None
+    model_bin = pathlib.Path(model_xml).with_suffix('.bin').as_posix()
+    net = IENetwork(model=model_xml, weights=model_bin)
+
+    ie = IECore()
+    global exec_net
+    exec_net = ie.load_network(network=net, device_name=device)
+    log.info('Device info:')
+    versions = ie.get_versions(device)
+    print("{}".format(device))
+    print("MKLDNNPlugin version ......... {}.{}".format(versions[device].major, versions[device].minor))
+    print("Build ........... {}".format(versions[device].build_number))
+
+    input_blob = next(iter(net.inputs))
+    n, c, h, w = net.inputs[input_blob].shape
+    global input_h, input_w, input_c, input_n
+    input_h, input_w, input_c, input_n = h, w, c, n
+
+    return net
+
+
+def process_image(net, input_image):
+    if not net or input_image is None:
+        log.error('Invalid input args')
+        return None
+    ih, iw, _ = input_image.shape
+
+    if ih != input_h or iw != input_w:
+        input_image = cv2.resize(input_image, (input_w, input_h))
+    input_image = cv2.cvtColor(input_image, cv2.COLOR_BGR2RGB)
+    input_image = input_image/255
+    input_image = input_image.transpose((2, 0, 1))
+    images = np.ndarray(shape=(input_n, input_c, input_h, input_w))
+    images[0] = input_image
+
+    input_blob = next(iter(net.inputs))
+    out_blob = next(iter(net.outputs))
+
+    start = time.time()
+    res = exec_net.infer(inputs={input_blob: images})
+    end = time.time()
+    log.info('inference time: {}ms'.format(int((end - start)*1000)))
+
+    data = res[out_blob]
+
+    data = non_max_suppression(data, 0.85, 0.2)
+    # log.info('nms finished')
+    # data = data[0]
+    # print(type(data[0]))
+    detect_objs = []
+    # log.info(data[0])
+    if type(data[0]) == int:
+        return 0
+    # if len(data) == 0:
+    #     return 0
+    else:
+        data = data[0].numpy()
+        for proposal in data:
+            if proposal[4] > 0:
+                xmin = np.int(iw * (proposal[0]/192))
+                ymin = np.int(ih * (proposal[1]/192))
+                xmax = np.int(iw * (proposal[2]/192))
+                ymax = np.int(ih * (proposal[3]/192))
+                confidence = proposal[4]
+                detect_objs.append({
+                    'xmin': int(xmin),
+                    'ymin': int(ymin),
+                    'xmax': int(xmax),
+                    'ymax': int(ymax),
+                    'confidence': float(confidence),
+                    'name': label_id_map[int(proposal[5])]
+                })
+
+        return detect_objs
+
+
+def plot_bboxes(image, bboxes, line_thickness=None):
+    # Plots one bounding box on image img
+    tl = line_thickness or round(
+        0.002 * (image.shape[0] + image.shape[1]) / 2) + 1  # line/font thickness
+    for box in bboxes:
+        x1,x2,y1,y2 = box['xmin'], box['xmax'], box['ymin'],box['ymax']
+        conf, name = box['confidence'], box['name']
+        if name == 'circle':
+            color = (0, 0, 255)
+        else:
+            color = (0, 255, 0)
+        c1, c2 = (x1, y1), (x2, y2)
+        cv2.rectangle(image, c1, c2, color, thickness=tl, lineType=cv2.LINE_AA)
+        tf = max(tl - 1, 1)  # font thickness
+        t_size = cv2.getTextSize(name, 0, fontScale=tl / 3, thickness=tf)[0]
+        c2 = c1[0] + t_size[0], c1[1] - t_size[1] - 3
+        cv2.rectangle(image, c1, c2, color, -1, cv2.LINE_AA)  # filled
+        cv2.putText(image, '{} conf-{}'.format(name, conf), (c1[0], c1[1] - 2), 0, tl / 3,
+                    [225, 255, 255], thickness=tf, lineType=cv2.LINE_AA)
+
+    return image
+
+
+if __name__ == '__main__':
+    main()
+```      
