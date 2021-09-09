@@ -93,8 +93,8 @@ return x if self.training else torch.cat(z, 1)
 
 1. 进入 torch1.5.1 环境；     
 2. 修改 `models/export.py`：     
-   ```python     
-   torch.onnx.export(model, img, f, verbose=False,       
+    ```python     
+    torch.onnx.export(model, img, f, verbose=False,       
         opset_version=11, input_names=['data'],      
         output_names=['prob']if y is None else ['output'])       
     ```       
@@ -106,5 +106,13 @@ return x if self.training else torch.cat(z, 1)
     中的布尔值改为 `False`。      
     [基于YoloV5的模型优化技术与使用OpenVINO推理实现](https://www.codenong.com/cs109702222/) 提出将 `torch.onnx.export` 中的 output_names 参数由 `['prob']if y is None else ['output']` 改为 `['classes', 'boxes'] if y is None else ['output']`。      
     以上，此外提出的两点修改自己没有执行，但似乎影响不大。如果 export 过程出现问题或感觉效果不好，可以试着修改。     
-    
+3. yolo 根目录下运行命令：     
+    ```bash       
+    $ export PYTHONPATH="$PWD"  python models/export.py --weights path/of/weights.pt --img image_shape --batch 1         
+    ```      
+4. 成功的标志是 terminal 打印出 
+   ```     
+   ONNX export success, saved as ./weights.onnx      
+   ```       
+   如果不成功，根据报错信息继续调整。       
 
