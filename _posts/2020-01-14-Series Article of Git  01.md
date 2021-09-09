@@ -11,11 +11,10 @@ tags:
     - Github   
 ---     
 
-一个多月没更新博客，今天（8thSep2021）再次更新的时候，使用 `git push` 提交报错：     
-```    
+一个多月没更新博客，今天（8thSep2021）再次更新的时候，使用 `git push` 提交报错：         
 remote: Support for password authentication was removed on August 13, 2021. Please use a personal access token instead.       
-remote: Please see https://github.blog/2020-12-15-token-authentication-requirements-for-git-operations/ for more information.
-```      
+remote: Please see https://github.blog/2020-12-15-token-authentication-requirements-for-git-operations/ for more information.     
+      
 这是因为自2021年8月13号开始，github的接入规则发生了变化。解决方案转载自 [stackoverflow](https://stackoverflow.com/questions/68775869/support-for-password-authentication-was-removed-please-use-a-personal-access-to)：      
 
 From August 13, 2021, GitHub is no longer accepting account passwords when authenticating Git operations. You need to add a PAT (Personal Access Token) instead, and you can follow the below method to add a PAT on your system.      
