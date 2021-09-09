@@ -110,9 +110,17 @@ return x if self.training else torch.cat(z, 1)
     ```bash       
     $ export PYTHONPATH="$PWD"  python models/export.py --weights path/of/weights.pt --img image_shape --batch 1         
     ```      
+    这里注意，执行 python 命令之前是否要加 `export PYTHONPATH="$PWD"` 语句临时指定python 路径，各个技术博客意见不一。我的实验结果是要加，不加会报错。具体细节并没有深究。      
+
 4. 成功的标志是 terminal 打印出 
    ```     
    ONNX export success, saved as ./weights.onnx      
    ```       
    如果不成功，根据报错信息继续调整。       
 
+
+### onnx --> openvino     
+OpenVino 的模型文件叫IR，实际上分为三个文件：`weights.bin`, `weights.mapping`, `weights.xml`，应该是 bin 文件存储了权重， xml 文件存储了模型图，mapping 就不知道了，似乎也没用到。      
+win + visual studio 安装 OpenVino 的话，需要装一个 cmake。装吧，早晚用得到的。以及需要 visual studio 2019 版本。其余的，按照 OpenVino 官网关于 win 安装的[教程](https://docs.openvinotoolkit.org/latest/openvino_docs_install_guides_installing_openvino_windows.html)来就好了。如果出现问题，再看一遍教程，要仔细看。      
+安装好，就可以转换模型了。      
+将 onnx 模型
