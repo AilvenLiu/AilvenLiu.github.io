@@ -24,9 +24,6 @@ From your GitHub account, go to
 **Settings => Developer Settings => Personal Access Token => Generate New Token (Give your password) => Fillup the form => click Generate token => Copy the generated Token**,      
 
 it will be something like ghp_sFhFsSHhTzMDreGRLjmks4Tzuzgthdvfsrta     
-Mine is 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      
-
-
 
 ## Add PAT    
 
@@ -62,9 +59,9 @@ $ ls -al ~/.ssh
 ```      
 如果之前配置过免密，会列出：
 
-     id_rsa (私钥)——这个不能泄露
+id_rsa （私钥）——这个不能泄露     
+id_rsa.pub（公钥）     
 
-     id_rsa.pub（公钥）
 如果已经长时间不用，建议删掉重新搞。    
 如果没有配过，那么就进入第二步：      
 

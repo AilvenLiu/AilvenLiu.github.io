@@ -24,7 +24,7 @@ tags:
 </head>   
 
 > u版yolov5有一个检测框定位转换函数，某些特殊情况下会抛出 senmentation fault 错误。
-> 经时隔三个月后的再次验证，bug 没有复现，怀疑该 bug 和pytorch 版本有关。   
+> 经时隔三个月后的再次验证，bug 没有复现，怀疑该 bug 和 pytorch 版本有关。   
 
 定位在 yolov5/utils/general.py 中的 `xyxy2xywh(x)` 和 `xywh2xyxy(x)` 两函数：    
 ```python     
