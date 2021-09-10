@@ -9,7 +9,7 @@ catalog: true
 tags:
     - RasPi   
     - pytorch    
-    - object detection    
+    - openvino   
 ---     
 
 > 这是按照2021年4月份实践经验整理出来的博客，由于 pytorch, yolov5, openvino 等版本的更新，现在可能已经不适用。但如果遇到问题，那问题形式应该也大差不差。        
