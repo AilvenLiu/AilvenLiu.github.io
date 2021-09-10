@@ -7,7 +7,8 @@ author:     OUC_LiuX
 header-img: img/wallpic02.jpg
 catalog: true
 tags:
-    - RasPi   
+    - RasPi    
+    - openvino     
 ---     
 
 依照 OpenVino 官网关于 [OpenVino for Raspbian OS](https://docs.openvinotoolkit.org/latest/openvino_docs_install_guides_installing_openvino_raspbian.html) 的文档进行安装配置。    
