@@ -84,5 +84,5 @@ if __name__ == "__main__":
 ## 进程池处理器ProcessPoolExecutor( int max_workers)    
 
 调用方法和ThreadPoolExecutor()一致，需要注意的有两点：    
-1. 调用过程一定要在`__name__=="__main__:"`内部。     
+1. 调用过程一定要在 `__name__=="__main__:"` 内部。     
 2. 对于CPU频繁的操作（方法、函数），ProcessPoolExecutor的效率更高。这是由于GIL锁的存在使得多个线程只能调用一个cpu，GIL锁此处不展开。
