@@ -28,5 +28,6 @@ E: Unable to acquire the dpkg frontend lock (/var/lib/dpkg/lock-frontend), is an
    ```bash      
    $ sudo rm /var/cache/apt/archives/lock      
    $ sudo rm /var/lib/dpkg/lock      
-   ```     
+   ```        
+
 实践证明，第二种方法有用。如果强制释放锁后仍然出现报错，但是查看进程发现并没有apt-get进程信息，重启吧，重启就行了。    
