@@ -36,7 +36,8 @@ sudo:unable to initialize policy plugin
 帖子 由 onlylove » 2021-04-24 16:53     
 那就用livecd启动机器，然后挂载硬盘改吧       
 
-#6     
+#6       
+帖子 由 OUC_LiuX » 2021-04-24 23:28     
 livecd进入系统挂载硬盘后      
 代码： 全选      
 ```bash    
