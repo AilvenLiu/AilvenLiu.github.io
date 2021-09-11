@@ -30,6 +30,7 @@ $ sudo userdel username
 **赋予/删除 sudo 权限：**       
 本质也就是是否加入 sudoer 组。编辑 `/etc/sudoers` 文件，在复制一行 `xxx ALL=() ALL` 内容，将 xxx 改为需要给予 sudo 的用户名即可。删除同理。     
 `/etc/sudoers` 文件需要 sudo 访问，且，务必不要改变他的权限，如果保存失败，使用 `wq!` 保存。      
+如果不小心改变了权限，sudo 将无法使用。解决方案可见 [修改/etc/sudoers权限导致无法使用sudo的问题]()
 
 **查看本系统所有用户：**       
 本系统所有赋予过密码的用户都保存在 `/etc/passwd` 文件中，则直接 cat 查看即可，一般最后几行 id 比较大的是用户创建的新用户。       
