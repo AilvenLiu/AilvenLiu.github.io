@@ -17,7 +17,7 @@ tags:
 ## 解决方案     
 
 进入 [UbuntuUpdates](https://www.ubuntuupdates.org/) 这个网站如下：    
-<div align=center><img src="https://raw.githubusercontent.com/OUCliuxiang/OUCliuxiang.github.io/master/img/ubuntuSeries/ubuntu003.png"></div>   
+<div align=center><img src="https://raw.githubusercontent.com/OUCliuxiang/OUCliuxiang.github.io/master/img/ubuntuSeries/ubuntu003.png"></div>     
 搜索下载 apt，libapt-pkg-dev，和 ubuntu-keyring 三个包，分别如下：      
 
 1. apt     
