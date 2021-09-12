@@ -10,7 +10,7 @@ tags:
     - python   
 ---
 
-> 转载自 cnblogs [python 修改文件内容3种方法](https://www.cnblogs.com/wc-chan/p/8085452.html)         
+> 转载自 cnblogs [python修改文件内容3种方法](https://www.cnblogs.com/wc-chan/p/8085452.html)         
 
 ## 修改原文件              
 ```python     
