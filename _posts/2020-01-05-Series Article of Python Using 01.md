@@ -172,3 +172,13 @@ None                          # zipped已空
 `zeros_like( array/tensor)` 函数 like 的不只有原 array/tensor 的 shape， type 也会 like。此处一定要注意。   
 如果需要一个特定数据元素构成的 array 或 tensor ，如 float 类型的 tensor: ft 转 int8 类型，应当使用 `ft = ft.to(torch.int8)` 类似语句加以指定和转换。     
 
+
+## open() 打开文件的读写追加三种模式       
+'r'： 读     
+'w'： 写     
+'a'： 追加      
+'r+' == r+w（可读可写，文件若不存在就报错(IOError)）      
+'w+' == w+r（可读可写，文件若不存在就创建）       
+'a+' == a+r（可追加可写，文件若不存在就创建）     
+对应的，如果是二进制文件，就都加一个b就好啦：       
+'rb'， 'wb'， 'ab'， 'rb+'， 'wb+'， 'ab+'

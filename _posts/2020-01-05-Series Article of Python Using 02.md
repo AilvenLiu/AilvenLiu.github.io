@@ -108,3 +108,30 @@ while True:
     sucess, frame = cap.read()    
 ```     
 显示，指导终端检测到`q`键被按下，退出循环。    
+
+## 读取png图像转成jpg图像存储      
+
+```python    
+import os
+import cv2
+import sys
+import numpy as np
+ 
+path = "path/to/directory/of/pic/"
+print(path)
+ 
+for filename in os.listdir(path):
+    if os.path.splitext(filename)[1] == '.png':
+        # print(filename)       
+
+        img = cv2.imread(path + filename)
+        print(filename.replace(".png",".jpg"))
+        newfilename = filename.replace(".png",".jpg")
+        # cv2.imshow("Image",img)      
+
+        # cv2.waitKey(0)        
+
+        cv2.imwrite(path + newfilename,img)
+```     
+
+虽然只是改一个后缀名，但检查图片格式，的确改变了。大概是因为 cv2 能识别后缀名，从而保存时自动转换。     
