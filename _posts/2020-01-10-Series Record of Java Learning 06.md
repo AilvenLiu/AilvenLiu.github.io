@@ -8,7 +8,6 @@ author:     OUC_LiuX
 header-img: img/wallpic02.jpg
 catalog: true
 tags:
-    - 学习
     - Java
 ---
 
