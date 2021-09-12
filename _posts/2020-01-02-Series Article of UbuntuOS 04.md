@@ -56,7 +56,7 @@ sudo mount /dev/sdb2(磁盘分区) /path/to/mount(挂载路径)
 sudo umount /path/to/mount     
 ```   
 其中挂载路径如果不存在，得自己创建。卸载的时候注意命令是`umount`而不是`unmount`。       
-如果需要挂载的路径不是一个真正的分区，而是一个普通的路径（用于进程隐藏），则需要使用 `mount --bind` 参数。   
+如果需要挂载的路径不是一个真正的分区，而是一个普通的路径（用于[进程隐藏](https://www.ouc-liux.cn/2021/09/12/Series-Article-of-UbuntuOS-17/)），则需要使用 `mount --bind` 参数。   
  
 
 ## ls的参数及隐藏文件    

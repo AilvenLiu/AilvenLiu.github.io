@@ -33,3 +33,4 @@ $ sudo mount --bind ~/tmp /proc/10823
 但回到 ssh 的界面，并没有退出。     
 进程隐藏成功，此时使用 ps 和 top 等命令都检测不到正在运行的 pid 为 10823 的进程。如果你正在执行 GPU 进程，使用 nvidia-smi 同样也不会列出任何进程信息。唯一不足，在没有任何进程信息的情况下 GPU 使用率达到 99%，同样会令人怀疑。      
 下一步如有机会考虑使用进程伪装代替进程隐藏，将不可告人的秘密进程的名字改成 `python train.py [argvs...]` 。     
+解挂载为 `sudo umount /proc/10823`，可参加[查看磁盘使用状态和挂载/解挂载硬盘](https://www.ouc-liux.cn/2021/05/07/Series-Article-of-UbuntuOS-04/#%E6%9F%A5%E7%9C%8B%E7%A3%81%E7%9B%98%E4%BD%BF%E7%94%A8%E7%8A%B6%E6%80%81%E5%92%8C%E6%8C%82%E8%BD%BD%E8%A7%A3%E6%8C%82%E8%BD%BD%E7%A1%AC%E7%9B%98) 。
