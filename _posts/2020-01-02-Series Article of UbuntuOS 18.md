@@ -53,4 +53,35 @@ crontab [-u username]　　　　# 省略用户表表示操作当前用户的cro
    `30 21 * * * /etc/init.d/smb restart`       
 7. 每月1、10、22日的4 : 45重启smb       
    `45 4 1,10，22 * * /etc/init.d/smb restart`        
- 
+8. 每周六、周日的1 : 10重启smb      
+   `10 1 * * 6,0 /etc/init.d/smb restart`       
+9. 每天18 : 00至23 : 00之间每隔30分钟重启smb      
+    `0,30 18-23 * * * /etc/init.d/smb restart`       
+10. 每星期六的晚上11 : 00 pm重启smb       
+    `0 23 * * 6 /etc/init.d/smb restart`      
+11. 每小时重启一次smb      
+    `0 */1 * * * /etc/init.d/smb restart`        
+12. 晚上11点到早上7点之间，每隔一小时重启smb      
+    `0 23-7/1 * * * /etc/init.d/smb restart`       
+
+## 根据进程关键词杀死任务     
+由于进程需要定时启动，每次任务的 pid 都不一样，于是要做到自动定时杀死进程，需要先行自动获取进程 pid 。       
+假如我们的任务是 `ipython` 它有唯一（指和其他任何进程相比的 unique ）关键词 `ipython` :    
+```shell   
+$ ps -ef | grep ipython | grep bin | awk '{print $2}'|xargs kill -9
+```       
+这句话的意思是：       
+* `ps -ef | grep ipython `： 返回进程名包含 ipython 字段的进程信息。     
+* `| grep bin`： 使用管道接受上一步的返回结果，并再此筛选上一步返回结果中包含 bin 的进程信息；这是为了排除其他比如 color=auto 这样的干扰信息，因为 ipython 这个 **进程** 的路径包含 bin，而其他则不一定；于是使用一个 bin 关键词进行二次确定。      
+* `| awk  '{print  $2}'`： 使用管道接受上一步的返回信息，提取返回信息的第二列，即进程 pid 。     
+* `| xargs kill -9`： 使用管道接受上一步的返回信息（PID），作为 xargs，并杀死 pid 为 xargs 的进程。这是一个固定格式。       
+  
+## 定时启动杀死进程       
+有了上述信息，即可做到定时启动杀死进程。加入我们要进行定时的任务是 `bminer_start.sh`，其中可执行文件的绝对路径为 `/home/OUC_LiuX/unique/bminer.sh`，需要每天 11:30 pm 启动，次日 6:30 am 停止，任务裸奔不需要独立环境：      
+使用 `crontab -e` 编辑定时任务表，添加以下两行：      
+```       
+30 23 * * * bash /home/OUC_LiuX/unique/bminer_start.sh         
+30 6 * * * ps -ef | grep bminer_start.sh | grep unique | awk '{print $2}' | xargs kill -9        
+```          
+
+完美结束。       
