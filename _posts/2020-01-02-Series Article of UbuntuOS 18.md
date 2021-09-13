@@ -2,7 +2,7 @@
 layout:     post
 title:      Series Article of UbuntuOS -- 18         
 subtitle:   crontab 定时启动和杀死任务           
-date:       2021-09-12      
+date:       2021-09-13      
 author:     OUC_LiuX     
 header-img: img/wallpic02.jpg     
 catalog: true
