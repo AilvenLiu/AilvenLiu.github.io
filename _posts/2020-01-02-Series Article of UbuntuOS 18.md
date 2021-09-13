@@ -77,11 +77,11 @@ $ ps -ef | grep ipython | grep bin | awk '{print $2}'|xargs kill -9
 * `| xargs kill -9`： 使用管道接受上一步的返回信息（PID），作为 xargs，并杀死 pid 为 xargs 的进程。这是一个固定格式。       
   
 ## 定时启动杀死进程       
-有了上述信息，即可做到定时启动杀死进程。加入我们要进行定时的任务是 `bminer_start.sh`，其中可执行文件的绝对路径为 `/home/OUC_LiuX/unique/bminer.sh`，需要每天 11:30 pm 启动，次日 6:30 am 停止，任务裸奔不需要独立环境：      
+有了上述信息，即可做到定时启动杀死进程。加入我们要进行定时的任务是 `bminer_start.sh`，其中可执行文件的绝对路径为 `/home/OUC_LiuX/unique/bminer`，需要每天 11:30 pm 启动，次日 6:30 am 停止，任务裸奔不需要独立环境：      
 使用 `crontab -e` 编辑定时任务表，添加以下两行：      
 ```       
 30 23 * * * bash /home/OUC_LiuX/unique/bminer_start.sh         
-30 6 * * * ps -ef | grep bminer_start.sh | grep unique | awk '{print $2}' | xargs kill -9        
+30 6 * * * ps -ef | grep bminer | grep unique | awk '{print $2}' | xargs kill -9        
 ```          
 
 完美结束。       
