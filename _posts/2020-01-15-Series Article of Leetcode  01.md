@@ -189,3 +189,109 @@ public int firstBadVersion(int n) {
 2. 当 n>1，迭代终点的起始条件只能是 left + 1 = right，left = G, right=B；此时 mid = left， mid = G --> left += 1 = right 回到了条件 1，迭代结束，返回 left。     
 非常巧妙。     
 
+### 35 Search Insert Position     
+
+Given a sorted array of distinct integers and a target value, return the index if the target is found. If not, return the index where it would be if it were inserted in order.
+
+You must write an algorithm with O(log n) runtime complexity.
+
+Example 1:
+Input: nums = [1,3,5,6], target = 5     
+Output: 2
+
+Example 2:
+Input: nums = [1,3,5,6], target = 2      
+Output: 1
+
+Example 3:
+Input: nums = [1,3,5,6], target = 7     
+Output: 4
+
+Example 4:
+Input: nums = [1,3,5,6], target = 0      
+Output: 0
+
+Example 5:
+Input: nums = [1], target = 0        
+Output: 0
+
+ 
+
+Constraints:     
+1 <= nums.length <= 104      
+-104 <= nums[i] <= 104      
+nums contains distinct values sorted in ascending order.     
+-104 <= target <= 104      
+
+#### My AC version     
+```c++     
+class Solution {
+public:
+    int searchInsert(vector<int>& nums, int target) {
+        int under = 0, upper = nums.size()-1;
+        if (target > nums.at(upper))
+            return upper + 1;
+        if (target <= nums.at(under))
+            return under;
+        while(under <= upper){
+            int mid = under + (upper - under) / 2;
+            if (target <= nums.at(mid)){
+                if (target > nums.at(mid - 1))
+                    return mid;
+                else
+                    upper = mid;
+            }
+            else
+                under = mid + 1;
+        }
+        return 0;
+    }
+};
+```      
+Runtime: 4 ms, faster than 79.59% of C++ online submissions for Search Insert Position.       
+Memory Usage: 9.6 MB, less than 55.48% of C++ online submissions for Search Insert Position.      
+没什么好说的，中规中矩的解法，先把小于最小和大于最大两个特殊情况单独择出来，然后递归解决。       
+时间和空间表现不算优秀，看看讨论区解法。      
+
+#### Discuss solution      
+本题 Solution 需要花钱解锁，但讨论区里有很多大神。贴一个讨论区里出现的极其简洁的实现：    
+```c++     
+class Solution {
+public:
+    int searchInsert(vector<int>& nums, int target) {
+        vector<int>::iterator lower; 
+        lower = lower_bound (nums.begin(), nums.end(), target); 
+        return (lower-nums.begin());
+    }
+};
+```     
+总共三行代码，使用了来自 c++20 的新特性（无怪翻了半天 cpp standard 和 c++ primer 没找到）。lower_bound 的功能正如其函数名，寻找一个变量在一个容器内的下界，返回一个迭代器。    
+具体的，看来自 [cplusplus](https://www.cplusplus.com/reference/algorithm/lower_bound/) 的示例代码：     
+```c++     
+// lower_bound/upper_bound example
+#include <iostream>     // std::cout
+#include <algorithm>    // std::lower_bound, std::upper_bound, std::sort
+#include <vector>       // std::vector
+
+int main () {
+int myints[] = {10,20,30,30,20,10,10,20};
+std::vector<int> v(myints,myints+8);           // 10 20 30 30 20 10 10 20
+
+std::sort (v.begin(), v.end());                // 10 10 10 20 20 20 30 30
+
+std::vector<int>::iterator low,up;
+low=std::lower_bound (v.begin(), v.end(), 20); //          ^
+up= std::upper_bound (v.begin(), v.end(), 20); //                   ^
+
+std::cout << "lower_bound at position " << (low- v.begin()) << '\n';
+std::cout << "upper_bound at position " << (up - v.begin()) << '\n';
+
+return 0;
+}
+```      
+Output:     
+```
+lower_bound at position 3    
+upper_bound at position 6     
+```
+更实际一点，就是在一个（有序）容器内插入一个值，返回这个值应当位于容器的所有合适的位置的最前面的迭代器。简直就是为这个题量身设计的。     
