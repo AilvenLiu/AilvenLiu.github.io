@@ -14,8 +14,10 @@ tags:
 
 > leetcode 刷题笔记，Study Plan Algorithm 1 。     
 
-## Day 1: 704 Binary Search 二分搜索        
-[GitHub 连接](https://github.com/OUCliuxiang/leetcode/blob/master/StudyPlan/Algo1/day1/704_Binary_Search.cpp)       
+## Day 1: Binary Search 二分搜索        
+[GitHub 连接](https://github.com/OUCliuxiang/leetcode/blob/master/StudyPlan/Algo1/day1)       
+
+### 704 Binary Search       
 Given an array of integers nums which is sorted in ascending order,      
 and an integer target, write a function to search target in nums.       
 If target exists, then return its index. Otherwise, return -1.    
@@ -38,7 +40,7 @@ Constraints:
 All the integers in nums are unique.   
 nums is sorted in ascending order.
 
-### My AC version:    
+#### My AC version:    
 ```c++           
 class Solution {
 public:
@@ -77,7 +79,7 @@ Memory Usage: 27.4 MB, less than 99.80% of C++ online submissions for Binary Sea
 
 极其朴素的二分思想，在进入循环之前进行一次判断，如果条件符合直接返回；通过 `while(rest /= 2)` 保证循环最大执行 log n 次；循环内根据目标数与当前值的大小判断交换 upper 上界和 under 下界，迭代循环；循环内进行判断没条件符合直接返回；如果循环内未返回而结束，必然说明不存在符合条件的数，返回 -1。     
 
-## Official Version    
+#### Official Version    
 ```c++    
 int search_official(vector<int>& nums, int target) {
     int pivot, left = 0, right = nums.size() - 1;
@@ -97,4 +99,6 @@ int search_official(vector<int>& nums, int target) {
 目标值大于锚点值，则上界不变，下界直接锚点加一。     
 反之，下界不变，上界直接锚点减一。       
 如果到了上下界相等时还找不到目标，下一次更新上下界，会出现上界比下界还小的情况，退出循环，这一点比较难想。      
-但以界值作为判断条件，很简洁。
+但以界值作为判断条件，很简洁。     
+
+### 278 First Bad Version        
