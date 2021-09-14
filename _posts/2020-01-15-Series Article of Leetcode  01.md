@@ -77,7 +77,7 @@ Memory Usage: 27.4 MB, less than 99.80% of C++ online submissions for Binary Sea
 
 极其朴素的二分思想，在进入循环之前进行一次判断，如果条件符合直接返回；通过 `while(rest /= 2)` 保证循环最大执行 log n 次；循环内根据目标数与当前值的大小判断交换 upper 上界和 under 下界，迭代循环；循环内进行判断没条件符合直接返回；如果循环内未返回而结束，必然说明不存在符合条件的数，返回 -1。     
 
-#### Official Version    
+#### Official solution    
 ```c++    
 int search_official(vector<int>& nums, int target) {
     int pivot, left = 0, right = nums.size() - 1;
@@ -160,4 +160,32 @@ public:
         return 0;
     }
 };
-```
+```     
+Runtime: 0 ms, faster than 100.00% of C++ online submissions for First Bad Version.       
+Memory Usage: 6 MB, less than 21.66% of C++ online submissions for First Bad Version.      
+其实这种简单题大家都差不多，相同的代码提交几次从 0 ms 到 5 ms ，5.8 MB 到 6.0 MB 不等，相差不大。    
+这个题也是经典的二分搜索，比着上面一个题的葫芦画瓢就行。     
+设置一个上下界，target 从 n/2 开始，更新上下界，直到找到符合条件的数或上下界矛盾为止。中间把 `n=1, target = 1` 这个情况拎出来单独讨论。       
+
+#### Official Solution      
+出现在 Solution 中的解法相当简洁，先贴代码：      
+```c++     
+public int firstBadVersion(int n) {
+    int left = 1;
+    int right = n;
+    while (left < right) {
+        int mid = left + (right - left) / 2;
+        if (isBadVersion(mid)) {
+            right = mid;
+        } else {
+            left = mid + 1;
+        }
+    }
+    return left;
+}
+```        
+官方版本非常巧妙地利用了 c++ 整数除法向下取整的特性。考虑两种情况：     
+1. 当 n=1，left = middle = right，不进入迭代，直接返回 left = 1 。       
+2. 当 n>1，迭代终点的起始条件只能是 left + 1 = right，left = G, right=B；此时 mid = left， mid = G --> left += 1 = right 回到了条件 1，迭代结束，返回 left。     
+非常巧妙。     
+
