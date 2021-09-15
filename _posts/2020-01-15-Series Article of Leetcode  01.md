@@ -295,3 +295,153 @@ lower_bound at position 3
 upper_bound at position 6     
 ```
 更实际一点，就是在一个（有序）容器内插入一个值，返回这个值应当位于容器的所有合适的位置的最前面的迭代器。简直就是为这个题量身设计的。     
+
+
+## Day 2: Two Pointers 双指针        
+[GitHub 连接](https://github.com/OUCliuxiang/leetcode/blob/master/StudyPlan/Algo1/day2)       
+
+### 977 Squares of a Soarted Array         
+
+Given an integer array nums sorted in non-decreasing order, return an array of the squares of each number sorted in non-decreasing order.    
+
+Example 1:       
+Input: nums = [-4,-1,0,3,10]       
+Output: [0,1,9,16,100]      
+Explanation: After squaring, the array becomes [16,1,0,9,100].        
+After sorting, it becomes [0,1,9,16,100].        
+
+Example 2:        
+Input: nums = [-7,-3,2,3,11]      
+Output: [4,9,9,49,121]      
+
+Constraints:      
+1 <= nums.length <= 104      
+-104 <= nums[i] <= 104       
+nums is sorted in non-decreasing order.     
+Follow up: Squaring each element and sorting the new array is very trivial, could you find an O(n) solution using a different approach?
+ 
+#### My AC version     
+```c++      
+class Solution {
+public:
+    vector<int> sortedSquares(vector<int>& nums) {
+        for (int i = 0; i < nums.size(); i++)
+            nums[i] *= nums[i];
+        sort(nums.begin(), nums.end());
+        return nums;
+    }
+};
+```       
+Runtime: 36 ms, faster than 50.74% of C++ online submissions for Squares of a Sorted Array.      
+Memory Usage: 25.9 MB, less than 55.72% of C++ online submissions for Squares of a Sorted Array.      
+
+简洁朴素。先使用迭代器（指针）使 vector 元素平方，再利用 algorithm 算法库中的 sort 方法排序。没什么技术性，看看讨论区有什么奇技淫巧。       
+
+#### Discuss solution      
+
+这，讨论区就有点强行双指针了。行吧，虽然有其他解法，但这个题毕竟考的是双指针。    
+```c++      
+class Solution {
+public:
+    vector<int> sortedSquares(vector<int>& A) {
+        vector<int> res(A.size());
+        int l = 0, r = A.size() - 1;
+        for (int k = A.size() - 1; k >= 0; k--) {
+            if (abs(A[r]) > abs(A[l])) res[k] = A[r] * A[r--];
+            else res[k] = A[l] * A[l++];
+        }
+        return res;
+    }
+};
+```       
+Runtime: 43 ms, faster than 30.28% of C++ online submissions for Squares of a Sorted Array.      
+Memory Usage: 25.9 MB, less than 82.08% of C++ online submissions for Squares of a Sorted Array.       
+也是比较朴素的思路，既然原始数组已经是排好序的，只是正负值不一致。那只需要在数组收尾各放置一个指针，比较首尾指针指向值的 abs 大小就可，从大到小，在新数组从右到左排布。可是这样需要新建一个数组作为 result，额外占据一个数组空间，真的好吗？      
+
+### 189 Rotate Array       
+
+Given an array, rotate the array to the right by k steps, where k is non-negative.
+
+Example 1:     
+
+Input: nums = [1,2,3,4,5,6,7], k = 3      
+Output: [5,6,7,1,2,3,4]     
+Explanation:      
+rotate 1 steps to the right: [7,1,2,3,4,5,6]      
+rotate 2 steps to the right: [6,7,1,2,3,4,5]      
+rotate 3 steps to the right: [5,6,7,1,2,3,4]      
+
+Example 2:      
+
+Input: nums = [-1,-100,3,99], k = 2      
+Output: [3,99,-1,-100]       
+Explanation:       
+rotate 1 steps to the right: [99,-1,-100,3]       
+rotate 2 steps to the right: [3,99,-1,-100]      
+
+Constraints:       
+
+1 <= nums.length <= 105      
+-231 <= nums[i] <= 231 - 1       
+0 <= k <= 105      
+
+Follow up:      
+
+Try to come up with as many solutions as you can. There are at least three different ways to solve this problem.       
+Could you do it in-place with O(1) extra space?        
+
+```c++     
+class Solution {
+public:
+    void rotate(vector<int>& nums, int k) {
+        k = k % nums.size();
+        vector<int> res(nums.begin(), nums.end()-k);// = nums;
+        copy(res.end() - k, res.end(), nums.begin());
+        copy(res.begin(), res.end()-k, nums.begin() + k);
+    }
+};
+```     
+Runtime: 28 ms, faster than 73.06% of C++ online submissions for Rotate Array.       
+Memory Usage: 25.7 MB, less than 11.07% of C++ online submissions for Rotate Array.       
+
+中规中矩的解法，需要考虑一下是否 k > nums.size()，通过取余操作避免这种情况；方便起见，对 nums.size() 取余之后的值仍以 k 表示。随后就好说了，所谓的 array rotate 实际上就变成了：     
+将原数组从后往前数 k 个元素保持顺序不变平移到最前端；      
+或       
+将原数组从前往后数 size()-k 个元素平移到数组尾端；    
+于是构造一个新 vector 接受原 vector 的值，然后分两次给原 vector 赋值即可。    
+
+其实有另一个空间复杂度稍低的解法：     
+```c++    
+class Solution {
+public:
+    void rotate(vector<int>& nums, int k) {
+        k = k % nums.size();
+        int size = nums.size();
+        nums.insert(nums.begin(), nums.end() - k, nums.end());
+        nums.resize(size);
+    }
+};
+```     
+但是，但是，不知道哪里出了问题，有时候插入的值老是在目标值之前。好像是某些情况下 迭代器 .end() 的位置被移动了。又但是，如果使用 stdout 打印 end()-1 处的值，并没有发生移位。难道偏偏在 insert处发生改变？       
+
+即使不出错误，这两种做法显然也都达不到空间上 O(1)，看讨论区吧。     
+
+#### Discuss solultion      
+
+```c++    
+class Solution {
+public:
+    void rotate(vector<int>& nums, int k) {
+        int n = nums.size();
+        reverse(nums.begin(), nums.end());
+        reverse(nums.begin(), nums.begin() + k%n);
+        reverse(nums.begin()+ k%n, nums.end());
+    }
+};
+```     
+
+Runtime: 24 ms, faster than 89.99% of C++ online submissions for Rotate Array.     
+Memory Usage: 24.8 MB, less than 98.91% of C++ online submissions for Rotate Array.     
+
+WOC！     
+讨论区里出大神，都些什么奇技淫巧......
