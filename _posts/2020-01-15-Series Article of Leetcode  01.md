@@ -444,4 +444,115 @@ Runtime: 24 ms, faster than 89.99% of C++ online submissions for Rotate Array.
 Memory Usage: 24.8 MB, less than 98.91% of C++ online submissions for Rotate Array.     
 
 WOC！     
-讨论区里出大神，都些什么奇技淫巧......
+讨论区里出大神，都些什么奇技淫巧......        
+
+## Day 3: Two Pointers 双指针        
+[GitHub 连接](https://github.com/OUCliuxiang/leetcode/blob/master/StudyPlan/Algo1/day3)       
+
+### 283 Move Zeroes        
+
+Given an integer array nums, move all 0's to the end of it while maintaining the relative order of the non-zero elements.     
+Note that you must do this in-place without making a copy of the array.        
+
+Example 1:       
+Input: nums = [0,1,0,3,12]     
+Output: [1,3,12,0,0]     
+
+Example 2:     
+Input: nums = [0]      
+Output: [0]     
+
+Constraints:     
+1 <= nums.length <= 104       
+-231 <= nums[i] <= 231 - 1       
+
+Follow up: Could you minimize the total number of operations done?     
+#### My AC version       
+```c++    
+class Solution {
+public:
+    void moveZeroes(vector<int>& nums) {
+        int count = 0;
+        for (vector<int>::iterator it = nums.begin(); it != nums.end(); it ++){
+            if (*it == 0){
+                nums.erase(it);
+                count ++;
+                it -- ;
+            }
+        }
+        nums.insert(nums.end(), count, 0);
+    }
+};
+```
+
+Runtime: 8 ms, faster than 38.59% of C++ online submissions for Move Zeroes.      
+Memory Usage: 8.8 MB, less than 85.11% of C++ online submissions for Move Zeroes.       
+
+中规中矩的解法，没什么特色。由于难以使用交换操作，这个题本质上就是删除 vector 里值为零的元素，在 vector 尾端插入与删除操作相等数量的 0 。       
+找找讨论区又有什么奇技淫巧。       
+
+#### Discuss solution      
+
+没什么好看的，讨论区的解法不如我的好。      
+
+### 167 Two Sum II - Input array is sorted     
+
+Given an array of integers numbers that is already sorted in non-decreasing order, find two numbers such that they add up to a specific target number.      
+Return the indices of the two numbers (1-indexed) as an integer array answer of size 2, where 1 <= answer[0] < answer[1] <= numbers.length.       
+The tests are generated such that there is exactly one solution. You may not use the same element twice.      
+
+Example 1:        
+Input: numbers = [2,7,11,15], target = 9
+Output: [1,2]       
+Explanation: The sum of 2 and 7 is 9. Therefore index1 = 1, index2 = 2.        
+
+Example 2:          
+Input: numbers = [2,3,4], target = 6       
+Output: [1,3]        
+
+Example 3:        
+Input: numbers = [-1,0], target = -1       
+Output: [1,2]        
+
+Constraints:         
+2 <= numbers.length <= 3 * 104      
+-1000 <= numbers[i] <= 1000      
+numbers is sorted in non-decreasing order.        
+-1000 <= target <= 1000        
+The tests are generated such that there is exactly one solution.      
+
+#### My AC Version
+```c++    
+class Solution {
+public:
+    vector<int> twoSum(vector<int>& numbers, int target) {
+        vector<int> res(2);
+        for (int i = 0; i < numbers.size(); i ++ ){
+            int under = i + 1, upper = numbers.size()-1;
+            while (under <= upper){
+                int j = under + (upper - under) / 2;
+                if (numbers.at(i) + numbers.at(j) == target){
+                    res[0] = i + 1;
+                    res[1] = j + 1;
+                    return res;
+                }
+                else if(numbers.at(i) + numbers.at(j) > target){
+                    upper = j - 1;
+                }
+                else{
+                    under = j + 1;
+                }
+            }
+        }
+        return res;
+    }
+};
+```        
+Runtime: 12 ms, faster than 9.56% of C++ online submissions for Two Sum II - Input array is sorted.     
+Memory Usage: 9.6 MB, less than 45.72% of C++ online submissions for Two Sum II - Input array is sorted.      
+
+
+平平无奇的解法，使用双循环  O(n^2) 的解法报 Time Limit Exceeded 了，索性换成 Binary Search O(nlogn) 的解法。没有任何特色。找找讨论区有什奇技淫巧。      
+
+#### Discuss solution      
+
