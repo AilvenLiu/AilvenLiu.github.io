@@ -556,3 +556,95 @@ Memory Usage: 9.6 MB, less than 45.72% of C++ online submissions for Two Sum II 
 
 #### Discuss solution      
 
+```c++    
+class Solution {     
+public:    
+vector<int> twoSum(vector<int>& numbers, int target) {
+    int lo=0, hi=numbers.size()-1;
+    while (numbers[lo]+numbers[hi]!=target){
+        if (numbers[lo]+numbers[hi]<target){
+            lo++;
+        } else {
+            hi--;
+        }
+    }
+    return vector<int>({lo+1,hi+1});
+}
+};
+```    
+一个时间复杂度 O(n) 的解法，非常简洁优雅。一小一大两个 pointer ，结果小了就加小，大了就减大。挺容易想，就是没想到，嘿。     
+
+## Day 4: Two Pointers 双指针        
+[GitHub 连接](https://github.com/OUCliuxiang/leetcode/blob/master/StudyPlan/Algo1/day4)        
+
+### 344. Reverse String        
+
+Write a function that reverses a string. The input string is given as an array of characters s.      
+
+Example 1:      
+Input: s = ["h","e","l","l","o"]     
+Output: ["o","l","l","e","h"]      
+
+Example 2:       
+Input: s = ["H","a","n","n","a","h"]      
+Output: ["h","a","n","n","a","H"]      
+
+Constraints:     
+1 <= s.length <= 105       
+s[i] is a printable ascii character.        
+
+Follow up: Do not allocate extra space for another array. You must do this by modifying the input array in-place with O(1) extra memory.     
+#### My AC Version      
+
+**first solution:**     
+```c++       
+class Solution {
+public:
+    void reverseString(vector<char>& s) {
+        for (vector<char>::iterator left = s.begin(), right = s.end()-1; 
+             right >= left; right --, left ++){
+            iter_swap(left, right);
+        }
+    }
+};
+```       
+Runtime: 23 ms, faster than 54.21% of C++ online submissions for Reverse String.      
+Memory Usage: 23 MB, less than 94.14% of C++ online submissions for Reverse String.       
+平平无奇毫无创意的两行解法。iter_swap 这个东西应该是 c++20 新标准，方便，真方便。      
+
+**second solution:**     
+```c++      
+class Solution {
+public:
+    void reverseString(vector<char>& s) {
+        reverse(s.begin(), s.end());
+    }
+};
+```       
+Runtime: 16 ms, faster than 94.27% of C++ online submissions for Reverse String.
+Memory Usage: 23.3 MB, less than 41.43% of C++ online submissions for Reverse String.       
+
+平平无奇的一行解法， 来自 algorithm 库的 reverse 方法简直为这个题量身定制的。
+     
+
+**third solution:**     
+```c++
+class Solution {
+public:
+    void reverseString(vector<char>& s) {
+        vector<char> st( s.rbegin(), s.rend());
+        s = st;
+    }
+};
+```     
+Runtime: 24 ms, faster than 53.10% of C++ online submissions for Reverse String.       
+Memory Usage: 23.5 MB, less than 5.14% of C++ online submissions for Reverse String.       
+
+使用逆序迭代器 rbegin()（从后往前数的第一个，也就是最后一个，方向向前，或者说 执行++ 会向前移） 和 rend()（从后往前数最后一个之后，也就是第一个元素再前一个，方向向前，也就是说执行 -- 会向后走），赋值新数组，再反向赋值回去。     
+好方便。
+
+找一找讨论区的奇技淫巧。      
+
+#### Discuss solution      
+霍～糟了，我成奇技淫巧了。      
+
