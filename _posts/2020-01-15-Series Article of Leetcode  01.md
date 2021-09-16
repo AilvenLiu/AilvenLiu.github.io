@@ -648,3 +648,47 @@ Memory Usage: 23.5 MB, less than 5.14% of C++ online submissions for Reverse Str
 #### Discuss solution      
 霍～糟了，我成奇技淫巧了。      
 
+### 557. Reverse Words in a String III       
+Given a string s, reverse the order of characters in each word within a sentence while still preserving whitespace and initial word order.      
+
+Example 1:     
+Input: s = "Let's take LeetCode contest"      
+Output: "s'teL ekat edoCteeL tsetnoc"      
+
+Example 2:       
+Input: s = "God Ding"     
+Output: "doG gniD"      
+
+Constraints:
+1 <= s.length <= 5 * 104      
+s contains printable ASCII characters.      
+s does not contain any leading or trailing spaces.      
+There is at least one word in s.      
+All the words in s are separated by a single space.       
+
+#### My AC Version       
+
+```c++     
+class Solution {
+public:
+    string reverseWords(string s) {
+        int found = -1;
+        while (found != s.length()){
+            int wordEnd = s.find_first_of(' ', found + 1);
+            wordEnd = (wordEnd == -1 ? s.length() : wordEnd);
+            reverse(s.begin()+found+1, s.begin()+wordEnd);
+            found = wordEnd;
+        }
+        return s;
+    }
+};
+```      
+Runtime: 11 ms, faster than **94.91%** of C++ online submissions for Reverse Words in a String III.      
+Memory Usage: 9.5 MB, less than **99.18%** of C++ online submissions for Reverse Words in a String III.      
+
+中规中矩的解法，但是时间和空间表现还挺优秀的。具体思想就是在一个 String 中使用 `find_first_of()` 方法找出每一个空格分开的单词，使用 algorithm 库中的 `reverse()` 方法在原句子中使用指针，对每个单词直接做翻转操作。      
+看看讨论区有什么奇技淫巧。       
+
+#### Discuss solution      
+
+没什么看的，讨论区不如我。     
