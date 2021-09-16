@@ -179,3 +179,13 @@ $ echo -e "1,2,3\n4,5\n6"
 $ cp filename.{py, bak}
 ```      
 
+## 将目录授权给其他用户      
+往往发生在服务器端。 user1 将家目录下文件夹 copy 到 user2 家目录，user2 却无法访问。授权步骤如下：         
+1. 更该目录所有者：       
+   ```shell    
+   $ chown -R user2 path/to/targetDir          
+   ```
+2. 更该目录权限：        
+   ```shell     
+   $ chmod -R 755 path/to/targetDir      
+   ```     
