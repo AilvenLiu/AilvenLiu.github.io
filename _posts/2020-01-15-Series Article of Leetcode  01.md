@@ -692,3 +692,73 @@ Memory Usage: 9.5 MB, less than **99.18%** of C++ online submissions for Reverse
 #### Discuss solution      
 
 没什么看的，讨论区不如我。     
+
+## Day 5: Two Pointers 双指针        
+[GitHub 连接](https://github.com/OUCliuxiang/leetcode/blob/master/StudyPlan/Algo1/day5)        
+
+###  876. Middle of the Linked List          
+Given the head of a singly linked list, return the middle node of the linked list.        
+If there are two middle nodes, return the second middle node.        
+
+Example 1:       
+Input: head = [1,2,3,4,5]       
+Output: [3,4,5]       
+Explanation: The middle node of the list is node 3.       
+
+Example 2:       
+Input: head = [1,2,3,4,5,6]       
+Output: [4,5,6]        
+Explanation: Since the list has two middle nodes with values 3 and 4, we return the second one.        
+
+Constraints:       
+The number of nodes in the list is in the range [1, 100].       
+1 <= Node.val <= 100      
+
+#### My AC version       
+
+```c++         
+/**
+ * Definition for singly-linked list.
+ * struct ListNode {
+ *     int val;
+ *     ListNode *next;
+ *     ListNode() : val(0), next(nullptr) {}
+ *     ListNode(int x) : val(x), next(nullptr) {}
+ *     ListNode(int x, ListNode *next) : val(x), next(next) {}
+ * };
+ */
+class Solution {
+public:
+    ListNode* middleNode(ListNode* head) {
+        ListNode* node = head;
+        int length = 1;
+        while(node -> next){
+            length ++;
+            node = node -> next;
+        }
+        length /= 2;
+        length += 1;
+        for(int i = 1; i < length; i++){
+            head = head -> next;
+        }
+        return head;
+    }
+};
+```      
+Runtime: 0 ms, faster than **100.00%** of C++ online submissions for Middle of the Linked List.       
+Memory Usage: 7 MB, less than **87.01%** of C++ online submissions for Middle of the Linked List.       
+
+平平无奇循规蹈矩的解法，先 while 循环获取长度，然后 for 循环走到链表中间点。值得注意的一点是 c++ 中点操作符 `.` 和箭头操作符 `->` 的使用。由于 head 和 node 是结构体**指针**，其值是指向结构体内存地址首部的一串地址数据，只能使用箭头操作符 `node -> item` 获取成员变量；其效果和 `(*node).item`， 先使用 `*` 从结构体指针获取成员变量，再用点操作符 `(*node).item` 获取成员变量，是一样的。      
+看看讨论区有什么奇技淫巧。       
+
+#### Discuss solution      
+还真有个其妙的解法，名为 Slow and Fast Pointers 快慢指针。具体思想是对同一个链表构造两个指针，由 head 开始，slow pointer 每走一步，fast pointer 走两步。直到 fast pointer 或 fast pointer 的 next node 越界，此时 slow pointer 的位置正好是 middle：      
+```c++     
+ListNode* middleNode(ListNode* head) {
+    ListNode *slow = head, *fast = head;
+    while (fast && fast->next)
+        slow = slow->next, fast = fast->next->next;
+    return slow;
+    }
+```        
+长知识，涨知识。     
