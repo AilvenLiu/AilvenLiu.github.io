@@ -829,3 +829,6 @@ Memory Usage: 10.8 MB, less than 31.05% of C++ online submissions for Remove Nth
 循规蹈矩平平无奇的解法，整体过程和上一题差不多。注意的点是将需要删除首部元素的情况和其他情况分开讨论。        
 看看讨论区有什么奇技淫巧。       
 
+#### Discuss solution      
+
+没什么看的，讨论区高赞解法就两种类型，一种和我差不多，另一种快慢指针，有点儿难理解，不费脑子了。    
