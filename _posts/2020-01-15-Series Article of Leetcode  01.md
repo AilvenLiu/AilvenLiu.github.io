@@ -898,4 +898,31 @@ For example, the input is "aba", you check dict\[s\[0\]\], which is dict\[97\] i
 dict 是一个长度为 256 的 vector ，这是由于 ASCII 决定了 string 中所有可能出现的元素种类总量为 256。现在开始遍历字符串 s，dict 的每一个位置（按照ASCII顺序）记录着当前字符上一次出现的 index，start 则记录着最近一个已经出现过的字符上一次出现的 index，默认状态为 -1。      
 如果当前字符没有出现过，dict 相应位置保持默认状态为 -1；如果已经出现过，也即 dict 相应位置的值发生过改变，大于上一次更新或默认的 start，则将 start 更新为该元素上一次出现的 index 。          
 
+需要考虑一种特殊情况：abba 型。使用文字进行表述既是，在当前重复的元素及其上一次出现的位置之间，有另一组不同的重复元素。此时我们不能简单的更新 start 到当前元素上一次出现的位置，因为中间隔着一组已经重复了的元素。需要保持为上一组重复元素的上一次出现 index 。于是，代码中 if 语句写为 `if ( dict[s[i]] > start)` 只有当当前元素上一次出现的 index 大于（表现在 string 顺序上也即后于） 上一组重复元素的上一个出现 index 时，才更新。           
+ 
 比较难解释，多看代码多理解。       
+
+comments 还提出一种改进型的解法。一方面使用了 map 代替一次性声明 256 个存储空间的 vector ，随用随加，节省了空间；另一方面，使用 max 语法更新 maxLen 更方便理解：     
+
+```c++        
+class Solution {
+public:
+    int lengthOfLongestSubstring(string s) {
+        map<char, int> charMap;
+        int start = -1, maxLen = 0;
+        for(int i = 0; i < s.length(); i++){
+            if (charMap.count(s[i]) != 0)
+                start = max(charMap[s[i]], start);
+                // 当前元素上一次出现的位置与上一组重复元素 
+                // 倒数第二次出现的位置做个比较
+            charMap[s[i]] = i;
+            maxLen = max(maxLen, i-start);
+        }
+        return maxLen;
+    }
+};
+```          
+Runtime: 11 ms, faster than 73.65% of C++ online submissions for Longest Substring Without Repeating Characters.           
+Memory Usage: 8.4 MB, less than 58.06% of C++ online submissions for Longest Substring Without Repeating Characters.            
+
+相对而言是容易理解了些，但节省了哪门子的空间？           
