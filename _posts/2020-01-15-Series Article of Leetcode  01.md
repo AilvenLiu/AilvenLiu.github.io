@@ -832,3 +832,70 @@ Memory Usage: 10.8 MB, less than 31.05% of C++ online submissions for Remove Nth
 #### Discuss solution      
 
 没什么看的，讨论区高赞解法就两种类型，一种和我差不多，另一种快慢指针，有点儿难理解，不费脑子了。    
+
+## Day 6: Sliding Window                  
+[GitHub 连接](https://github.com/OUCliuxiang/leetcode/blob/master/StudyPlan/Algo1/day6)           
+
+### 3. Longest Substring Without Repeating Characters      
+
+Given a string s, find the length of the longest substring without repeating characters.          
+
+Example 1:            
+Input: s = "abcabcbb"       
+Output: 3          
+Explanation: The answer is "abc", with the length of 3.         
+
+Example 2:            
+Input: s = "bbbbb"               
+Output: 1           
+Explanation: The answer is "b", with the length of 1.            
+
+Example 3:            
+Input: s = "pwwkew"             
+Output: 3            
+Explanation: The answer is "wke", with the length of 3.           
+
+Notice that the answer must be a substring, "pwke" is a subsequence and not a substring.
+
+Example 4:        
+Input: s = ""        
+Output: 0            
+
+Constraints:            
+0 <= s.length <= 5 * 104            
+s consists of English letters, digits, symbols and spaces.           
+
+#### My Version    
+没有，没做出来。本科数据结构课上老师讲过这个类型题，当时不会做，现在还不会做。直接看讨论区。           
+
+#### Discuss solution      
+```c++      
+class Solution {
+public:
+    int lengthOfLongestSubstring(string s) {
+        vector<int> dict(256, -1);
+        int start = -1, maxLen = 0;
+        for(int i = 0; i < s.length(); i++){
+            if (dict[s[i]] > start)
+                start = dict[s[i]];
+            dict[s[i]] = i;
+            maxLen = max(maxLen, i-start);
+        }
+        return maxLen;
+    }
+};
+```         
+Runtime: 10 ms, faster than 74.17% of C++ online submissions for Longest Substring Without Repeating Characters.       
+Memory Usage: 8.2 MB, less than 79.99% of C++ online submissions for Longest Substring Without Repeating Characters.            
+
+说实在的，comments 里面给爷整笑了，一堆刷 niubi, 666 的，还有人在下面 you make me laugh laoge。除此之外，最多的评论还是 amazing 。的确是个令人拍案叫绝的解法。       
+comments 里面给了一个解释，如下：          
+"dict" is used to keep tracking the char in the input string you read every time. start indicates the position of starting position of the substring. At the beginning, it initializes all value in "dict" to -1. Then in the for loop, it scans every char in the string. If the char in the "dict"'s value is larger than "start", it means it already in the substring. You should change the start position of substring to the repeat position and start a new count. "maxLen" records the maximum length of substring you have so far.      
+  
+For example, the input is "aba", you check dict\[s\[0\]\], which is dict\[97\] is -1. Therefore, you can change the dict\[97\] to 0. In this way, you keep recording the string char's position in the dict. When you meet the second "a" in the input, dict\[97\] is 0 and larger than start, which is -1. Then you change start value to 0. When you apply length function ( i - start), you calculate the new substring length, which didn't contain the substring before the first "a".     
+
+还是不太容易理解，可能是英文表述本身就给理解加了一层障碍吧。我尝试用中文做个解释：    
+dict 是一个长度为 256 的 vector ，这是由于 ASCII 决定了 string 中所有可能出现的元素种类总量为 256。现在开始遍历字符串 s，dict 的每一个位置（按照ASCII顺序）记录着当前字符上一次出现的 index，start 则记录着最近一个已经出现过的字符上一次出现的 index，默认状态为 -1。      
+如果当前字符没有出现过，dict 相应位置保持默认状态为 -1；如果已经出现过，也即 dict 相应位置的值发生过改变，大于上一次更新或默认的 start，则将 start 更新为该元素上一次出现的 index 。          
+
+比较难解释，多看代码多理解。       
