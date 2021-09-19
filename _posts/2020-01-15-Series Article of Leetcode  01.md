@@ -926,3 +926,79 @@ Runtime: 11 ms, faster than 73.65% of C++ online submissions for Longest Substri
 Memory Usage: 8.4 MB, less than 58.06% of C++ online submissions for Longest Substring Without Repeating Characters.            
 
 相对而言是容易理解了些，但节省了哪门子的空间？           
+
+### 567. Permutation in String           
+Given two strings s1 and s2, return true if s2 contains a permutation of s1, or false otherwise.            
+In other words, return true if one of s1's permutations is the substring of s2.            
+
+Example 1:          
+Input: s1 = "ab", s2 = "eidbaooo"           
+Output: true           
+Explanation: s2 contains one permutation of s1 ("ba").            
+
+Example 2:             
+Input: s1 = "ab", s2 = "eidboaoo"           
+Output: false               
+
+Constraints:                  
+
+1 <= s1.length, s2.length <= 104               
+s1 and s2 consist of lowercase English letters.                
+
+#### My TLE Version         
+```c++     
+class Solution {
+public:
+    bool checkInclusion(string s1, string s2) {
+        vector<string> permutations;
+        sort(s1.begin(), s1.end());
+        do{
+            permutations.push_back(s1);
+        }while(next_permutation(s1.begin(), s1.end()));
+        for (vector<string>::iterator it = permutations.begin(); it != permutations.end(); it++){
+            if (s2.find(*it) != -1){
+                return true;
+            }
+        }
+        return false;
+    }                
+
+    bool checkInclusion_second(string s1, string s2) {
+        sort(s1.begin(), s1.end());
+        for (int i = 0; i < s2.length()-s1.length()+1; i ++){
+            string tmp = s2.substr(s2.begin()+i, s1.length());
+            sort(tmp.begin(), tmp.end());
+            if (s1 == tmp)
+                return true;
+        }
+        return false;
+    }
+};
+```         
+尝试用枚举的方式暴力求解，失败。本题超出自己知识范围了，看看讨论区有什么奇技淫巧。         
+
+#### Discuss solution            
+
+```c++     
+class Solution {
+public:
+    bool checkInclusion(string s1, string s2) {
+        vector<int> curr(26), goal(26);
+        for (char c: s1)    goal[c - 'a'] ++;
+        for (int i = 0; i < s2.length(); i ++){
+            curr[s2[i] - 'a'] ++;
+            if (i >= s1.length())    curr[s2[i - s1.length()] - 'a'] --;
+            if (curr == goal) return true;
+        }
+        return false;
+    }
+};
+```        
+Runtime: 8 ms, faster than 80.66% of C++ online submissions for Permutation in String.      
+Memory Usage: 7.3 MB, less than 76.83% of C++ online submissions for Permutation in String.       
+
+好巧妙的方法，我怎么就没想到...？      
+这个题既然出现在了 Slide Windows 大类下，自然应当考虑滑动窗口解法。由于题目已经限制了 s1, s2 的元素取值范围是 lowercase English letters ，我们设置两个容量为 26 的 vector\<int\>  型容器。一个是 goal，储存待模式字符串 s1 包含的诸字符的数量；一个是 curr，储存待匹配字符串 s2 最近 s1.length() 长度子串中包含的诸字符的数量。           
+其本质上就是给 s2 一个长度为 s1.length() 滑动窗口 slide windows，比较滑动窗口中储存的各字符出现次数和 goal 是否相等。         
+比较难以具象解释，多看代码，慢慢悟就好了。        
+需要注意的是，不能使用类似 `int goal[26]` 形式的数组。这是由于使用 `==` 判断数组相等实质比较的是地址相等，两个不同数组永远为 false；而 vector 则重载了 `==` 操作符，为逐元素比较内容（见《C++标准库（第二版）》电子工业出版社中译本 273 页）。          
