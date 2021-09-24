@@ -1097,3 +1097,106 @@ Memory Usage: 14.2 MB, less than 29.53% of C++ online submissions for Flood Fill
 
 广度优先的实现稍微复杂一点点，但思路似乎更简单：设计一个 List，将第一个元素加入到 List ，立刻进入 while 循环，循环终止条件为 List 置空。循环内部执行：      
 提取并移除头部元素，判断头部元素是否符合 fill 的条件（边界条件及值条件），不满足则 continue 进入下一轮，满足则 fill 并将上下左右四个元素依次加入到 List 尾部。       
+
+### 695. Max Area of Island             
+
+You are given an m x n binary matrix grid. An island is a group of 1's (representing land) connected 4-directionally (horizontal or vertical.) You may assume all four edges of the grid are surrounded by water.           
+The area of an island is the number of cells with a value 1 in the island.            
+Return the maximum area of an island in grid. If there is no island, return 0.             
+
+Example 1:             
+Input: grid =           
+[[0,0,1,0,0,0,0,1,0,0,0,0,0],            
+ [0,0,0,0,0,0,0,1,1,1,0,0,0],           
+ [0,1,1,0,1,0,0,0,0,0,0,0,0],          
+ [0,1,0,0,1,1,0,0,1,0,1,0,0],          
+ [0,1,0,0,1,1,0,0,1,1,1,0,0],           
+ [0,0,0,0,0,0,0,0,0,0,1,0,0],            
+ [0,0,0,0,0,0,0,1,1,1,0,0,0],                 
+ [0,0,0,0,0,0,0,1,1,0,0,0,0]]            
+Output: 6             
+Explanation: The answer is not 11, because the island must be connected 4-directionally.             
+
+Example 2:             
+Input: grid = [[0,0,0,0,0,0,0,0]]             
+Output: 0             
+
+Constraints:           
+* m == grid.length          
+* n == grid[i].length            
+* 1 <= m, n <= 50              
+* grid[i][j] is either 0 or 1.
+
+#### My AC Version            
+有了上一题的经验，已经可以徒手撸中规中矩的 DFS 和 BFS 了。先上一个DFS。       
+```c++          
+class Solution {
+public:
+    int maxAreaOfIsland_dfs(vector<vector<int>>& grid) {
+        int maxArea = 0;
+        for (int i = 0; i < grid.size(); i ++){
+            for (int j = 0; j < grid[0].size(); j++){
+                if (grid[i][j]==1){
+                    int thisArea = 0;
+                    dfs(grid, i, j, thisArea);
+                    maxArea = max(maxArea, thisArea);
+                }
+            }
+        }
+        return maxArea;     
+    }
+
+private:
+    void dfs(vector<vector<int>>& grid, int i, int j, int& thisArea){
+        if (i < 0 || i == grid.size() || j < 0 || j == grid[0].size() || 
+            grid[i][j] != 1 ) return;
+        thisArea ++;
+        grid[i][j] = 2;
+        dfs(grid, i-1, j, thisArea);
+        dfs(grid, i+1, j, thisArea);
+        dfs(grid, i, j-1, thisArea);
+        dfs(grid, i, j+1, thisArea);
+    }
+};
+```            
+Runtime: 16 ms, faster than 84.46% of C++ online submissions for Max Area of Island.             
+Memory Usage: 23.3 MB, less than 70.36% of C++ online submissions for Max Area of Island.           
+时间空间表现还算可以。         
+事实上，这个DFS with helper function 解法平平无奇，没有什么特色。需要注意的一点是，避免使用额外的二维 mask 标记数组。一来容易出错，也不比使用题目提供的 vector 本身作为标记数组（比如访问过的陆地值 1 置 0）方便快捷；二者，二维数组传参访问麻烦了些。         
+再看一个 BFS 解法，跟上一题也几乎一致。           
+```c++           
+class Solution {
+public:
+    int maxAreaOfIsland(vector<vector<int>>& grid) {
+        list<pair<int, int>> itemList;
+        int maxArea = 0;
+        for (int i = 0; i < grid.size(); i ++){
+        for (int j = 0; j < grid[0].size(); j++){
+            int thisArea = 0;
+            if (grid[i][j] == 1)
+                itemList.push_back(make_pair(i,j));
+            while(!itemList.empty()){
+                pair<int, int> thisItem = itemList.front();
+                itemList.pop_front();
+                int row = get<0>(thisItem), col = get<1>(thisItem);
+                if (row < 0 || row == grid.size() || col < 0 || col == grid[0].size() || grid[row][col] != 1)
+                    continue;
+                thisArea ++;
+                grid[row][col] = 0;
+                itemList.push_back(make_pair(row-1, col));
+                itemList.push_back(make_pair(row+1, col));
+                itemList.push_back(make_pair(row, col-1));
+                itemList.push_back(make_pair(row, col+1));
+            }
+            maxArea = max(thisArea, maxArea);
+        }
+        }
+        return maxArea;
+    }
+};
+```            
+Runtime: 36 ms, faster than 20.78% of C++ online submissions for Max Area of Island.           
+Memory Usage: 30.7 MB, less than 6.53% of C++ online submissions for Max Area of Island.               
+速度和空间表现都不太好，随意吧。            
+行，本题完美收工。           
+
