@@ -1393,3 +1393,29 @@ Memory Usage: 18.3 MB, less than 6.14% of C++ online submissions for Populating 
 时间和空间表现都不算好，看看讨论区有什么奇技淫巧。         
 
 #### Discuss solution             
+
+受讨论区[My simple non-iterative C++ code with O(1) memory](https://leetcode.com/problems/populating-next-right-pointers-in-each-node/discuss/37578/My-simple-non-iterative-C%2B%2B-code-with-O(1)-memory)启发，重写出如下解：            
+```c++
+class Solution {
+public:
+    Node* connect(Node* root) {
+        if (!root) return root;
+        Node* currNode = root;
+        while(currNode -> left){
+            currNode -> left -> next = currNode -> right;
+            Node* p = currNode;
+            while(p -> next){
+                p -> right -> next = p -> next -> left;
+                p = p -> next;
+                p -> left -> next = p -> right;
+            }
+            p -> next = NULL;
+            currNode = currNode -> left;
+        }
+        return root;
+    }
+};
+```        
+Runtime: 16 ms, faster than **89.82%** of C++ online submissions for Populating Next Right Pointers in Each Node.          
+Memory Usage: 16.7 MB, less than **85.93%** of C++ online submissions for Populating Next Right Pointers in Each Node.           
+非常巧妙的解法。本质上仍然是层次遍历，但巧妙的使用了 next 指针，而不是死板的使用 list 容器实现。节省了相当空间，同时时间效率也得到了较大提升。         
