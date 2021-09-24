@@ -833,7 +833,7 @@ Memory Usage: 10.8 MB, less than 31.05% of C++ online submissions for Remove Nth
 
 没什么看的，讨论区高赞解法就两种类型，一种和我差不多，另一种快慢指针，有点儿难理解，不费脑子了。    
 
-## Day 6: Sliding Window                  
+## Day 6: Sliding Window 滑动窗口                 
 [GitHub 连接](https://github.com/OUCliuxiang/leetcode/blob/master/StudyPlan/Algo1/day6)           
 
 ### 3. Longest Substring Without Repeating Characters      
@@ -1002,3 +1002,98 @@ Memory Usage: 7.3 MB, less than 76.83% of C++ online submissions for Permutation
 其本质上就是给 s2 一个长度为 s1.length() 滑动窗口 slide windows，比较滑动窗口中储存的各字符出现次数和 goal 是否相等。         
 比较难以具象解释，多看代码，慢慢悟就好了。        
 需要注意的是，不能使用类似 `int goal[26]` 形式的数组。这是由于使用 `==` 判断数组相等实质比较的是地址相等，两个不同数组永远为 false；而 vector 则重载了 `==` 操作符，为逐元素比较内容（见《C++标准库（第二版）》电子工业出版社中译本 273 页）。          
+
+## Day 7 BFS / DFS 广度优先/深度优先搜索             
+[GitHub 连接](https://github.com/OUCliuxiang/leetcode/blob/master/StudyPlan/Algo1/day7)
+
+### 733. Flood Fill         
+
+An image is represented by an m x n integer grid image where image\[i\]\[j\] represents the pixel value of the image. You are also given three integers sr, sc, and newColor. You should perform a flood fill on the image starting from the pixel image\[sr\]\[sc\].         
+To perform a flood fill, consider the starting pixel, plus any pixels connected 4-directionally to the starting pixel of the same color as the starting pixel, plus any pixels connected 4-directionally to those pixels (also with the same color), and so on. Replace the color of all of the aforementioned pixels with newColor. Return the modified image after performing the flood fill.             
+ 
+Example 1:             
+Input: image = \[\[1,1,1\],\[1,1,0\],\[1,0,1\]\], sr = 1, sc = 1, newColor = 2           
+Output: \[\[2,2,2\],\[2,2,0\],\[2,0,1\]\]           
+Explanation: From the center of the image with position (sr, sc) = (1, 1) (i.e., the red pixel), all pixels connected by a path of the same color as the starting pixel (i.e., the blue pixels) are colored with the new color.          
+Note the bottom corner is not colored 2, because it is not 4-directionally connected to the starting pixel.        
+
+Example 2:          
+Input: image = [[0,0,0],[0,0,0]], sr = 0, sc = 0, newColor = 2          
+Output: [[2,2,2],[2,2,2]]           
+
+Constraints:
+ * m == image.length      
+ * n == image[i].length         
+ * 1 <= m, n <= 50        
+ * 0 <= image[i][j], newColor < 216        
+ * 0 <= sr < m         
+ * 0 <= sc < n          
+
+#### My AC Version                           
+此题不会，翻了讨论区才勉强搞出来的朴素的深度优先解法：             
+```c++            
+class Solution {
+public:
+    vector<vector<int>> floodFill(vector<vector<int>>& image, int sr, int sc, int newColor) {
+        if (image[sr][sc] == newColor) return image;
+        
+        int oldColor = image[sr][sc];
+        if (image[sr][sc] != newColor){
+            dfs(image, sr, sc, oldColor, newColor);
+        }
+        return image;
+    }
+    
+    
+private:
+    void dfs(vector<vector<int>>& image, int sr, int sc, int oldColor, int newColor){
+        if (sr < 0 || sr == image.size() || sc < 0 || sc == image[0].size() || image[sr][sc] != oldColor) return;
+        image[sr][sc] = newColor;
+        dfs(image, sr-1, sc, oldColor, newColor);
+        dfs(image, sr+1, sc, oldColor, newColor);
+        dfs(image, sr, sc-1, oldColor, newColor);
+        dfs(image, sr, sc+1, oldColor, newColor);
+    }
+};
+```                
+Runtime: 8 ms, faster than 81.26% of C++ online submissions for Flood Fill.              
+Memory Usage: 14 MB, less than 81.29% of C++ online submissions for Flood Fill.         
+
+一个中规中矩的邻接矩阵图深度优先搜索，使用了辅助函数 dfs 进行递归。首先进行一次目标区域颜色是否是目标颜色的判断，是的话直接返回，节省一定时间。然后提取旧颜色，用于 dfs 递归（深度优先），递归结束，返回 image 。             
+
+随后又根据 discuss 中的一个 [java 版本 BFS](https://leetcode.com/problems/flood-fill/discuss/473494/Java-DFS-BFS-Solutions-Space-complexity-Analysis-Clean-and-Concise) 广度优先解法搞了个 c++ 广度优先：              
+
+```c++           
+class Solution {
+public:
+    vector<vector<int>> floodFill(vector<vector<int>>& image, int sr, int sc, int newColor) {
+        if (image[sr][sc] == newColor) return image;
+        
+        int oldColor = image[sr][sc];
+        int Row = image.size(), Col = image[0].size();
+        list<pair<int, int>> itemList;
+        itemList.push_back( ( make_pair(sr, sc)));
+        while( !itemList.empty()){
+            pair<int, int> thisItem = itemList.front();
+            itemList.pop_front();
+            int thisRow = get<0>(thisItem), thisCol = get<1>(thisItem);
+            if (thisRow < 0 || thisRow == Row || thisCol < 0 || 
+                thisCol == Col || image[thisRow][thisCol] != oldColor)
+                continue;
+            image[thisRow][thisCol] = newColor;
+            
+            itemList.push_back( ( make_pair(thisRow-1, thisCol)));
+            itemList.push_back( ( make_pair(thisRow+1, thisCol)));
+            itemList.push_back( ( make_pair(thisRow, thisCol-1)));
+            itemList.push_back( ( make_pair(thisRow, thisCol+1)));
+        }
+        return image;
+    }
+};
+```             
+
+Runtime: 4 ms, faster than **97.94%** of C++ online submissions for Flood Fill.           
+Memory Usage: 14.2 MB, less than 29.53% of C++ online submissions for Flood Fill.         
+
+广度优先的实现稍微复杂一点点，但思路似乎更简单：设计一个 List，将第一个元素加入到 List ，立刻进入 while 循环，循环终止条件为 List 置空。循环内部执行：      
+提取并移除头部元素，判断头部元素是否符合 fill 的条件（边界条件及值条件），不满足则 continue 进入下一轮，满足则 fill 并将上下左右四个元素依次加入到 List 尾部。       
