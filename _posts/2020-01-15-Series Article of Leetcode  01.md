@@ -1200,3 +1200,116 @@ Memory Usage: 30.7 MB, less than 6.53% of C++ online submissions for Max Area of
 速度和空间表现都不太好，随意吧。            
 行，本题完美收工。           
 
+## Day 8 BFS / DFS 广度优先/深度优先搜索             
+[GitHub 连接](https://github.com/OUCliuxiang/leetcode/blob/master/StudyPlan/Algo1/day8)           
+
+### 617 Merge Two Binary Trees           
+You are given two binary trees root1 and root2.     
+Imagine that when you put one of them to cover the other, some nodes of the two trees are overlapped while the others are not. You need to merge the two trees into a new binary tree. The merge rule is that if two nodes overlap, then sum node values up as the new value of the merged node. Otherwise, the NOT null node will be used as the node of the new tree.            
+Return the merged tree.             
+Note: The merging process must start from the root nodes of both trees.           
+
+Example 1:           
+Input: root1 = [1,3,2,5], root2 = [2,1,3,null,4,null,7]        
+Output: [3,4,5,5,4,null,7]            
+
+Example 2:           
+Input: root1 = [1], root2 = [1,2]             
+Output: [2,2]           
+
+Constraints:          
+* The number of nodes in both trees is in the range [0, 2000].       
+* -104 <= Node.val <= 104
+
+#### My AC Version        
+这道题玩儿树，怎么也得是层次遍历或前中后序遍历吧，跟 BFS、DFS 有几毛钱关系？     
+先来一个前序遍历版本。          
+```c++       
+/**
+ * Definition for a binary tree node.
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode() : val(0), left(nullptr), right(nullptr) {}
+ *     TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
+ *     TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}
+ * };
+ */
+class Solution {
+public:
+    TreeNode* mergeTrees(TreeNode* root1, TreeNode* root2) {
+        if (!root1 && ! root2)  return nullptr;
+        TreeNode* root = new TreeNode();
+        Traverse(root, root1, root2);
+        return root;
+    }
+private:
+    void Traverse(TreeNode* root, TreeNode* root1, TreeNode* root2){
+        if (root1 && root2) {
+            root -> val = root1 -> val + root2 -> val;
+            if(root1 -> left || root2 -> left){
+                root -> left = new TreeNode();
+                Traverse(root -> left, root1 -> left, root2 -> left);
+            }
+            if(root1 -> right || root2 -> right){
+                root -> right = new TreeNode();
+                Traverse(root -> right, root1 -> right, root2 -> right);
+            }
+        }else if(root1 && !root2){
+            root -> val = root1 -> val;
+            if(root1 -> left){
+                root -> left = new TreeNode();
+                Traverse(root -> left, root1 -> left, nullptr);
+            }
+            if(root1 -> right){
+                root -> right = new TreeNode();
+                Traverse(root -> right, root1 -> right, nullptr);
+            }
+        }
+        else if (!root1 && root2){
+            root -> val = root2 -> val;
+            if(root2 -> left){
+                root -> left = new TreeNode();
+                Traverse(root -> left, nullptr, root2 -> left);
+            }
+            if(root2 -> right){
+                root -> right = new TreeNode();
+                Traverse(root -> right, nullptr, root2 -> right);
+            }
+        }
+        else
+            return;
+    }
+};       
+```         
+Runtime: 32 ms, faster than 88.12% of C++ online submissions for Merge Two Binary Trees.        
+Memory Usage: 33.6 MB, less than 14.71% of C++ online submissions for Merge Two Binary Trees.    
+时间表现还过得去，空间表现差了些，一会儿看讨论区。          
+虽然用了递归遍历，但我的版本过于复杂，对于遍历中两树节点存在与否的四种可能分别进了讨论。如果硬要按图遍历来讲，这大概算一个深度优先DFS？     
+
+另一方面，由于需要考虑的情况相对较多（两棵树要同步进行，当前节点存在与否，左右子节点存在与否的组合情况），不建议使用层次遍历，或叫广度优先。看看讨论区的奇技淫巧。         
+
+#### Discuss solution        
+```c++       
+class Solution {
+public:
+    TreeNode* mergeTrees(TreeNode* t1, TreeNode* t2) {
+        if (t1 && t2) { 
+            t1->val+=t2->val;
+            t1->left = mergeTrees(t1->left,t2->left);  
+            t1->right = mergeTrees(t1->right, t2->right);
+        } else { 
+            return t1 ? t1 : t2;  
+        }
+        return t1; 
+        }
+};
+```      
+Runtime: 24 ms, faster than **99.01%** of C++ online submissions for Merge Two Binary Trees.       
+Memory Usage: 32.3 MB, less than 85.30% of C++ online submissions for Merge Two Binary Trees.         
+
+什么神奇解法，惊为天人！       
+这就不是人能写出来的代码。简洁，优美，明了，甚至不需要explination 。没有十年 bug 经验，写不出这样优雅的代码。      
+
+
