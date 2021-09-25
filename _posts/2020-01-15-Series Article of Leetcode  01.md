@@ -1536,4 +1536,86 @@ private:
 Runtime: 68 ms, faster than 63.28% of C++ online submissions for 01 Matrix.        
 Memory Usage: 29.9 MB, less than 43.83% of C++ online submissions for 01 Matrix.           
 
-讨论区这个思路就比较好，先遍历一遍矩阵，如果元素值是 0，加入到队列 `queue< pair< int, int>>`，否则将值置 maxValue。这里需要注意，三目运算符内部完成赋值操作需要将返回值强制转换为 void，这是由于赋值操作默认的返回类型是 int 整型，不能被判断语句所接收。随后广度优先读队列，如果读出的值 center 的四周某个方向的值是 maxValue，就证明这块地方是陆地，其值变更为 `min(original, center+1)`，比较难理解。首先明确这个解法思路是从 0 开始一层层向外逼近，然后多看两眼悟一悟就能理解了。
+讨论区这个思路就比较好，先遍历一遍矩阵，如果元素值是 0，加入到队列 `queue< pair< int, int>>`，否则将值置 maxValue。这里需要注意，三目运算符内部完成赋值操作需要将返回值强制转换为 void，这是由于赋值操作默认的返回类型是 int 整型，不能被判断语句所接收。随后广度优先读队列，如果读出的值 center 的四周某个方向的值是 maxValue，就证明这块地方是陆地，其值变更为 `min(original, center+1)`，比较难理解。首先明确这个解法思路是从 0 开始一层层向外（值 1 方向）逼近，然后多看两眼悟一悟就能理解了。             
+
+### 994. Rotting Oranges         
+You are given an m x n grid where each cell can have one of three values:            
+0. representing an empty cell,           
+1. representing a fresh orange, or         
+2. representing a rotten orange.           
+
+Every minute, any fresh orange that is 4-directionally adjacent to a rotten orange becomes rotten.             
+Return the minimum number of minutes that must elapse until no cell has a fresh orange. If this is impossible, return -1.           
+
+Example 1:             
+Input: grid = [[2,1,1],[1,1,0],[0,1,1]]            
+Output: 4              
+
+Example 2:               
+Input: grid = [[2,1,1],[0,1,1],[1,0,1]]           
+Output: -1              
+Explanation: The orange in the bottom left corner (row 2, column 0) is never rotten, because rotting only happens 4-directionally.        
+
+Example 3:            
+Input: grid = [[0,2]]             
+Output: 0           
+Explanation: Since there are already no fresh oranges at minute 0, the answer is just 0.             
+
+Constraints:             
+* m == grid.length            
+* n == grid[i].length           
+* 1 <= m, n <= 10            
+* grid[i][j] is 0, 1, or 2.
+
+### My AC Version            
+```c++          
+class Solution {
+public:
+    int Row, Col;
+    int DIRS[5] = {-1, 0, 1, 0, -1};
+    int orangesRotting(vector<vector<int>>& grid) {
+        Row = grid.size();
+        Col = grid[0].size();
+        queue<tuple<int, int, int>> q;
+        int step = 0;
+        for (int i = 0; i < Row; i ++)
+            for (int j = 0; j < Col; j ++)
+                if (grid[i][j] == 2)
+                    q.push(make_tuple(i, j, step));
+        
+        while(!q.empty()){
+            auto [x, y, s] = q.front(); q.pop();
+            for (int i = 0; i < 4; i++){
+                int x1 = x + DIRS[i], y1 = y + DIRS[i+1];
+                if (isValid(x1, y1, grid)){
+                    grid[x1][y1] = 2;
+                    q.push(make_tuple(x1, y1, s+1));
+                }
+            }
+            step = s;
+        }
+        
+        for (int i = 0; i < Row; i ++)
+            for (int j = 0; j < Col; j ++)
+                if (grid[i][j] == 1)
+                    return -1;
+        
+        return step;
+    }
+private:
+    bool isValid(int x, int y, vector<vector<int>>& grid){
+        if (x >= 0 && x < Row && y >= 0 && y < Col && grid[x][y] == 1)
+            return true;
+        return false;
+    }
+};
+```           
+Runtime: 8 ms, faster than 62.77% of C++ online submissions for Rotting Oranges.             
+Memory Usage: 13.2 MB, less than 51.36% of C++ online submissions for Rotting Oranges.           
+这个题看似简单，却着实费了不少功夫去调。依然是广度优先搜索 BFS，分成三个阶段（三个循环）。第一阶段遍历矩阵，将值为 2 的元素加入到广度优先队列；第二阶段读队列，开始广度优先，一层一层向外蔓延，变 1 为 2，直到队列为空；第三阶段在遍历一遍，看看是否仍存在 1，是则返回 -1，否则返回 step 。           
+个人认为我的解法巧妙之处在于使用 tuple 而非 pair 作为队列的基本单元，其中 tuple 中除了横纵坐标之外，另加入了每一层的 step 作为 label ，从而避免了 while 读队列时每一个元素 step+1 的窘境。      
+比如，测试用例 1 中 [0,0] 元素旁边的两个 orange 是同时被 rot 的，如果按照常规的广度优先读队列，这两个元素的读取由于有先后之分，于是很难做到 step 统一。但我额外加入一个 step label，就很容易做到统一了。           
+看看讨论区有什么奇技淫巧。             
+
+#### Discuss solution            
+基本看不懂，但我觉得我的解法和讨论区奇技淫巧也差不了多少，时间空间表现也还过得去，就不卷了。            
