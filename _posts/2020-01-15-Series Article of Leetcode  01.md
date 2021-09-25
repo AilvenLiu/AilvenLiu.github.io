@@ -1340,8 +1340,7 @@ Constraints:
 * The number of nodes in the tree is in the range [0, 212 - 1].           
 * -1000 <= Node.val <= 1000
 
-#### My AC Version           
-朴素的层次遍历，或者叫广度优先？这题似乎只能有层次来解。           
+#### My AC Version                      
 ```c++            
 /*
 // Definition for a Node.
@@ -1389,8 +1388,8 @@ public:
 ```          
 Runtime: 24 ms, faster than 35.21% of C++ online submissions for Populating Next Right Pointers in Each Node.           
 Memory Usage: 18.3 MB, less than 6.14% of C++ online submissions for Populating Next Right Pointers in Each Node.          
-
-时间和空间表现都不算好，看看讨论区有什么奇技淫巧。         
+朴素的层次遍历，或者叫广度优先？这题似乎只能有层次来解，本意是使用位运算符判断是否到完美二叉树某一层最有段，但位运算符还是有点门槛的，遂弃之不用，用 pow。     
+我们的解时间和空间表现都不算好，看看讨论区有什么奇技淫巧。         
 
 #### Discuss solution             
 
@@ -1419,3 +1418,83 @@ public:
 Runtime: 16 ms, faster than **89.82%** of C++ online submissions for Populating Next Right Pointers in Each Node.          
 Memory Usage: 16.7 MB, less than **85.93%** of C++ online submissions for Populating Next Right Pointers in Each Node.           
 非常巧妙的解法。本质上仍然是层次遍历，但巧妙的使用了 next 指针，而不是死板的使用 list 容器实现。节省了相当空间，同时时间效率也得到了较大提升。         
+
+## Day 9 BFS / DFS 广度优先/深度优先搜索             
+[GitHub 连接](https://github.com/OUCliuxiang/leetcode/blob/master/StudyPlan/Algo1/day9)          
+
+### 542. 01 Matrix         
+Given an m x n binary matrix mat, return the distance of the nearest 0 for each cell.          
+The distance between two adjacent cells is 1.           
+
+Example 1:          
+Input: mat = [          
+    [0,0,0],           
+    [0,1,0],           
+    [0,0,0]]                      
+Output: [
+    [0,0,0],          
+    [0,1,0],            
+    [0,0,0]]              
+
+Example 2:            
+Input: mat = [           
+    [0,0,0],          
+    [0,1,0],          
+    [1,1,1]]                       
+Output: [           
+    [0,0,0],          
+    [0,1,0],        
+    [1,2,1]]            
+
+Constraints:         
+* m == mat.length          
+* n == mat[i].length           
+* 1 <= m, n <= 104             
+* 1 <= m * n <= 104           
+* mat[i][j] is either 0 or 1.         
+* There is at least one 0 in mat.
+
+#### My TLE Version           
+```c++       
+class Solution {
+public:
+    vector<vector<int>> updateMatrix(vector<vector<int>>& mat) {
+        int Row = mat.size(), Col = mat[0].size();
+        for (int i = 0; i < Row; i ++){
+            for (int j = 0; j < Col; j++){
+                if (mat[i][j] != 0){
+                    int minDis = 0x7fff;
+                    list<pair<int, int>> itemList;
+                    itemList.push_back(make_pair(i,j));
+                    while(!itemList.empty()){
+                        pair<int, int> thisItem = itemList.front();
+                        itemList.pop_front();
+                        int row = get<0>(thisItem), col = get<1>(thisItem);
+                        if(row < 0 || row == Row || col < 0 || col == Col)
+                            continue;
+                        if(mat[row][col] == 0 ){
+                            minDis = abs(row-i)+abs(col-j);
+                            break;
+                        }
+                        itemList.push_back(make_pair(row-1, col));
+                        itemList.push_back(make_pair(row+1, col));
+                        itemList.push_back(make_pair(row, col-1));
+                        itemList.push_back(make_pair(row, col+1));
+                    }
+                    mat[i][j] = minDis;
+                    itemList.~list();
+                } 
+            }
+        }
+        return mat;
+    }
+}; 
+```          
+本题起初想用 BFS 广度优先一层一层往外找，通过了48个测试用例，在第四十九个用例：     
+[[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[1,1,1],[0,0,0]]
+       
+Time Limit Exceeded ，卡住了。看看讨论区。        
+
+#### Discuss solution           
+
+思路完全错了，层次搜索不错，一层一层逼近也不错，但应该是从（）
