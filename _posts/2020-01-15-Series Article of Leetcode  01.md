@@ -1497,4 +1497,43 @@ Time Limit Exceeded ，卡住了。看看讨论区。
 
 #### Discuss solution           
 
-思路完全错了，层次搜索不错，一层一层逼近也不错，但应该是从（）
+思路完全错了，层次搜索不错，一层一层逼近也不错，但应该是从海面（值 0）向陆地（值 1）逼近。       
+```c++             
+class Solution {
+public:
+    int DIRS[5] = {-1,0,1,0,-1}, Row, Col;
+    vector<vector<int>> updateMatrix(vector<vector<int>>& mat) {
+        Row = mat.size();
+        Col = mat[0].size();
+        int maxDis = Row+Col;
+        queue<pair<int, int>> q; 
+        for (int i = 0; i < Row; i++ ){
+            for (int j = 0; j < Col; j++){
+                mat[i][j] == 0 ? q.push(make_pair(i, j)) : void( mat[i][j] = maxDis); 
+            }
+        }
+        while(!q.empty()){
+            auto [x, y] = q.front();    q.pop();
+            for (int i = 0; i < 4; i++){
+                int x1 = x + DIRS[i], y1 = y + DIRS[i+1];
+                if(isValid(x1, y1) && mat[x1][y1] == maxDis){
+                    q.push(make_pair(x1, y1));
+                    mat[x1][y1] = min(mat[x1][y1], mat[x][y] + 1);
+                }                  
+            }
+        }
+        
+        return mat;
+    }
+    
+private:
+    bool isValid(int x, int y){
+        if (x >= 0 && x < Row && y >=0 && y < Col ) return true;
+        return false;
+    }
+};
+```           
+Runtime: 68 ms, faster than 63.28% of C++ online submissions for 01 Matrix.        
+Memory Usage: 29.9 MB, less than 43.83% of C++ online submissions for 01 Matrix.           
+
+讨论区这个思路就比较好，先遍历一遍矩阵，如果元素值是 0，加入到队列 `queue< pair< int, int>>`，否则将值置 maxValue。这里需要注意，三目运算符内部完成赋值操作需要将返回值强制转换为 void，这是由于赋值操作默认的返回类型是 int 整型，不能被判断语句所接收。随后广度优先读队列，如果读出的值 center 的四周某个方向的值是 maxValue，就证明这块地方是陆地，其值变更为 `min(original, center+1)`，比较难理解。首先明确这个解法思路是从 0 开始一层层向外逼近，然后多看两眼悟一悟就能理解了。
