@@ -1612,7 +1612,7 @@ private:
 ```           
 Runtime: 8 ms, faster than 62.77% of C++ online submissions for Rotting Oranges.             
 Memory Usage: 13.2 MB, less than 51.36% of C++ online submissions for Rotting Oranges.           
-这个题看似简单，却着实费了不少功夫去调。依然是广度优先搜索 BFS，分成三个阶段（三个循环）。第一阶段遍历矩阵，将值为 2 的元素加入到广度优先队列；第二阶段读队列，开始广度优先，一层一层向外蔓延，变 1 为 2，直到队列为空；第三阶段在遍历一遍，看看是否仍存在 1，是则返回 -1，否则返回 step 。           
+这个题看似简单，却着实费了不少功夫去调。依然是广度优先搜索 BFS，分���三个阶段（三个循环）。第一阶段遍历矩阵，将值为 2 的元素加入到广度优先队列；第二阶段读队列，开始广度优先，一层一层向外蔓延，变 1 为 2，直到队列为空；第三阶段在遍历一遍，看看是否仍存在 1，是则返回 -1，否则返回 step 。           
 个人认为我的解法巧妙之处在于使用 tuple 而非 pair 作为队列的基本单元，其中 tuple 中除了横纵坐标之外，另加入了每一层的 step 作为 label ，从而避免了 while 读队列时每一个元素 step+1 的窘境。      
 比如，测试用例 1 中 [0,0] 元素旁边的两个 orange 是同时被 rot 的，如果按照常规的广度优先读队列，这两个元素的读取由于有先后之分，于是很难做到 step 统一。但我额外加入一个 step label，就很容易做到统一了。           
 看看讨论区有什么奇技淫巧。             
@@ -1730,4 +1730,41 @@ public:
 Runtime: 4 ms, faster than **95.57%** of C++ online submssions for Merge Two Sorted Lists.        
 Memory Usage: 14.8 MB, less than 53.24% of C++ online submissions for Merge Two Sorted Lists.          
 
-卧槽，这递归用的妙啊，简直是妙妙进了米奇妙妙屋，妙到家了。简洁优美，极致的简洁，甚至不需要任何解释，哪怕再添加一行注释，都破坏了整段程序的简洁美感。
+卧槽，这递归用的妙啊，简直是妙妙进了米奇妙妙屋，妙到家了。简洁优美，极致的简洁，甚至不需要任何解释。哪怕再添加一行注释，都破坏了整段程序的简洁美感。          
+
+### 206. Reverse Linked List             
+Given the head of a singly linked list, reverse the list, and return the reversed list.            
+
+Example 1:        
+Input: head = [1,2,3,4,5]            
+Output: [5,4,3,2,1]           
+
+Example 2:        
+Input: head = [1,2]           
+Output: [2,1]            
+
+Example 3:           
+Input: head = []          
+Output: []          
+
+#### Discuss solution          
+
+这道题，不使用另建可翻转容器的方法搞出来。但如果另建容器，过于作弊了，脱离了本题练习递归/回溯的本意。直接跳到讨论区。          
+```c++                 
+class Solution {
+public:
+    ListNode* reverseList(ListNode* head) {
+        if( !head || !(head -> next))   return head;
+        ListNode* node = reverseList(head -> next);
+        head -> next -> next = head;
+        head -> next = nullptr;
+        return node;
+    }
+};
+```               
+Runtime: 4 ms, faster than **95.91%** of C++ online submissions for Reverse Linked List.             
+Memory Usage: 8.6 MB, less than 10.55% of C++ online submissions for Reverse Linked List.              
+时间表现非常好。           
+但，这道题的难度分级是 Easy，这分明一点都不 Easy。递归用的这么熟练，就不是初学者能掌握的等级。        
+这个递归吧，五行代码，每一行都是灵魂，都起着至关重要的作用。文字解释不清楚，画个图，可能更清楚一点：             
+<div align=center><img src="https://raw.githubusercontent.com/OUCliuxiang/OUCliuxiang.github.io/master/img/leetcode/leetcode001.png"></div>       
