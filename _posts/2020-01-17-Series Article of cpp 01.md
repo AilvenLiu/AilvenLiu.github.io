@@ -2,7 +2,7 @@
 layout:     post
 title:      Series Article of cpp -- 01
 subtitle:   三目运算符*内部*完成赋值操作需要转 void        
-date:       2021-09-025
+date:       2021-09-25
 author:     OUC_LiuX
 header-img: img/wallpic02.jpg
 catalog: true
