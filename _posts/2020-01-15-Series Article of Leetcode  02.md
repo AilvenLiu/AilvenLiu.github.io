@@ -581,7 +581,7 @@ Memory Usage: 8.6 MB, less than 10.55% of C++ online submissions for Reverse Lin
 时间表现非常好。           
 但，这道题的难度分级是 Easy，这分明一点都不 Easy。递归用的这么熟练，就不是初学者能掌握的等级。        
 这个递归吧，五行代码，每一行都是灵魂，都起着至关重要的作用。文字解释不清楚，画个图，可能更清楚一点：             
-<div align=center><img src="https://raw.githubusercontent.com/OUCliuxiang/OUCliuxiang.github.io/master/img/leetcode/leetcode001.png"></div>       
+<div align=center><img src="https://raw.githubusercontent.com/OUCliuxiang/OUCliuxiang.github.io/master/img/leetcode/leetcode001.jpg"></div>       
 
 
 ## Day 10 Recursion/Backtracking 递归/回溯            
@@ -609,4 +609,169 @@ Output: [[1]]
 Constraints:      
 * 1 <= n <= 20      
 * 1 <= k <= n      
- 
+
+#### Discuss solution         
+不会做，直接讨论区。顺便看了看前几天刷过去的题，有不少都忘了。得常复习嘛。       
+
+```c++         
+class Solution {
+public:
+    vector<vector<int>> combine(int n, int k) {
+        vector<vector<int>> res;
+        vector<int> item;
+        helper(1, k, n, res, item);
+        return res;
+    }
+private:
+    void helper(int idx, int k, int n, vector<vector<int>>& res, vector<int>& item){
+        if (item.size() == k){
+            res.push_back(item);
+            return;
+        }
+        for (int i = idx; i <= n; i++){
+            item.push_back(i);
+            helper(i+1, k, n, res, item);
+            item.pop_back();
+        }
+    }
+};
+```          
+
+这个题，递归和回溯都用到了，相对还是比较难的，至少于我而言，根本想不到解法。不知道为什么难度分级反而是 Easy，莫非真的是自己太菜了？           
+这题，我不知道怎么解释，多看代码吧。或许我的刷题策略就不对，不应该搞这么细致，应该暴力堆题量。从下一个Study Plan 开始，堆题量吧，每做一道题都多找它几道相关类型题。     
+
+### 46. Permutations                
+Given an array nums of distinct integers, return all the possible permutations. You can return the answer in any order.        
+
+Example 1:       
+Input: nums = [1,2,3]            
+Output: [[1,2,3],[1,3,2],[2,1,3],[2,3,1],[3,1,2],[3,2,1]]       
+
+Example 2:        
+Input: nums = [0,1]       
+Output: [[0,1],[1,0]]            
+
+Example 3:       
+Input: nums = [1]           
+Output: [[1]]            
+
+Constraints:             
+* 1 <= nums.length <= 6           
+* -10 <= nums[i] <= 10          
+* All the integers of nums are unique.          
+
+#### My AC Version            
+不用讨巧的方法已经不会做了，但用讨巧的方法，总感觉是在作弊。         
+```c++        
+class Solution {
+public:
+    vector<vector<int>> permute(vector<int>& nums) {
+        sort(nums.begin(), nums.end());
+        vector<vector<int>> res;
+        do{
+            res.push_back(nums);
+        }while(next_permutation(nums.begin(), nums.end()));
+        return res;
+    }
+    
+};
+```        
+Runtime: 4 ms, faster than 69.87% of C++ online submissions for Permutations.       
+Memory Usage: 7.7 MB, less than 57.68% of C++ online submissions for Permutations.         
+使用 C++20 新标准中的 next_permutation() 直接把所有排列形式找出来。太作弊了，太作弊了。        
+
+#### Discuss solution            
+```c++      
+class Solution {
+public:
+    vector<vector<int>> permute(vector<int>& nums) {
+        vector<vector<int>> res;
+        help(0, res, nums);
+        return res;
+    }
+private:
+    void help(int begin, vector<vector<int>>& res, vector<int>& nums){
+        if(begin == nums.size()){
+            res.push_back(nums);
+            return;
+        }
+        for (int i = begin; i < nums.size(); i ++){
+            swap(nums[begin], nums[i]);
+            help(begin+1, res, nums);
+            swap(nums[begin], nums[i]);
+        }
+    }
+};
+```        
+Runtime: 4 ms, faster than 69.87% of C++ online submissions for Permutations.        
+Memory Usage: 7.7 MB, less than 57.68% of C++ online submissions for Permutations.    
+
+跟上一题有点儿像，但只是形式上、代码组织上比较像而已，其内核则完全不一样。      
+这一道题是已经给定了定长定值的数组，让我们去寻找所有不同的排列，而不是找 m 个数中 k 个数的组合这种，所以，不需要另外建立 vector ，就在给出的 nums 数组中操作即可。       
+因为长度是已经给定的，只是找不同的组合，其也就可以抽象成寻找给定数组内所有可能的元素交换位置的情况。于是使用递归寻找，在从 0 开始第 i 个元素和其他所有元素依次交换的情况下递归调用以剩下的 n-i 个元素的子数组为参数的 help 。递归这种东西，很难具象地去想象它，只能是多读代码多写代码了。           
+
+
+### 784. Letter Case Permutation               
+
+Given a string s, we can transform every letter individually to be lowercase or uppercase to create another string.           
+Return a list of all possible strings we could create. You can return the output in any order.            
+
+Example 1:          
+Input: s = "a1b2"          
+Output: ["a1b2","a1B2","A1b2","A1B2"]             
+
+Example 2:             
+Input: s = "3z4"         
+Output: ["3z4","3Z4"]             
+
+Example 3:           
+Input: s = "12345"            
+Output: ["12345"]            
+
+Example 4:        
+Input: s = "0"            
+Output: ["0"]              
+
+Constraints:           
+* s will be a string with length between 1 and 12.          
+* s will consist only of letters or digits.            
+
+#### My AC Version              
+```c++         
+class Solution {
+public:
+    vector<string> letterCasePermutation(string s) {
+        vector<string> res;
+        helper(0, s, res);
+        set<string> se(res.begin(), res.end());
+        res.assign(se.begin(), se.end());
+        return res;
+    }
+private:
+    void helper(int idx, string& s, vector<string>& res){
+        if(idx == s.size()){
+            res.push_back(s);
+            return;
+        }
+        for (int i = idx; i < s.size(); i ++){
+            char tmp = s[i];
+            if( tmp >= 'A' && tmp <= 'Z') {
+                s[i] += 32;
+                helper(i+1, s, res);
+            }
+            if( tmp >= 'a' && tmp <= 'z') {
+                s[i] -= 32;
+                helper(i+1, s, res);
+            }
+            s[i] = tmp;
+            helper(i+1, s, res);
+        }
+    }
+};
+```        
+Runtime: 464 ms, faster than 5.26% of C++ online submissions for Letter Case Permutation.          
+Memory Usage: 151.2 MB, less than 5.00% of C++ online submissions for Letter Case Permutation.           
+
+用最笨的方法 AC 了，邯郸学步东施效颦比着葫芦还画不好瓢，装模作样用了递归回溯，却搞不好递归函数的组织。一共就几行代码的排列组合都搞不好，最后输出奇形怪状一堆重复元素，只好用 set 去一下重，结果就导致时间空间表现简直一坨屎。         
+
+#### Discuss solution          
