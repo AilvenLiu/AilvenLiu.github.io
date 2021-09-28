@@ -775,3 +775,35 @@ Memory Usage: 151.2 MB, less than 5.00% of C++ online submissions for Letter Cas
 用最笨的方法 AC 了，邯郸学步东施效颦比着葫芦还画不好瓢，装模作样用了递归回溯，却搞不好递归函数的组织。一共就几行代码的排列组合都搞不好，最后输出奇形怪状一堆重复元素，只好用 set 去一下重，结果就导致时间空间表现简直一坨屎。         
 
 #### Discuss solution          
+```c++          
+class Solution {
+public:
+    vector<string> letterCasePermutation(string s) {
+        vector<string> res;
+        helper(0, s, res);
+        return res;
+    }
+private:
+    void helper(int idx, string& s, vector<string>& res){
+        if(idx == s.size()){
+            res.push_back(s);
+            return;
+        }
+        helper(idx+1, s, res);
+        if (s[idx] >= 'A' && s[idx] <= 'Z'){
+            s[idx] += 32;
+            helper(idx+1, s, res);
+        }
+        else if (s[idx] >= 'a' && s[idx] <= 'z'){
+            s[idx] -= 32;
+            helper(idx+1, s, res);
+        }
+    }
+};
+```           
+Runtime: 0 ms, faster than **100.00%** of C++ online submissions for Letter Case Permutation.           
+Memory Usage: 9.5 MB, less than **90.62%** of C++ online submissions for Letter Case Permutation.           
+
+应该是很容易想到的，helper 函数里面判断结束（退出）条件后应该立刻进入递归调用，也即无论当前元素是不是字母都不影响递归调用的进行，然后才是是否是字母的判断。如果是字母，交换大小写后再进行一次递归。此时进入递归的字符串相应位置字母大小写已经交换，且，和判断语句之外的递归调用不冲突。    
+或者也可以，把判断语句外面的 helper 递归调用写到 if/elseif 后面，但这样写的话需要在判断语句内部、递归调用之后，再多写一行形如 `s[idx] += 32` 这样的语句，以恢复原始的值（回溯）。      
+但一定要注意的是，两个 if 语句，一定要用 else 做成一个组合，千万不要 if 后面直接跟另一个 if ，因为在第一个 If 里面，元素的值已经改变了！         
