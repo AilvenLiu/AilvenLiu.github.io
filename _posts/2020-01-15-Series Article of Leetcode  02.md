@@ -584,7 +584,7 @@ Memory Usage: 8.6 MB, less than 10.55% of C++ online submissions for Reverse Lin
 <div align=center><img src="https://raw.githubusercontent.com/OUCliuxiang/OUCliuxiang.github.io/master/img/leetcode/leetcode001.jpg"></div>       
 
 
-## Day 10 Recursion/Backtracking 递归/回溯            
+## Day 11 Recursion/Backtracking 递归/回溯            
 [GitHub 连接](https://github.com/OUCliuxiang/leetcode/blob/master/StudyPlan/Algo1/day11)         
 
 ### 77. Combinations                 
@@ -806,4 +806,195 @@ Memory Usage: 9.5 MB, less than **90.62%** of C++ online submissions for Letter 
 
 应该是很容易想到的，helper 函数里面判断结束（退出）条件后应该立刻进入递归调用，也即无论当前元素是不是字母都不影响递归调用的进行，然后才是是否是字母的判断。如果是字母，交换大小写后再进行一次递归。此时进入递归的字符串相应位置字母大小写已经交换，且，和判断语句之外的递归调用不冲突。    
 或者也可以，把判断语句外面的 helper 递归调用写到 if/elseif 后面，但这样写的话需要在判断语句内部、递归调用之后，再多写一行形如 `s[idx] += 32` 这样的语句，以恢复原始的值（回溯）。      
-但一定要注意的是，两个 if 语句，一定要用 else 做成一个组合，千万不要 if 后面直接跟另一个 if ，因为在第一个 If 里面，元素的值已经改变了！         
+但一定要注意的是，两个 if 语句，一定要用 else 做成一个组合，千万不要 if 后面直接跟另一个 if ，因为在第一个 if 里面，元素的值已经改变了！         
+
+## Day 12 Dynamic Programming                
+[GitHub 连接](https://github.com/OUCliuxiang/leetcode/blob/master/StudyPlan/Algo1/day12)          
+
+### 70. Climbing Stairs           
+
+You are climbing a staircase. It takes n steps to reach the top.      
+Each time you can either climb 1 or 2 steps. In how many distinct ways can you climb to the top?             
+
+Example 1:       
+Input: n = 2       
+Output: 2         
+Explanation: There are two ways to climb to the top.       
+1. 1 step + 1 step           
+2. 2 steps         
+
+Example 2:       
+Input: n = 3        
+Output: 3          
+Explanation: There are three ways to climb to the top.       
+1. 1 step + 1 step + 1 step       
+2. 1 step + 2 steps        
+3. 2 steps + 1 step           
+
+Constraints:       
+* 1 <= n <= 45        
+
+#### My TLE Version         
+```c++      
+class Solution {
+public:
+    int climbStairs(int n) {
+        if (n == 0 || n == 1) return 1;
+        int count  = 0;
+        helper(0, n, count);
+        return count;
+    }
+private:
+    void helper(int curr, int n, int& count){
+        if (curr == n){
+            count ++;
+            return;
+        }
+        helper(curr+1, n, count);
+        if (curr + 2 <= n)
+            helper(curr+2, n, count);  
+    }
+};  
+```         
+本来想，终于遇到一个会做的递归,,,,,, 用递归去做，Time Limit Exceeded 了。     
+找找讨论区动态规划 Dynamic Programming 怎么玩儿吧。        
+
+#### Discuss solution         
+```c++          
+class Solution {
+public:
+    int climbStairs(int n) {
+        if (n == 1) return 1;
+        if (n == 2) return 2;
+        int step[n];
+        step[0] = 1;
+        step[1] = 2;
+        for (int i = 2; i < n; i++)
+            step[i] = step[i-1] + step[i-2];
+        return step[n-1];
+    }
+};
+```           
+Runtime: 0 ms, faster than **100.00%** of C++ online submissions for Climbing Stairs.       
+Memory Usage: 5.9 MB, less than 82.36% of C++ online submissions for Climbing Stairs.        
+
+从 n=3 开始，登上第 n 阶台阶的途径只有两个：从 n-2 台阶两步登上；从 n-1 台阶一步登上。于是登上第 n 阶台阶的方法就变成了登上第 n-1 阶台阶和登上 n-2 阶台阶的方法总和。于是也可以按照 return climbStairs(n-1) + climbStairs(n-2) 建立递归，但，效率太低。于是换动态规划解法，建立一个长度为 n 的定长数组，for 循环将前两项的值相加赋值给当前项。
+
+
+### 198. House Robber         
+You are a professional robber planning to rob houses along a street. Each house has a certain amount of money stashed, the only constraint stopping you from robbing each of them is that adjacent houses have security systems connected and it will automatically contact the police if two adjacent houses were broken into on the same night.        
+Given an integer array nums representing the amount of money of each house, return the maximum amount of money you can rob tonight without alerting the police.         
+
+Example 1:           
+Input: nums = [1,2,3,1]           
+Output: 4            
+Explanation: Rob house 1 (money = 1) and then rob house 3 (money = 3).
+Total amount you can rob = 1 + 3 = 4.           
+ 
+Example 2:          
+Input: nums = [2,7,9,3,1]         
+Output: 12         
+Explanation: Rob house 1 (money = 2), rob house 3 (money = 9) and rob house 5 (money = 1).           
+Total amount you can rob = 2 + 9 + 1 = 12.            
+
+Constraints:            
+* 1 <= nums.length <= 100          
+* 0 <= nums[i] <= 400
+
+#### My WA Version          
+```c++              
+class Solution {
+public:
+    int res = 0;
+    int rob(vector<int>& nums) {
+        help(nums);
+        return res;
+    }
+private:
+    void help(vector<int>& nums){
+        vector<int>::iterator max_it = max_element(begin(nums), end(nums));
+        res += *max_it;
+        if (max_it-1 > nums.begin()){
+            vector<int> pre(nums.begin(), max_it-1);
+            help(pre);
+        }
+        if (max_it + 2 < nums.end()){
+            vector<int> aft(max_it+2, nums.end());
+            help(aft);
+        }
+    }
+};
+```          
+Wrong Answer          
+Input [2,3,2]         
+Output 3       
+Expected 4      
+
+试图用贪心去解，失败了。直奔讨论区。              
+
+#### Discuss solution            
+讨论区有个良心帖子 [From good to great. How to approach most of DP problems.](https://leetcode.com/problems/house-robber/discuss/156523/From-good-to-great.-How-to-approach-most-of-DP-problems.) 以本题为模板对动态规划类型题进行了深入浅出细致入微循序渐进的讲解，我搬运过来，并调整题解中的 java代码为 c++ 风格。
+
+There is some frustration when people publish their perfect fine-grained algorithms without sharing any information abut how they were derived. This is an attempt to change the situation. There is not much more explanation but it's rather an example of higher level improvements. Converting a solution to the next step shouldn't be as hard as attempting to come up with perfect algorithm at first attempt.             
+This particular problem and most of others can be approached using the following sequence:        
+1. Find recursive relation           
+2. Recursive (top-down)       
+3. Recursive + memo (top-down)         
+4. Iterative + memo (bottom-up)         
+5. Iterative + N variables (bottom-up)       
+
+**Step 1.** Figure out recursive relation.          
+A robber has 2 options: a) rob current house *i*; b) don't rob current house.            
+If an option "a" is selected it means she can't rob previous i-1 house but can safely proceed to the one before previous i-2 and gets all cumulative loot that follows.          
+If an option "b" is selected the robber gets all the possible loot from robbery of i-1 and all the following buildings.
+So it boils down to calculating what is more profitable:
+
+
+* robbery of current house + loot from houses before the previous    
+* loot from the previous house robbery and any loot captured before that
+
+`rob(i) = Math.max( rob(i - 2) + currentHouseValue, rob(i - 1) )`       
+
+**Step 2.** Recursive (top-down)         
+Converting the recurrent relation from Step 1 shound't be very hard.        
+
+```c++           
+public int rob(vector<int>& nums) {
+    return rob(nums, nums.size() - 1);
+}
+private int rob(vector<int>& nums, int i) {
+    if (i < 0) {
+        return 0;
+    }
+    return max(rob(nums, i - 2) + nums[i], rob(nums, i - 1));
+}           
+```          
+Time Limit Exceeded.           
+
+**Step 3.** Recursive + memo (top-down).          
+
+```c++          
+public int rob(vector<int>& nums) {
+    vector<int> memo(nums.size(), -1);
+    return rob(nums, memo, nums.size() - 1);
+}
+
+private int rob(vector<int>& nums, vector<int>& memo, int i) {
+    if (i < 0) {
+        return 0;
+    }
+    if (memo[i] >= 0) {
+        return memo[i];
+    }
+    int result = Math.max(
+        rob(nums, memo, i - 2) + nums[i], rob(nums, memo, i - 1));
+    memo[i] = result;
+    return result;
+}
+```             
+
+
+
+
+
+得搞个动态规划类型题的专题笔记。        
