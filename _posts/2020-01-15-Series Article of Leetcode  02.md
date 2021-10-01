@@ -1175,3 +1175,44 @@ Runtime: 3 ms, faster than 49.36% of C++ online submissions for Number of 1 Bits
 Memory Usage: 5.9 MB, less than 48.28% of C++ online submissions for Number of 1 Bits.         
 
 使用 gcc 自带的 `__builtin_xxxx` 系列内建函数解决。          
+
+## Day 14 Bit Manipulation                 
+[GitHub 连接](https://github.com/OUCliuxiang/leetcode/blob/master/StudyPlan/Algo1/day14)          
+
+### 190. Reverse Bits       
+Reverse bits of a given 32 bits unsigned integer.          
+Note that in some languages, such as Java, there is no unsigned integer type. In this case, both input and output will be given as a signed integer type. They should not affect your implementation, as the integer's internal binary representation is the same, whether it is signed or unsigned.           
+In Java, the compiler represents the signed integers using 2's complement notation. Therefore, in Example 2 above, the input represents the signed integer -3 and the output represents the signed integer -1073741825.
+
+Example 1:          
+Input: n = 00000010100101000001111010011100           
+Output:    964176192 (00111001011110000010100101000000)      
+Explanation: The input binary string 00000010100101000001111010011100 represents the unsigned integer 43261596, so return 964176192 which its binary representation is 00111001011110000010100101000000.           
+
+Example 2:               
+Input: n = 11111111111111111111111111111101            
+Output:   3221225471 (10111111111111111111111111111111)          
+Explanation: The input binary string 11111111111111111111111111111101 represents the unsigned integer 4294967293, so return 3221225471 which its binary representation is 10111111111111111111111111111111.        
+
+Constraints:        
+* The input must be a binary string of length 32
+
+#### My AC Version         
+```c++     
+class Solution {
+public:
+    uint32_t reverseBits(uint32_t n) {
+        string s = bitset<32>(n).to_string();
+        reverse(s.begin(), s.end());
+        return (uint32_t)bitset<32>(s).to_ullong();
+    }
+};
+```     
+Runtime: 0 ms, faster than **100.00%** of C++ online submissions for Reverse Bits.       
+Memory Usage: 6.2 MB, less than 8.41% of C++ online submissions for Reverse Bits.           
+
+时间表现还可以，空间表现一言难尽。借助 algorithm 库的 reverse 函数和 STL 中的 bitset 容器实现，其中 bitset 有方法 to_ullong() 可以将容器中的内容转为整型数。         
+找找讨论区的奇技淫巧。        
+
+#### Discuss solutoon         
+讨论区的移位操作看不懂，略。          
