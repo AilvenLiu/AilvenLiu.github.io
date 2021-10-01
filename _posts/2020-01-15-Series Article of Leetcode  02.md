@@ -1074,3 +1074,66 @@ public:
 看了一眼评论区才搞出来的，主要有两点注意：       
 一个是，这次的任务是解决一个二维空间中的问题，不能奢求向前两个题一样用几个基本状态标量存储之前状态，必然要建立和二维数组适配的向量（数组），存储上一层所有状态。      
 一个是从下往上遍历，一方面考量是建立的状态存储数组要按照最长状态（最下一层）定长度的，首先存储起来的状态最方便应该是直接接收最下一层的值；另一方面从下往上走，选择是递减的，也即收敛的，直到最上一层，可选择的节点变为 1，相对于从上往下走的开放式选择，这样更方便确立路径。       
+
+## Day 13 Bit Manipulation                 
+[GitHub 连接](https://github.com/OUCliuxiang/leetcode/blob/master/StudyPlan/Algo1/day13)          
+
+### 231. Power of Two        
+Given an integer n, return true if it is a power of two. Otherwise, return false.        
+An integer n is a power of two, if there exists an integer x such that n == 2^x.           
+
+Example 1:           
+Input: n = 1        
+Output: true       
+Explanation: 2^0 = 1           
+
+Example 2:         
+Input: n = 16          
+Output: true         
+Explanation: 2^4 = 16        
+
+Example 3:         
+Input: n = 3      
+Output: false       
+
+Example 4:          
+Input: n = 4       
+Output: true         
+
+Example 5:       
+Input: n = 5         
+Output: false          
+
+Constraints:        
+* -2^31 <= n <= 2^31 - 1            
+
+#### My AC version          
+```c++           
+class Solution {
+public:
+    bool isPowerOfTwo(int n) {
+        for (int i=0; i < 32; i ++)
+            if (pow(2, i) == n) return true;
+        return false;
+    }
+};
+```         
+Runtime: 2 ms, faster than 39.89% of C++ online submissions for Power of Two.        
+Memory Usage: 5.9 MB, less than 69.96% of C++ online submissions for Power of Two.         
+
+纯暴力解，跟题目要求的位操作没有关系，找找讨论区怎么玩儿位操作符。        
+
+#### Discuss solution        
+```c++          
+class Solution {
+public:
+    bool isPowerOfTwo(int n) {
+        return (n>0&&!(n&(n-1)));
+    }
+};
+```          
+Runtime: 0 ms, faster than **100%** of C++ online submissions for Power of Two.         
+Memory Usage: 5.9 MB, less than 69.96% of C++ online submissions for Power of Two.       
+
+比较容易理解的一个操作，当且仅当一个整数 n 是 2 的 k 次方，该数在内存中的表现是从右往左数第 k 位为 1，其余为 0； 而 n-1 在内存中的表现则是从右往左 k-1 位全为 1，其余为零。于是 n/n-1 两个数在内存中做一个位相与操作，结果为全零。以此判断。       
+
