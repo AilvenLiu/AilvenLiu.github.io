@@ -959,40 +959,79 @@ So it boils down to calculating what is more profitable:
 Converting the recurrent relation from Step 1 shound't be very hard.        
 
 ```c++           
-public int rob(vector<int>& nums) {
-    return rob(nums, nums.size() - 1);
-}
-private int rob(vector<int>& nums, int i) {
-    if (i < 0) {
-        return 0;
+public:
+    int rob(vector<int>& nums) {
+        return rob(nums, nums.size() - 1);
     }
-    return max(rob(nums, i - 2) + nums[i], rob(nums, i - 1));
-}           
+private:
+    int rob(vector<int>& nums, int i) {
+        if (i < 0)  return 0;
+        return max( rob( nums, i - 2) + nums[i], rob(nums, i - 1));
+    }           
 ```          
 Time Limit Exceeded.           
 
 **Step 3.** Recursive + memo (top-down).          
 
 ```c++          
+public:
+    int rob(vector<int>& nums) {
+        vector<int> memo(nums.size(), -1);
+        return rob(nums, memo, nums.size() - 1);
+    }
+
+private: 
+    int rob(vector<int>& nums, vector<int>& memo, int i) {
+        if (i < 0)  return 0;
+        if (memo[i] >= 0) return memo[i];
+        int result = max( rob( nums, memo, i - 2) + nums[i], 
+                          rob( nums, memo, i - 1));
+        memo[i] = result;
+        return result;
+    }
+```              
+Runtime: 0 ms, faster than 100.00% of C++ online submissions for House Robber.         
+Memory Usage: 7.8 MB, less than 42.06% of C++ online submissions for House Robber.           
+
+Much better, this should run in O(n) time. Space complexity is O(n) as well, because of the recursion stack, let's try to get rid of it.       
+**Step 4.** Iterative + memo (bottom-up)           
+
+```c++          
+public:
+    int rob(vector<int>& nums) {
+        if (nums.size() == 1) return nums[0];
+        if (nums.size() == 2) return max(nums[0], nums[1]);
+        vector<int> memo(nums.size(), -1);
+        
+        memo[0] = nums[0];
+        memo[1] = max(nums[0], nums[1]);
+        for (int i = 2; i < nums.size(); i++)
+            memo[i] = max(memo[i-2] + nums[i], memo[i-1]);
+        return memo[nums.size()-1];
+    }
+```           
+Runtime: 3 ms, faster than 43.50% of C++ online submissions for House Robber.        
+Memory Usage: 7.9 MB, less than 21.28% of C++ online submissions for House Robber.           
+
+
+**Step 5.** Iterative + 2 variables (bottom-up)       
+We can notice that in the previous step we use only memo[i] and memo[i-1], so going just 2 steps back. We can hold them in 2 variables instead. This optimization is met in Fibonacci sequence creation and some other problems [to paste links].           
+
+```c++          
 public int rob(vector<int>& nums) {
-    vector<int> memo(nums.size(), -1);
-    return rob(nums, memo, nums.size() - 1);
-}
-
-private int rob(vector<int>& nums, vector<int>& memo, int i) {
-    if (i < 0) {
-        return 0;
+    if (nums.size() == 0) return 0;
+    int prev1 = 0;
+    int prev2 = 0;
+    for (int i = 0; i < nums.size(); i ++) {
+        int tmp = prev1;
+        prev1 = max(prev2 + nums[i], prev1);
+        prev2 = tmp;
     }
-    if (memo[i] >= 0) {
-        return memo[i];
-    }
-    int result = Math.max(
-        rob(nums, memo, i - 2) + nums[i], rob(nums, memo, i - 1));
-    memo[i] = result;
-    return result;
+    return prev1;
 }
-```             
-
+```            
+Runtime: 0 ms, faster than **100.00%** of C++ online submissions for House Robber.             
+Memory Usage: 7.5 MB, less than **99.82%** of C++ online submissions for House Robber.              
 
 
 
