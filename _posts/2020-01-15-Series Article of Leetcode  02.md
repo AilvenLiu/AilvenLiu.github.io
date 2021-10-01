@@ -1033,7 +1033,44 @@ public int rob(vector<int>& nums) {
 Runtime: 0 ms, faster than **100.00%** of C++ online submissions for House Robber.             
 Memory Usage: 7.5 MB, less than **99.82%** of C++ online submissions for House Robber.              
 
+得搞个动态规划类型题的专题笔记。          
 
 
+### 120. Triangle             
+Given a triangle array, return the minimum path sum from top to bottom.            
+For each step, you may move to an adjacent number of the row below. More formally, if you are on index i on the current row, you may move to either index i or index i + 1 on the next row.          
 
-得搞个动态规划类型题的专题笔记。        
+Example 1:            
+Input: triangle = [[2],[3,4],[6,5,7],[4,1,8,3]]        
+Output: 11            
+Explanation: The minimum path sum from top to bottom is 2 + 3 + 5 + 1 = 11 (underlined above).            
+
+Example 2:           
+Input: triangle = [[-10]]          
+Output: -10             
+ 
+Constraints:           
+* 1 <= triangle.length <= 200           
+* triangle[0].length == 1             
+* triangle[i].length == triangle[i - 1].length + 1        
+* -104 <= triangle[i][j] <= 104
+
+#### My AC Version based on Discuss             
+```c++           
+class Solution {
+public:
+    int minimumTotal(vector<vector<int>>& triangle) {
+        if (triangle.size() == 0) return 0;
+        if (triangle.size() == 1) return triangle.at(0).at(0);
+        vector<int> minPath( triangle.back());
+        for (int layer = triangle.size() - 2; layer >= 0 ; layer --)
+            for (int node = 0; node <= layer; node ++)
+                minPath[node] = 
+                    min( minPath[node], minPath[node + 1]) + triangle[layer][node];
+        return minPath[0];
+    }
+};
+```            
+看了一眼评论区才搞出来的，主要有两点注意：       
+一个是，这次的任务是解决一个二维空间中的问题，不能奢求向前两个题一样用几个基本状态标量存储之前状态，必然要建立和二维数组适配的向量（数组），存储上一层所有状态。      
+一个是从下往上遍历，一方面考量是建立的状态存储数组要按照最长状态（最下一层）定长度的，首先存储起来的状态最方便应该是直接接收最下一层的值；另一方面从下往上走，选择是递减的，也即收敛的，直到最上一层，可选择的节点变为 1，相对于从上往下走的开放式选择，这样更方便确立路径。       
