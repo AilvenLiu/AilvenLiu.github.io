@@ -1137,3 +1137,41 @@ Memory Usage: 5.9 MB, less than 69.96% of C++ online submissions for Power of Tw
 
 比较容易理解的一个操作，当且仅当一个整数 n 是 2 的 k 次方，该数在内存中的表现是从右往左数第 k 位为 1，其余为 0； 而 n-1 在内存中的表现则是从右往左 k-1 位全为 1，其余为零。于是 n/n-1 两个数在内存中做一个位相与操作，结果为全零。以此判断。       
 
+### 191. Number of 1 Bits            
+Write a function that takes an unsigned integer and returns the number of '1' bits it has (also known as the Hamming weight).       
+
+Note:          
+Note that in some languages, such as Java, there is no unsigned integer type. In this case, the input will be given as a signed integer type. It should not affect your implementation, as the integer's internal binary representation is the same, whether it is signed or unsigned.          
+In Java, the compiler represents the signed integers using 2's complement notation. Therefore, in Example 3, the input represents the signed integer. -3.
+
+Example 1:           
+Input: n = 00000000000000000000000000001011         
+Output: 3         
+Explanation: The input binary string 00000000000000000000000000001011 has a total of three '1' bits.
+
+Example 2:            
+Input: n = 00000000000000000000000010000000       
+Output: 1          
+Explanation: The input binary string 00000000000000000000000010000000 has a total of one '1' bit.
+
+Example 3:          
+Input: n = 11111111111111111111111111111101        
+Output: 31       
+Explanation: The input binary string 11111111111111111111111111111101 has a total of thirty one '1' bits.
+
+Constraints:          
+* The input must be a binary string of length 32.
+
+#### My AC Version        
+```c++          
+class Solution {
+public:
+    int hammingWeight(uint32_t n) {
+        return __builtin_popcount(n);
+    }
+};
+```           
+Runtime: 3 ms, faster than 49.36% of C++ online submissions for Number of 1 Bits.       
+Memory Usage: 5.9 MB, less than 48.28% of C++ online submissions for Number of 1 Bits.         
+
+使用 gcc 自带的 `__builtin_xxxx` 系列内建函数解决。          
