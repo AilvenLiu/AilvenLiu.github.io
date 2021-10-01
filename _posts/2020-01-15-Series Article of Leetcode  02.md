@@ -1018,7 +1018,7 @@ Memory Usage: 7.9 MB, less than 21.28% of C++ online submissions for House Robbe
 We can notice that in the previous step we use only memo[i] and memo[i-1], so going just 2 steps back. We can hold them in 2 variables instead. This optimization is met in Fibonacci sequence creation and some other problems [to paste links].           
 
 ```c++          
-public int rob(vector<int>& nums) {
+int rob(vector<int>& nums) {
     if (nums.size() == 0) return 0;
     int prev1 = 0;
     int prev2 = 0;
