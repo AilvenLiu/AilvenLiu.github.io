@@ -190,4 +190,70 @@ public:
 Runtime: 4 ms, faster than **72.45%** of C++ online submissions for Search in Rotated Sorted Array.         
 Memory Usage: 11.2 MB, less than 29.52% of C++ online submissions for Search in Rotated Sorted Array.      
 代码比较好理解，纯手工实现了在有偏移有序数组中的二分搜索，时间表现有较大进步，空间表现还是不行，这样吧，留点遗憾。简单而言，就是在判断完 middle 左侧数组是否为有序后，加一步对 target 是否在该序列中的判断。       
-   
+
+
+### 74. Search a 2D Matrix      
+Write an efficient algorithm that searches for a value in an m x n matrix. This matrix has the following properties:       
+* Integers in each row are sorted from left to right.      
+* The first integer of each row is greater than the last integer of the previous row.          
+
+Example 1:          
+Input: matrix = [[1,3,5,7],[10,11,16,20],[23,30,34,60]], target = 3        
+Output: true           
+
+Example 2:         
+Input: matrix = [[1,3,5,7],[10,11,16,20],[23,30,34,60]], target = 13       
+Output: false      
+
+Constraints:         
+* m == matrix.length           
+* n == matrix[i].length       
+* 1 <= m, n <= 100          
+* -104 <= matrix[i][j], target <= 104
+
+#### My AC Version       
+```c++       
+class Solution {
+public:
+    bool searchMatrix(vector<vector<int>>& matrix, int target) {
+        int n = matrix[0].size()-1;
+        for(int i = 0; i < matrix.size(); i ++)
+            if (target >= matrix[i].at(0) && target <= matrix[i].at(n))
+                return binary_search(matrix[i].begin(), matrix[i].end(), target);
+        return false;
+    }
+};
+```        
+Runtime: 0 ms, faster than **100.00%** of C++ online submissions for Search a 2D Matrix.        
+Memory Usage: 9.5 MB, less than 79.06% of C++ online submissions for Search a 2D Matrix.            
+调用库函数进行判断，时间空间表现还过得去。其实这个题完全不难。            
+
+```c++      
+class Solution {
+public:
+    bool searchMatrix(vector<vector<int>>& matrix, int target) {
+        int n = matrix[0].size()-1;
+        for(int i = 0; i < matrix.size(); i ++)
+            if (target >= matrix[i].at(0) && target <= matrix[i].at(n)){
+                int left = 0, right = n, middle;
+                while(left <= right){
+                    middle = (left + right) / 2;
+                    if (matrix[i][middle] == target)    return true;
+                    if (matrix[i][middle] > target)
+                        right = middle - 1;
+                    else
+                        left = middle + 1;
+                }
+                return false;
+            }
+            return false;
+    }
+};
+```         
+Runtime: 4 ms, faster than 74.80% of C++ online submissions for Search a 2D Matrix.       
+Memory Usage: 9.3 MB, less than **99.98%** of C++ online submissions for Search a 2D Matrix.        
+
+Runtime: 0 ms, faster than **100%** of C++ online submissions for Search a 2D Matrix.      
+Memory Usage: 9.6 MB, less than 52.38% of C++ online submissions for Search a 2D Matrix.           
+
+自己写二分的话，效率也不差。就不看讨论区了。         
