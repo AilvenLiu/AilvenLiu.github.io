@@ -1265,7 +1265,7 @@ Memory Usage: 20.8 MB, less than 6.58% of C++ online submissions for Single Numb
 具体思想就是先遍历一遍数组，用 map 容器记录每一个数值出现的次数。在遍历一遍 map 容器，返回 val 为 1 的 key 。            
 但这个时间空间表现，？？？         
 
-#### Discuss solution           
+#### Discuss solution            
 ```c++          
 class Solution {
 public:
