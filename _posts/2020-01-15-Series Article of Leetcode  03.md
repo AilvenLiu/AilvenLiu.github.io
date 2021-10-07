@@ -331,3 +331,39 @@ Runtime: 0 ms, faster than **100.00%** of C++ online submissions for Find Minimu
 Memory Usage: 10.2 MB, less than 72.74% of C++ online submissions for Find Minimum in Rotated Sorted Array.         
 由于 min_element 和 sort 都是不小于线性复杂度的库函数，而我们手写二分则是对数复杂度，故而分析应当效率更高一些。但毕竟库函数已经达到 100% 了，也没有提升空间了。       
 由于 while 循环不完善，要首先剔除数组有序和 size = 1 这两种特殊情况，令其直接返回。此时 while 必然具有数组不完全有序的前提条件，于是当值 middle > left，说明前半部分是有序的，最小值出现在后半部分；反则反之。自己对比着测试样例，可以看出来 while 最终停止在最小值的前面的 index 。         
+
+### 162. Find Peak Element            
+A peak element is an element that is strictly greater than its neighbors.            
+Given an integer array nums, find a peak element, and return its index. If the array contains multiple peaks, return the index to any of the peaks.       
+You may imagine that nums[-1] = nums[n] = -∞.        
+You must write an algorithm that runs in O(log n) time.         
+
+Example 1:          
+Input: nums = [1,2,3,1]         
+Output: 2           
+Explanation: 3 is a peak element and your function should return the index number 2.           
+
+Example 2:       
+Input: nums = [1,2,1,3,5,6,4]        
+Output: 5          
+Explanation: Your function can return either index number 1 where the peak element is 2, or index number 5 where the peak element is 6.        
+
+Constraints:          
+* 1 <= nums.length <= 1000           
+* -231 <= nums[i] <= 231 - 1            
+* nums[i] != nums[i + 1] for all valid i.
+
+#### My AC Version           
+同样的，用轮子很容易解决。但不用动脑子的方法毕竟不能真正锻炼自己。         
+```c++        
+class Solution {
+public:
+    int findPeakElement(vector<int>& nums) {
+        if(nums.size() ==1) return 0;
+        return max_element(nums.begin(), nums.end()) - nums.begin();
+    }
+};
+```          
+Runtime: 0 ms, faster than **100.00%** of C++ online submissions for Find Peak Element.           
+Memory Usage: 8.7 MB, less than **99.71%** of C++ online submissions for Find Peak Element.        
+用线性遍历也容易做，但这个题，怎么玩儿二分？看看讨论区。          
