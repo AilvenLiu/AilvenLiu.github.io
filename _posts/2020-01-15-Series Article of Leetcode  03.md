@@ -367,3 +367,28 @@ public:
 Runtime: 0 ms, faster than **100.00%** of C++ online submissions for Find Peak Element.           
 Memory Usage: 8.7 MB, less than **99.71%** of C++ online submissions for Find Peak Element.        
 用线性遍历也容易做，但这个题，怎么玩儿二分？看看讨论区。          
+
+#### Discuss solution           
+```c++        
+class Solution {
+public:
+    int findPeakElement(vector<int>& nums) {
+        if(nums.size() ==1) return 0;
+        int left = 0, right = nums.size()-1, middle;
+        while(left < right - 1){
+            middle = (left + right) / 2;
+            if (nums[middle] > nums[middle-1] && nums[middle] > nums[middle+1])
+                return middle;
+            else if (nums[middle] > nums[middle-1])
+                left = middle;
+            else
+                right = middle; 
+        }
+        return nums[left] > nums[right] ? left : right;
+    }
+    
+};
+```             
+Runtime: 0 ms, faster than **100.00%** of C++ online submissions for Find Peak Element.        
+Memory Usage: 8.9 MB, less than 5.13% of C++ online submissions for Find Peak Element.       
+这个二分有意思。首先还是先把 size == 1 的特殊情况单独择出来直接返回以节省时间，随后为了在 while 循环里面进行 peak 的判断，要始终保证 middle 左右都有值（避免 middle 出现在两侧的情况）。while 里面先判断一次当前 middle 是不是 peak；如果不是，且 middle 右侧值更大，则右侧必有 peak；左侧同理。改变上下界进入迭代。如果直到 while 无法再进行仍没有选择出 peak，则，peak 必然出现在最后一步迭代更新后的上下界中，直接判断上下界的值返回结果。        
