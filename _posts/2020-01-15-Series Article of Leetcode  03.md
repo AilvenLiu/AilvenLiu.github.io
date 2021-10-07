@@ -329,4 +329,5 @@ public:
 ```           
 Runtime: 0 ms, faster than **100.00%** of C++ online submissions for Find Minimum in Rotated Sorted Array.          
 Memory Usage: 10.2 MB, less than 72.74% of C++ online submissions for Find Minimum in Rotated Sorted Array.         
+由于 min_element 和 sort 都是不小于线性复杂度的库函数，而我们手写二分则是对数复杂度，故而分析应当效率更高一些。但毕竟库函数已经达到 100% 了，也没有提升空间了。       
 由于 while 循环不完善，要首先剔除数组有序和 size = 1 这两种特殊情况，令其直接返回。此时 while 必然具有数组不完全有序的前提条件，于是当值 middle > left，说明前半部分是有序的，最小值出现在后半部分；反则反之。自己对比着测试样例，可以看出来 while 最终停止在最小值的前面的 index 。         
