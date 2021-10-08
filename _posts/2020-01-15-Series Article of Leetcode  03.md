@@ -468,3 +468,126 @@ public:
 Runtime: 4 ms, faster than **94.44%** of C++ online submissions for Remove Duplicates from Sorted List II.          
 Memory Usage: 11.1 MB, less than **91.30%** of C++ online submissions for Remove Duplicates from Sorted List II.         
 简洁优美，惊为天人。代码理解了，但没有完全理解，只理解了个大概。          
+
+### 15. 3Sum          
+Given an integer array nums, return all the triplets [nums[i], nums[j], nums[k]] such that i != j, i != k, and j != k, and nums[i] + nums[j] + nums[k] == 0.       
+Notice that the solution set must not contain duplicate triplets.       
+Example 1:       
+Input: nums = [-1,0,1,2,-1,-4]         
+Output: [[-1,-1,2],[-1,0,1]]            
+
+Example 2:        
+Input: nums = []         
+Output: []        
+
+Example 3:         
+Input: nums = [0]      
+Output: []           
+
+Constraints:        
+* 0 <= nums.length <= 3000     
+* -105 <= nums[i] <= 105
+
+#### My AC Version        
+```c++         
+class Solution {
+public:
+    vector<vector<int>> threeSum(vector<int>& nums) {
+        if(nums.size()<3) return {};
+        vector<vector<int>> res;
+        std::sort(nums.begin(), nums.end());
+        for (int i = 0; i < nums.size()-2; i++){
+            // printf("%d",i);
+            int target = -nums[i];
+            int front = i + 1, back = nums.size() - 1;
+            while(front < back){
+                if (nums[front] + nums[back] > target)
+                    back --;
+                else if (nums[front] + nums[back] < target)
+                    front ++;
+                else{
+                    printf("%d,%d,%d\n",i, front, back);
+                    vector<int> tmp = {nums[i], nums[front], nums[back]};
+                    res.emplace_back(tmp);
+                    front ++;back --;
+                }
+            }
+            while(i < nums.size()-2 && nums[i] == nums[i+1]) i++;
+        }
+        std::sort(res.begin(), res.end());
+        res.erase(std::unique(res.begin(), res.end()), res.end());
+        return res;
+    }
+};
+```        
+Runtime: 108 ms, faster than 51.27% of C++ online submissions for 3Sum.         
+Memory Usage: 24.8 MB, less than 24.20% of C++ online submissions for 3Sum.        
+
+此题不能用暴力解，否则会 TLE 。但由于给我们的数组存在重复元素，很难准确的避开，所以最后加一个去重复，会占用不小的时间空间资源。讨论区有避开重复元素的方法。      
+
+#### Discuss solution         
+```c++           
+class Solution {
+public:
+    vector<vector<int>> threeSum(vector<int>& nums) {
+        if(nums.size()<3) return {};
+        vector<vector<int>> res;
+        std::sort(nums.begin(), nums.end());
+        for (int i = 0; i < nums.size()-2; i++){
+            int target = -nums[i];
+            int front = i + 1, back = nums.size() - 1;
+            while(front < back){
+                if (nums[front] + nums[back] > target)
+                    back --;
+                else if (nums[front] + nums[back] < target)
+                    front ++;
+                else{
+                    vector<int> tmp = {nums[i], nums[front], nums[back]};
+                    res.emplace_back(tmp);
+                    while(front < back && nums[front] == tmp[1]) front ++;
+                    while(front < back && nums[back] == tmp[2]) back --;
+                }
+            }
+            while(i < nums.size()-2 && nums[i] == nums[i+1]) i++;
+        };
+        return res;
+    }
+};
+```          
+Runtime: 72 ms, faster than 79.40% of C++ online submissions for 3Sum.       
+Memory Usage: 21.2 MB, less than 47.92% of C++ online submissions for 3Sum.      
+空间时间表现都有较大幅度的提升。         
+这个避开重复元素的方法和我们最初使用的 while(...&& nums[front] == nums[front+1]) 类似，但我们是在 `front ++; back --;` 之后才执行上述条件语句，这就造成了判断重复元素的时候，front/back 的值已经改变了。所以，写成如下形式就可以了：          
+
+```c++        
+class Solution {
+public:
+    vector<vector<int>> threeSum(vector<int>& nums) {
+        if(nums.size()<3) return {};
+        vector<vector<int>> res;
+        std::sort(nums.begin(), nums.end());
+        for (int i = 0; i < nums.size()-2; i++){
+            int target = -nums[i];
+            int front = i + 1, back = nums.size() - 1;
+            while(front < back){
+                if (nums[front] + nums[back] > target)
+                    back --;
+                else if (nums[front] + nums[back] < target)
+                    front ++;
+                else{
+                    vector<int> tmp = {nums[i], nums[front], nums[back]};
+                    res.emplace_back(tmp);
+                    front ++; back --;
+                    while(front < back && nums[front] == nums[front-1]) front ++;
+                    while(front < back && nums[back] == nums[back+1]) back --;
+                }
+            }
+            while(i < nums.size()-2 && nums[i] == nums[i+1]) i++;
+        }
+        return res;
+    }
+};
+```         
+Runtime: 64 ms, faster than 88.20% of C++ online submissions for 3Sum.         
+Memory Usage: 21.3 MB, less than 43.36% of C++ online submissions for 3Sum.    
+时间空间表现非常好。        
