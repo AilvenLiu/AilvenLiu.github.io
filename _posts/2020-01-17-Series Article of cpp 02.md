@@ -7,7 +7,8 @@ author:     OUC_LiuX
 header-img: img/wallpic02.jpg
 catalog: true
 tags:     
-    - c++ 
+    - c++       
+    - STL
 ---     
 
 刷 leetcode ，46 题 Permutations 一个作弊的方法是直接使用 C++20 新标准中的 next_permutation API：        

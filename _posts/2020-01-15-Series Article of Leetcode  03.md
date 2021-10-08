@@ -258,6 +258,9 @@ Memory Usage: 9.6 MB, less than 52.38% of C++ online submissions for Search a 2D
 
 自己写二分的话，效率也不差。就不看讨论区了。         
 
+## Day 2 Binary Search           
+[GitHub 连接](https://github.com/OUCliuxiang/leetcode/blob/master/StudyPlan/Algo2/day02)          
+
 ### 153. Find Minimum in Rotated Sorted Array        
 Suppose an array of length n sorted in ascending order is rotated between 1 and n times. For example, the array nums = [0,1,2,4,5,6,7] might become:         
 * [4,5,6,7,0,1,2] if it was rotated 4 times.          
@@ -392,3 +395,76 @@ public:
 Runtime: 0 ms, faster than **100.00%** of C++ online submissions for Find Peak Element.        
 Memory Usage: 8.9 MB, less than 5.13% of C++ online submissions for Find Peak Element.       
 这个二分有意思。首先还是先把 size == 1 的特殊情况单独择出来直接返回以节省时间，随后为了在 while 循环里面进行 peak 的判断，要始终保证 middle 左右都有值（避免 middle 出现在两侧的情况）。while 里面先判断一次当前 middle 是不是 peak；如果不是，且 middle 右侧值更大，则右侧必有 peak；左侧同理。改变上下界进入迭代。如果直到 while 无法再进行仍没有选择出 peak，则，peak 必然出现在最后一步迭代更新后的上下界中，直接判断上下界的值返回结果。        
+
+## Day 3 Two Pointers             
+[GitHub 连接](https://github.com/OUCliuxiang/leetcode/blob/master/StudyPlan/Algo2/day03)          
+
+### 82. Remove Duplicates from Sorted List II          
+Given the head of a sorted linked list, delete all nodes that have duplicate numbers, leaving only distinct numbers from the original list. Return the linked list sorted as well.          
+
+Example 1:        
+Input: head = [1,2,3,3,4,4,5]         
+Output: [1,2,5]           
+
+Example 2:          
+Input: head = [1,1,1,2,3]            
+Output: [2,3]            
+
+Constraints:           
+* The number of nodes in the list is in the range [0, 300].      
+* -100 <= Node.val <= 100        
+* The list is guaranteed to be sorted in ascending order.
+
+#### My AC Version      
+使用 map 容器记录元素出现的次数。优点是很容易想到也很容易实现，缺点则是空间表现实在堪忧：           
+```c++          
+class Solution {
+public:
+    ListNode* deleteDuplicates(ListNode* head) {
+        if(!head || !(head -> next)) return head;
+        
+        map<int, int> m;
+        while(head){
+            m[head -> val] ++;
+            head = head -> next;
+        }
+        ListNode *pt1 = new ListNode();
+        ListNode *pt2 = pt1;
+        for(map<int, int>::iterator iter = m.begin(); 
+            iter != m.end(); iter ++){
+            if (iter -> second == 1){
+                pt2 -> next = new ListNode(iter -> first);
+                pt2 = pt2 -> next;
+            }
+        }
+        return pt1 -> next;
+    }
+};
+```          
+Runtime: 8 ms, faster than 66.18% of C++ online submissions for Remove Duplicates from Sorted List II.          
+Memory Usage: 12 MB, less than 7.64% of C++ online submissions for Remove Duplicates from Sorted List II.          
+
+#### Discuss solution          
+讨论区有人提出来使用递归去做。他们的脑子到底是怎么长的，怎么我就想不到？... 
+
+```c++          
+class Solution {
+public:
+    ListNode* deleteDuplicates(ListNode* head) {
+        if(!head || !(head -> next)) return head;
+        int val = head -> val;
+        ListNode*p = head -> next;
+        if (p->val == val){
+            while ( p &&  p -> val == val) 
+                p = p -> next;
+            return deleteDuplicates(p);
+        }else{
+            head -> next = deleteDuplicates(head -> next);
+            return head;
+        }
+    }
+};
+```        
+Runtime: 4 ms, faster than **94.44%** of C++ online submissions for Remove Duplicates from Sorted List II.          
+Memory Usage: 11.1 MB, less than **91.30%** of C++ online submissions for Remove Duplicates from Sorted List II.         
+简洁优美，惊为天人。代码理解了，但没有完全理解，只理解了个大概。          

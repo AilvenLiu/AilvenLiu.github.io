@@ -2,12 +2,13 @@
 layout:     post
 title:      Series Article of cpp -- 05
 subtitle:   建议使用 emplace 代替 insert           
-date:       2021-10-01
+date:       2021-10-07
 author:     OUC_LiuX
 header-img: img/wallpic02.jpg
 catalog: true
 tags:     
-    - c++ 
+    - c++        
+    - STL 
 ---     
 
 > 使用 insert 向荣其中加入元素的时候，有出错的可能。尤其是执行 `vec.insert(pos, vec[i])` , `vec.insert(pos, vector.begin()+x, vec.begin()+y)` 类似的从本容器中择出元素加入到本容器指定位置的时候，极容易出错。猜测是因为 insert 会生成一份拷贝，而从本容器中择出元素会涉及到地址拷贝，并不稳定。但 emplace(pos, elem) 则直接插入值为 elem 的元素，避免了拷贝操作，更稳定安全。            
