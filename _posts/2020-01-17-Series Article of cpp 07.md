@@ -10,26 +10,31 @@ tags:
     - c++     
     - STL      
 ---     
-> From [StackOverlow](https://stackoverflow.com/questions/571394/how-to-find-out-if-an-item-is-present-in-a-stdvector)
+> 参考 [StackOverlow](https://stackoverflow.com/questions/19583720/convert-bitset-to-int-in-c) 和 《C++标准库（第二版）》电子工业出版社中译本 650 页， 12.5 节 Bitset。          
          
-You can use std::find from <algorithm>:        
-```c++
-#include <algorithm>
-#include <vector>
-vector<int> vec; 
-//can have other data types instead of int but must same datatype as item        
-
-std::find(vec.begin(), vec.end(), item) != vec.end()
-```       
-
-This returns a bool (true if present, false otherwise). With example:
-```c++          
-#include <algorithm>
-#include <vector>
-
-if ( std::find(vec.begin(), vec.end(), item) != vec.end() )
-   do_this();
-else
-   do_that();
+给出例程如下：           
+```c++           
+#include <iostream>
+#include <bitset>
+#include <string>
+int main(){
+	uint32_t n = 3452;
+	std::bitset<32> bs(n);
+	std::string sb = bs.to_string();
+	printf("%s\n", sb.c_str());
+	unsigned long long int ull;
+	ull = bs.to_ullong(); 
+    int in;
+    in = (int) bs.to_ullong();
+	printf("%lld\n", ull);
+	return 0;
+}
 ```          
-```          
+**Output:**          
+00000000000000000000110101111100             
+3452           
+
+**Explination:**              
+`bitset<32> bs(n)` 可以将整型数 n 转换为有 32 bits 的二进制数 bs （数据类型为 bitset）；         
+`bs.to_string()` 可以将存储在 bitset 容器中的二进制数 bs （内容不变）转换为 string ；       
+`bs.to_ullong()` 可以讲存储在 bitset 容器中的二进制数 bs 转换为 无符号长长整型数；但注意如果将被复制的左操作数不是 unsigned long long，则需要一个强制类型转换以明确数据类型。        
