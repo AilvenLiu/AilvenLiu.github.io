@@ -591,3 +591,237 @@ public:
 Runtime: 64 ms, faster than 88.20% of C++ online submissions for 3Sum.         
 Memory Usage: 21.3 MB, less than 43.36% of C++ online submissions for 3Sum.    
 时间空间表现非常好。        
+
+## Day 4 Two Pointers             
+[GitHub 连接](https://github.com/OUCliuxiang/leetcode/blob/master/StudyPlan/Algo2/day04)          
+
+### 844. Backspace String Compare         
+Given two strings s and t, return true if they are equal when both are typed into empty text editors. '#' means a backspace character.       
+Note that after backspacing an empty text, the text will continue empty.       
+
+Example 1:          
+Input: s = "ab#c", t = "ad#c"            
+Output: true            
+Explanation: Both s and t become "ac".         
+
+Example 2:          
+Input: s = "ab##", t = "c#d#"          
+Output: true         
+Explanation: Both s and t become "".         
+
+Example 3:          
+Input: s = "a##c", t = "#a#c"          
+Output: true             
+Explanation: Both s and t become "c".          
+
+Example 4:             
+Input: s = "a#c", t = "b"           
+Output: false            
+Explanation: s becomes "c" while t becomes "b".          
+
+Constraints:           
+* 1 <= s.length, t.length <= 200              
+* s and t only contain lowercase letters and '#' characters.        
+
+#### My AV Version          
+```c++        
+class Solution {
+public:
+    bool backspaceCompare(string s, string t) {
+        for(int i = 0; i < s.length(); i++){
+            if (i > 0 && s[i] == '#'){ 
+                s.erase(i-1, 2);
+                i-=2;
+            }
+            while(s[0] == '#') s.erase(0,1);
+        }
+        for(int i = 0; i < t.length(); i++){
+            if (i > 0 && t[i] == '#'){ 
+                t.erase(i-1, 2);
+                i-=2;
+            }
+            while(t[0] == '#') t.erase(0,1);
+        }
+        if (s == t) return true;
+        return false;
+    }
+};
+```         
+Runtime: 0 ms, faster than **100.00%** of C++ online submissions for Backspace String Compare.            
+Memory Usage: 6.2 MB, less than 88.62% of C++ online submissions for Backspace String Compare.            
+
+这题没什么意思。            
+
+
+### 986. Interval List Intersections           
+You are given two lists of closed intervals, firstList and secondList, where firstList[i] = [starti, endi] and secondList[j] = [startj, endj]. Each list of intervals is pairwise disjoint and in sorted order.           
+Return the intersection of these two interval lists.           
+A closed interval [a, b] (with a <= b) denotes the set of real numbers x with a <= x <= b.            
+The intersection of two closed intervals is a set of real numbers that are either empty or represented as a closed interval. For example, the intersection of [1, 3] and [2, 4] is [2, 3].           
+
+Example 1:           
+Input: firstList = [[0,2],[5,10],[13,23],[24,25]], secondList = [[1,5],[8,12],[15,24],[25,26]]           
+Output: [[1,2],[5,5],[8,10],[15,23],[24,24],[25,25]]            
+
+Example 2:          
+Input: firstList = [[1,3],[5,9]], secondList = []             
+Output: []          
+
+Example 3:             
+Input: firstList = [], secondList = [[4,8],[10,12]]           
+Output: []          
+
+Example 4:        
+Input: firstList = [[1,7]], secondList = [[3,10]]        
+Output: [[3,7]]          
+
+Constraints:           
+* 0 <= firstList.length, secondList.length <= 1000          
+* firstList.length + secondList.length >= 1           
+* 0 <= starti < endi <= 109           
+* endi < starti+1           
+* 0 <= startj < endj <= 109           
+* endj < startj+1
+
+#### My AC Version           
+```c++         
+class Solution {
+public:
+    vector<vector<int>> intervalIntersection(vector<vector<int>>& firstList, vector<vector<int>>& secondList) {
+        if (firstList.size() == 0 || secondList.size() == 0) return {};
+        vector<vector<int>> res;
+        int i = 0, j = 0;
+        while(i < firstList.size() && j < secondList.size()){
+            printf("i = %d, j = %d\t", i, j);
+            if (firstList[i][1] < secondList[j][0]) {
+                i ++;   printf("1");
+            }
+            else if (firstList[i][0] > secondList[j][1]) {
+                j++;    printf("2");
+            }
+            
+            else if (firstList[i][0] >=secondList[j][0] &&
+                     firstList[i][1] <=secondList[j][1]){
+                vector<int> tmp = {firstList[i][0], firstList[i][1]};
+                res.emplace_back(tmp);
+                i++; 
+                printf("3");
+            }
+            else if (firstList[i][0] <=secondList[j][0] &&
+                     firstList[i][1] >=secondList[j][1]){
+                vector<int> tmp = {secondList[j][0], secondList[j][1]};
+                res.emplace_back(tmp);
+                j++; 
+                printf("4");
+            }
+            else if (firstList[i][0] <=secondList[j][0] &&
+                     firstList[i][1] >=secondList[j][0] &&
+                     firstList[i][1] <=secondList[j][1]){
+                vector<int> tmp = {secondList[j][0], firstList[i][1]};
+                res.emplace_back(tmp);
+                i ++;
+                printf("5");
+            }
+            else if (firstList[i][0] >=secondList[j][0] &&
+                     firstList[i][0] <=secondList[j][1] &&
+                     firstList[i][1] >=secondList[j][1]){
+                vector<int> tmp = {firstList[i][0], secondList[j][1]};
+                res.emplace_back(tmp);
+                j ++;
+                printf("6");
+            }
+            printf("\n");
+        }
+        return res;
+    }
+};
+```          
+Runtime: 44 ms, faster than 33.13% of C++ online submissions for Interval List Intersections.         
+Memory Usage: 19.3 MB, less than 20.49% of C++ online submissions for Interval List Intersections.        
+
+暴力求解，while + if else 枚举出所有可能的情况。没什么技巧可言，时间空间表现极差。        
+
+#### Discuss solution          
+```c++          
+class Solution {
+public:
+    vector<vector<int>> intervalIntersection(vector<vector<int>>& firstList, vector<vector<int>>& secondList) {
+        if (firstList.size() == 0 || secondList.size() == 0) return {};
+        vector<vector<int>> res;
+        int i = 0, j = 0;
+        while(i < firstList.size() && j < secondList.size()){
+            int lower = max( firstList[i][0], secondList[j][0]);
+            int upper = min( firstList[i][1], secondList[j][1]);
+            if (lower <= upper)  res.push_back({lower, upper});
+            if (firstList[i][1] > secondList[j][1]) j++;
+            else i++;
+        }
+        return res;
+    }
+};
+```         
+使用更精炼的语句遍历了所有可能的情况。自己必写不出来，但比对这测试样例一看代码，还真是这么回事儿......               
+
+### 11. Container With Most Water          
+Given n non-negative integers a1, a2, ..., an , where each represents a point at coordinate (i, ai). n vertical lines are drawn such that the two endpoints of the line i is at (i, ai) and (i, 0). Find two lines, which, together with the x-axis forms a container, such that the container contains the most water.             
+Notice that you may not slant the container.           
+ 
+Example 1:           
+Input: height = [1,8,6,2,5,4,8,3,7]            
+Output: 49           
+Explanation: The above vertical lines are represented by array [1,8,6,2,5,4,8,3,7]. In this case, the max area of water (blue section) the container can contain is 49.          
+
+Example 2:            
+Input: height = [1,1]            
+Output: 1           
+
+Example 3:          
+Input: height = [4,3,2,1,4]            
+Output: 16           
+
+Example 4:         
+Input: height = [1,2,1]           
+Output: 2          
+
+Constraints:            
+* n == height.length           
+* 2 <= n <= 105           
+* 0 <= height[i] <= 104
+
+#### My TLE Version              
+```c++         
+class Solution {
+public:
+    int maxArea(vector<int>& height) {
+        int most = 0;
+        for(int i = 0; i < height.size(); i++)
+            for(int j = i+1; j < height.size(); j++)
+                most = max(most, (j-i) * min(height[i], heights[j]));            
+    return most;
+    }
+};
+```           
+Time Limit Exceeded           
+暴力求解，试图遍历出所有可能，时间复杂度 O(n^2) ， TLE 了。          
+
+#### Discuss solution           
+```c++          
+class Solution {
+public:
+    int maxArea(vector<int>& height) {
+        int most = 0, front = 0, back = height.size()-1;
+        while(front < back){
+            int h = min(height[front], height[back]);
+            most = max(most, ( back - front) * h);
+            while(front < back && height[front] <= h) front++;
+            while(front < back && height[ back] <= h) back --;
+        }
+        return most;
+    }
+};
+```          
+Runtime: 84 ms, faster than 70.98% of C++ online submissions for Container With Most Water.        
+Memory Usage: 59.1 MB, less than 39.17% of C++ online submissions for Container With Most Water.           
+
+nb.     
+隐隐约约我也想到了这种方法，但没想出怎样将之具体地实现出来。NB。           
