@@ -825,3 +825,180 @@ Memory Usage: 59.1 MB, less than 39.17% of C++ online submissions for Container 
 
 nb.     
 隐隐约约我也想到了这种方法，但没想出怎样将之具体地实现出来。NB。           
+
+## Day 5 Sliding Window               
+[GitHub 连接](https://github.com/OUCliuxiang/leetcode/blob/master/StudyPlan/Algo2/day05)          
+
+### 438. Find All Anagrams in a String              
+Given two strings s and p, return an array of all the start indices of p's anagrams in s. You may return the answer in any order.         
+An Anagram is a word or phrase formed by rearranging the letters of a different word or phrase, typically using all the original letters exactly once.                
+
+Example 1:              
+Input: s = "cbaebabacd", p = "abc"              
+Output: [0,6]            
+Explanation:            
+The substring with start index = 0 is "cba", which is an anagram of "abc".           
+The substring with start index = 6 is "bac", which is an anagram of "abc".            
+
+Example 2:          
+Input: s = "abab", p = "ab"            
+Output: [0,1,2]            
+Explanation:          
+The substring with start index = 0 is "ab", which is an anagram of "ab".         
+The substring with start index = 1 is "ba", which is an anagram of "ab".       
+The substring with start index = 2 is "ab", which is an anagram of "ab".        
+
+Constraints:          
+* 1 <= s.length, p.length <= 3 * 104           
+* s and p consist of lowercase English letters.
+
+#### My TLE Version            
+```c++
+class Solution {
+public:
+    vector<int> findAnagrams(string s, string p) {
+        if (p.size() > s.size()) return {};
+        sort(p.begin(), p.end());
+        vector<int> res;
+        for (int i = 0; i <= s.size() - p.size(); i++){
+            string sub = s.substr(i, p.size());
+            sort(sub.begin(), sub.end());
+            if (sub == p) res.emplace_back(i);
+        }
+        return res;
+    }
+};
+```         
+试图暴力解，失败。           
+
+#### My AC Version            
+```c++         
+class Solution {
+public:
+    vector<int> findAnagrams(string s, string p) {
+        if (p.size() > s.size()) return {};
+        vector<int> res;
+        map<char, int> pm, sm;
+        for (char c: p) pm[c] ++;
+        for (int i = 0; i < s.size(); i++){
+            sm[s[i]] ++;
+            if(i >= p.size() && --sm[s[i-p.size()]]==0) 
+                sm.erase(s[i-p.size()]);
+            if(sm == pm) res.emplace_back(i-p.size()+1);
+        }
+        return res;
+    }
+};
+```        
+Runtime: 48 ms, faster than 21.11% of C++ online submissions for Find All Anagrams in a String.         
+Memory Usage: 14.6 MB, less than 8.42% of C++ online submissions for Find All Anagrams in a String.           
+
+使用滑动窗口去做，建立两个 map，一个存储 p ，一个存储 s (substr) ，比较两者是否相等，是，加入此时子串起始索引。          
+
+进阶一点，可以只是用一个 map ，节省部分空间：         
+```c++           
+class Solution {
+public:
+    vector<int> findAnagrams(string s, string p) {
+        if (p.size() > s.size()) return {};
+        vector<int> res;
+        map<char, int> pm;
+        for (char c: p) pm[c] ++;
+        for (int i = 0; i < s.size(); i++){
+            if (--pm[s[i]] == 0) pm.erase(s[i]);;
+            if(i >= p.size() && ++pm[s[i-p.size()]]==0) 
+                pm.erase(s[i-p.size()]);
+            if(pm.empty()) res.emplace_back(i-p.size()+1);
+        }
+        return res;
+    }
+};
+```           
+Runtime: 36 ms, faster than 27.52% of C++ online submissions for Find All Anagrams in a String.          
+Memory Usage: 17.9 MB, less than 5.95% of C++ online submissions for Find All Anagrams in a String.           
+
+提升似乎不明显。如果将 map 换为 unordered_map ，实测可以节省相当部分空间占用，但时间空间表现仍然较差。              
+
+### 713. Subarray Product Less Than K        
+Given an array of integers nums and an integer k, return the number of contiguous subarrays where the product of all the elements in the subarray is strictly less than k.           
+
+Example 1:         
+Input: nums = [10,5,2,6], k = 100           
+Output: 8            
+Explanation: The 8 subarrays that have product less than 100 are:
+[10], [5], [2], [6], [10, 5], [5, 2], [2, 6], [5, 2, 6]
+Note that [10, 5, 2] is not included as the product of 100 is not strictly less than k.            
+
+Example 2:          
+Input: nums = [1,2,3], k = 0              
+Output: 0            
+
+Constraints:            
+* 1 <= nums.length <= 3 * 104            
+* 1 <= nums[i] <= 1000           
+* 0 <= k <= 106
+
+#### Discuss solution             
+一眼不会，直奔讨论区，答案如下：            
+```c++          
+class Solution {
+public:
+    int numSubarrayProductLessThanK(vector<int>& nums, int k) {
+        if (k == 0) return 0;
+        int cnt = 0, prod = 1;
+        for (int i=0, j=0; j< nums.size(); j++){
+            prod *= nums[j];
+            while(i <= j && prod >= k) prod/=nums[i++];
+            printf("i=%d, j=%d\n", i, j);
+            cnt += j-i+1;
+        }
+        return cnt;
+    }
+};
+```       
+Runtime: 244 ms, faster than 5.01% of C++ online submissions for Subarray Product Less Than K.          
+Memory Usage: 61.3 MB, less than 69.88% of C++ online submissions for Subarray Product Less Than K.                
+简洁明了的解。不看答案啥都不会，一看答案啥都懂了。还是做题做得少。           
+
+### 209. Minimum Size Subarray Sum            
+Given an array of positive integers nums and a positive integer target, return the minimal length of a contiguous subarray [numsl, numsl+1, ..., numsr-1, numsr] of which the sum is greater than or equal to target. If there is no such subarray, return 0 instead.       
+
+Example 1:           
+Input: target = 7, nums = [2,3,1,2,4,3]            
+Output: 2           
+Explanation: The subarray [4,3] has the minimal length under the problem constraint.           
+
+Example 2:         
+Input: target = 4, nums = [1,4,4]         
+Output: 1             
+
+Example 3:             
+Input: target = 11, nums = [1,1,1,1,1,1,1,1]              
+Output: 0           
+
+Constraints:            
+* 1 <= target <= 109           
+* 1 <= nums.length <= 105              
+* 1 <= nums[i] <= 105
+
+#### My AC Version           
+```c++      
+class Solution {
+public:
+    int minSubArrayLen(int target, vector<int>& nums) {
+        int size = 0x7fff, s = 0;
+        for(int i = 0, j = 0; j < nums.size(); j++){
+            s += nums[j];
+            while( i<=j && s >=target){
+                size = min( size, j-i+1);
+                s -= nums[i++];
+            }
+        }
+        return size == 0x7fff ? 0 : size;
+    }
+};
+```           
+Runtime: 4 ms, faster than **96.65%** of C++ online submissions for Minimum Size Subarray Sum.             
+Memory Usage: 10.6 MB, less than 61.03% of C++ online submissions for Minimum Size Subarray Sum.        
+比葫芦画个瓢，效果还行。           
+     
