@@ -1,7 +1,7 @@
 ---
 layout:     post
 title:      Series Article of cpp -- 12
-subtitle:   C++ 退出多层for循环        
+subtitle:   Whats the most efficient way to erase duplicates and sort a vector        
 date:       2021-10-11
 author:     OUC_LiuX
 header-img: img/wallpic02.jpg
