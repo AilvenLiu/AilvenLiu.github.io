@@ -8,7 +8,6 @@ header-img: img/wallpic02.jpg
 catalog: true
 tags:     
     - c++     
-    - STL      
 ---     
 > 参考 《C++标准库（第二版）》电子工业出版社中译本 669 页， 13.2.4 节 String 和 CString 。          
          
