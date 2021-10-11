@@ -1,7 +1,7 @@
 ---
 layout:     post
 title:      Series Article of RasPi -- 05
-subtitle:   树莓派使用实录04 -- 超频，电压频率温度检测，压力测试         
+subtitle:   树莓派使用实录05 -- 超频，电压频率温度检测，压力测试         
 date:       2021-10-11
 author:     OUC_LiuX
 header-img: img/wallpic02.jpg
