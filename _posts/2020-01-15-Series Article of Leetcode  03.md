@@ -1002,3 +1002,114 @@ Runtime: 4 ms, faster than **96.65%** of C++ online submissions for Minimum Size
 Memory Usage: 10.6 MB, less than 61.03% of C++ online submissions for Minimum Size Subarray Sum.        
 比葫芦画个瓢，效果还行。           
      
+
+## Day 6 Breadth-First Search / Depth-First Search               
+[GitHub 连接](https://github.com/OUCliuxiang/leetcode/blob/master/StudyPlan/Algo2/day06)          
+
+### 200. Number of Islands             
+Given an m x n 2D binary grid grid which represents a map of '1's (land) and '0's (water), return the number of islands.            
+An island is surrounded by water and is formed by connecting adjacent lands horizontally or vertically. You may assume all four edges of the grid are all surrounded by water.                
+
+Example 1:              
+Input: grid = [           
+  ["1","1","1","1","0"],         
+  ["1","1","0","1","0"],           
+  ["1","1","0","0","0"],       
+  ["0","0","0","0","0"]        
+]         
+Output: 1            
+
+Example 2:          
+Input: grid = [          
+  ["1","1","0","0","0"],         
+  ["1","1","0","0","0"],       
+  ["0","0","1","0","0"],        
+  ["0","0","0","1","1"]           
+]         
+Output: 3            
+
+Constraints:           
+* m == grid.length           
+* n == grid[i].length           
+* 1 <= m, n <= 300          
+* grid[i][j] is '0' or '1'.
+
+#### My AC Version          
+```c++           
+class Solution {
+public:
+    int Row, Col, DIRS[5] = {-1,0,1,0,-1};
+    int numIslands( vector<vector<char>>& grid) {
+        Row = grid.size();
+        Col = grid[0].size();
+        int cnt = 0;
+        for (int i = 0; i < Row; i++)
+            for (int j = 0; j < Col; j++)
+                if (grid[i][j] == '1'){
+                    dfs(grid, i, j);
+                    cnt++;
+                }
+        return cnt; 
+    }
+private:
+    void dfs(vector<vector<char>>& grid, int i, int j){
+        if(i < 0 || j < 0 || i >= Row || j >= Col || grid[i][j] != '1') return;
+        grid[i][j] = '0';
+        for(int l = 0; l < 4; l++)
+            dfs(grid, i+DIRS[l], j + DIRS[l+1]);
+    }
+};
+```           
+Runtime: 32 ms, faster than 60.13% of C++ online submissions for Number of Islands.         
+Memory Usage: 12.3 MB, less than 55.80% of C++ online submissions for Number of Islands.            
+相对中庸的一个深搜，没什么特别。             
+
+### 547. Number of Provinces         
+There are n cities. Some of them are connected, while some are not. If city a is connected directly with city b, and city b is connected directly with city c, then city a is connected indirectly with city c.          
+A province is a group of directly or indirectly connected cities and no other cities outside of the group.          
+You are given an n x n matrix isConnected where isConnected[i][j] = 1 if the ith city and the jth city are directly connected, and isConnected[i][j] = 0 otherwise.          
+Return the total number of provinces.          
+
+Example 1:           
+Input: isConnected = [[1,1,0],[1,1,0],[0,0,1]]           
+Output: 2           
+
+Example 2:        
+Input: isConnected = [[1,0,0],[0,1,0],[0,0,1]]           
+Output: 3              
+
+#### My AV Version             
+```c++           
+class Solution {
+public:
+    int n;
+    int findCircleNum( vector<vector<int>>& isConnected) {
+        n = isConnected.size();
+        int cnt = 0;
+        for (int i = 0; i < n; i ++)
+            if (isConnected[i][i] == 1){
+                dfs(isConnected, i, i);
+                cnt ++;
+            }
+        return cnt;
+    }
+private:
+    void dfs(vector<vector<int>>& isConnected, int i, int j){
+        if (i < 0 || j < 0 || i >= n || j >= n || 
+            isConnected[i][j] != 1 || isConnected[j][i] != 1) return;
+        isConnected[i][j] = 0;
+        if(i != j) isConnected[j][i] = 0;
+        for (int l = 0; l < n; l++)
+            dfs(isConnected, l, i);
+    }
+};
+```         
+Runtime: 37 ms, faster than 26.45% of C++ online submissions for Number of Provinces.       
+Memory Usage: 14 MB, less than 33.09% of C++ online submissions for Number of Provinces.             
+
+这个深搜比较难理解，尝试把这几行代码解释一下：         
+这是一个由（对角线对称的）邻接矩阵表现的图结构，元素 [i, j] 是否为 1 代表着元素 i, j 之间是否有通路，对角线元素（不含连接属性的元素自身）初始值必然是 1 。我们的任务则是寻找独立的元素群的数量。由于所有的不同元素之间的连接都有对角线元素开启，于是深搜的起点应当为且仅为对角线元素，也即，`for(i:n) dfs(i,i)`  开始搜索。             
+显然，当对角线元素同一行（/列，由于对称，择其一即可）有其他元素值为 1 ，即代表对角线元素与该元素有连接，于是对该元素继续进行 dfs 深搜。假设我们选择对每个对角线元素的同列元素深搜，深搜的过程中发现同列有行标为 **i** 的元素值为 1 （由于深搜对每列遍历行标，于是不排除遍历到对角线元素的可能），则应当将该元素及其对角线对称元素置 **0**，作为标记过的标志，后续的深搜不再考虑；随后以该元素**行标为**新一轮深搜的**列标**，继续加入深搜。         
+且由于每列的非对角线行元素必然被遍历到，且在以之为起点的下一轮深搜中，该元素对应的对角线元素被置零。这将作为该元素在上几轮深搜中已被遍历过的标识，从而决定其是否为新的独立元素群起点的最外层 dfs 将跳过它，进入下一个对角线元素的深搜。          
+
+自然语言很难去准确地解释代码语言，多看几遍代码就能理解了。         
