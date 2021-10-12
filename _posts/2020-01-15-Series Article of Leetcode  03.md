@@ -1222,6 +1222,6 @@ private:
 Runtime: 20 ms, faster than 83.03% of C++ online submissions for Subtree of Another Tree.          
 Memory Usage: 29.2 MB, less than 9.06% of C++ online submissions for Subtree of Another Tree.           
 
-依然用广搜去做，当然会牺牲较多的空间表现。具体思路是广搜遍历 root 树所有节点，一旦发现有节点值和 subRoot 树根节点值相等，进入 judge 函数。函数返回 true 代表是子树，直接返回 true。     
+依然用广搜去做，当然会牺牲较多的空间性能。具体思路是广搜遍历 root 树所有节点，一旦发现有节点值和 subRoot 树根节点值相等，进入 judge 函数。函数返回 true 代表是子树，直接返回 true。     
 judge 函数为递归调用。如果当前输入待比较的两个节点都存在，进行比较：不相等直接返回 false；相等的话递归调用 judge 函数本身，比较当前两节点的左右子节点。一旦走到最下层节点，判断是否两树最下层节点都不存在：是，则证明两树当前节点以上节点都相等，且最终能走到这一步，即可证明两树相等，返回 true；否则，两树长度不相等，返回 false。        
 
