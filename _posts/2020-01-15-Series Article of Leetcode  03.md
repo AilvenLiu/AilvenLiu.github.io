@@ -1113,3 +1113,115 @@ Memory Usage: 14 MB, less than 33.09% of C++ online submissions for Number of Pr
 且由于每列的非对角线行元素必然被遍历到，且在以之为起点的下一轮深搜中，该元素对应的对角线元素被置零。这将作为该元素在上几轮深搜中已被遍历过的标识，从而决定其是否为新的独立元素群起点的最外层 dfs 将跳过它，进入下一个对角线元素的深搜。          
 
 自然语言很难去准确地解释代码语言，多看几遍代码就能理解了。         
+
+## Day 6 Breadth-First Search / Depth-First Search               
+[GitHub 连接](https://github.com/OUCliuxiang/leetcode/blob/master/StudyPlan/Algo2/day07)          
+
+### 117. Populating Next Right Pointers in Each Node II           
+
+Given a binary tree        
+```
+struct Node {
+  int val;
+  Node *left;
+  Node *right;
+  Node *next;
+}
+```      
+Populate each next pointer to point to its next right node. If there is no next right node, the next pointer should be set to NULL.           
+Initially, all next pointers are set to NULL.           
+
+Example 1:
+Input: root = [1,2,3,4,5,null,7]          
+Output: [1,#,2,3,#,4,5,7,#]           
+Explanation: Given the above binary tree (Figure A), your function should populate each next pointer to point to its next right node, just like in Figure B. The serialized output is in level order as connected by the next pointers, with '#' signifying the end of each level.             
+
+Example 2:       
+Input: root = []        
+Output: []           
+
+Constraints:           
+* The number of nodes in the tree is in the range [0, 6000].      
+* -100 <= Node.val <= 100
+
+#### My AC Version          
+```c++   
+class Solution {
+public:
+    Node* connect(Node* root) {
+        if (! root) return root;
+        Node* p = root;
+        int level = 1;
+        queue< pair<Node*, int>> q;
+        if (p -> left != NULL)   q.push(make_pair( p->left, level));
+        if (p ->right != NULL)   q.push(make_pair( p->right,level));
+        
+        while(!q.empty()){
+            pair<Node*, int> tmp = q.front(); 
+            q.pop();
+            p = get<0>(tmp);
+            level = get<1>(tmp);
+            if (p -> left != NULL)   q.push(make_pair( p->left, level+1));
+            if (p ->right != NULL)   q.push(make_pair( p->right,level+1));
+            
+            tmp = q.front(); 
+            if (level == get<1>(tmp))
+                p -> next = get<0>(tmp);
+        }
+        return root;
+    }
+};
+```         
+Runtime: 19 ms, faster than 28.04% of C++ online submissions for Populating Next Right Pointers in Each Node II.       
+Memory Usage: 17.8 MB, less than 11.40% of C++ online submissions for Populating Next Right Pointers in Each Node II.        
+
+这道题用广搜去做。由于只有同一层节点可进行 next 赋值，给每一个加入队列的节点添加一个 level 信息制作成 pair，用以判断队列内相邻的两个节点是否在同一层（不在同一层则不进行 next 赋值）。当然空间表现会有较大损失，anyhow，这种解法比较容易理解。      
+
+### 572. Subtree of Another Tree         
+Given the roots of two binary trees root and subRoot, return true if there is a subtree of root with the same structure and node values of subRoot and false otherwise.           
+A subtree of a binary tree tree is a tree that consists of a node in tree and all of this node's descendants. The tree tree could also be considered as a subtree of itself.            
+
+Example 1:        
+Input: root = [3,4,5,1,2], subRoot = [4,1,2]         
+Output: true          
+
+Example 2:            
+Input: root = [3,4,5,1,2,null,null,null,null,0], subRoot = [4,1,2]      
+Output: false           
+
+#### My AC Version            
+```c++           
+class Solution {
+public:
+    bool isSubtree(TreeNode* root, TreeNode* subRoot) {
+        int subVal = subRoot -> val, 
+            rootVal = root -> val;
+        
+        deque<TreeNode*> q;
+        q.emplace_back(root);
+        while(!q.empty()){
+            TreeNode* p = q.front(); q.pop_front();
+            if( subVal == p -> val)
+                if (judge(p, subRoot)) return true;
+            if(p ->left) q.emplace_back(p -> left);
+            if(p->right) q.emplace_back(p ->right);
+        }
+        return false;
+    }
+private:
+    bool judge(TreeNode* root, TreeNode* subRoot){
+        while(root && subRoot){
+            if(root -> val != subRoot -> val) return false;
+            return ( judge(root -> left, subRoot -> left) &&
+                     judge(root ->right, subRoot ->right));
+        }
+        return (!root && !subRoot) ? true : false;
+    }
+};
+```            
+Runtime: 20 ms, faster than 83.03% of C++ online submissions for Subtree of Another Tree.          
+Memory Usage: 29.2 MB, less than 9.06% of C++ online submissions for Subtree of Another Tree.           
+
+依然用广搜去做，当然会牺牲较多的空间表现。具体思路是广搜遍历 root 树所有节点，一旦发现有节点值和 subRoot 树根节点值相等，进入 judge 函数。函数返回 true 代表是子树，直接返回 true。     
+judge 函数为递归调用。如果当前输入待比较的两个节点都存在，进行比较：不相等直接返回 false；相等的话递归调用 judge 函数本身，比较当前两节点的左右子节点。一旦走到最下层节点，判断是否两树最下层节点都不存在：是，则证明两树当前节点以上节点都相等，且最终能走到这一步，即可证明两树相等，返回 true；否则，两树长度不相等，返回 false。        
+
