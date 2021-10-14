@@ -77,4 +77,143 @@ Memory Usage: 19.3 MB, less than 74.67% of C++ online submissions for Shortest P
 如果 while 里面没有触发返回条件，即终点不可达，返回 -1 。      
 考虑一种特殊情况，起终点元素非零，直接意为终点不可达，在队列开始前考虑该情况，直接返回 -1 。          
 
+### 130. Surrounded Regions       
+Given an m x n matrix board containing 'X' and 'O', capture all regions that are 4-directionally surrounded by 'X'.        
+A region is captured by flipping all 'O's into 'X's in that surrounded region.       
 
+Example 1:        
+Input: board = [         
+["X","X","X","X"],         
+["X","O","O","X"],         
+["X","X","O","X"],          
+["X","O","X","X"]]            
+Output:[          
+["X","X","X","X"],          
+["X","X","X","X"],           
+["X","X","X","X"],         
+["X","O","X","X"]]             
+Explanation: Surrounded regions should not be on the border, which means that any 'O' on the border of the board are not flipped to 'X'. Any 'O' that is not on the border and it is not connected to an 'O' on the border will be flipped to 'X'. Two cells are connected if they are adjacent cells connected horizontally or vertically.         
+
+Example 2:       
+Input: board = [["X"]]         
+Output: [["X"]]            
+
+Constraints:          
+* m == board.length          
+* n == board[i].length           
+* 1 <= m, n <= 200            
+* board[i][j] is 'X' or 'O'.           
+
+#### My AC Version          
+
+```c++       
+class Solution {
+public:
+    int DIRS[5] = {-1,0,1,0,-1};
+    void solve(vector<vector<char>>& board) {
+        int n = board.size();
+        int m = board[0].size();
+        if(n<3 || m < 3) return;
+        
+        queue<pair<int, int>> q;
+        for(int i = 0; i < n; i ++){
+            if(board[i][0] == 'O') {
+                board[i][0] = 'V';
+                q.push({i,0});
+            }
+            if(board[i][m-1] == 'O'){ 
+                board[i][m-1] = 'V';
+                q.push({i,m-1});
+            }
+        }
+        for(int i = 0; i < m; i ++){
+            if(board[0][i] == 'O'){
+                board[0][i] = 'V';
+                q.push({0,i});
+            }
+            if(board[n-1][i] == 'O'){ 
+                board[n-1][i] = 'V';
+                q.push({n-1, i});
+            }
+        }
+        while(!q.empty()){
+            pair<int, int> pos = q.front(); q.pop();
+            int row = get<0>(pos);
+            int col = get<1>(pos);
+            for(int i = 0; i < 4; i ++){
+                int newRow = row + DIRS[i];
+                int newCol = col + DIRS[i+1];
+                if (newRow >=0 && newCol >=0 && 
+                    newRow < n && newCol < m &&
+                    board[newRow][newCol] == 'O'){
+                    board[newRow][newCol] = 'V';
+                    q.push({newRow, newCol});
+                }
+            }
+        }
+        for (int i = 0; i < n; i ++)
+            for (int j = 0; j < m; j ++)
+                board[i][j] = board[i][j] == 'V' ? 'O' : 'X';
+    }
+};
+```         
+Runtime: 18 ms, faster than 32.34% of C++ online submissions for Surrounded Regions.          
+Memory Usage: 10 MB, less than 77.46% of C++ online submissions for Surrounded Regions.         
+
+用广搜。这题没什么意思。           
+考虑一种特殊情况：行列有一个值小于等于二，这意味着每个元素都是边界元素，直接返回原矩阵即可。否则，执行以下程序：       
+先遍历边界元素，将每一个值为 'O' 的元素重新赋值（作为 visited），加入队列。while(!q.empty()) 读写队列，队列内每一个元素的值为零的毗邻元素同样重新赋值，继续加入队列，直到队列为空。遍历矩阵，被重新复制的元素恢复到原值，其他元素置 'X'。        
+### 797. All Paths From Source to Target           
+Given a directed acyclic graph (DAG) of n nodes labeled from 0 to n - 1, find all possible paths from node 0 to node n - 1 and return them in any order.          
+The graph is given as follows: graph[i] is a list of all nodes you can visit from node i (i.e., there is a directed edge from node i to node graph[i][j]).          
+
+Example 1:           
+Input: graph = [[1,2],[3],[3],[]]          
+Output: [[0,1,3],[0,2,3]]      
+Explanation: There are two paths: 0 -> 1 -> 3 and 0 -> 2 -> 3.       
+
+Example 2:      
+Input: graph = [[4,3,1],[3,2,4],[3],[4],[]]          
+Output: [[0,4],[0,3,4],[0,1,3,4],[0,1,2,3,4],[0,1,4]]          
+
+Example 3:       
+Input: graph = [[1],[]]        
+Output: [[0,1]]          
+
+Example 4:         
+Input: graph = [[1,2,3],[2],[3],[]]        
+Output: [[0,1,2,3],[0,2,3],[0,3]]       
+
+Example 5:       
+Input: graph = [[1,3],[2],[3],[]]       
+Output: [[0,1,2,3],[0,3]]         
+ 
+#### My AC Version          
+```c++       
+class Solution {
+public:
+    int n;
+    vector<vector<int>> allPathsSourceTarget(vector<vector<int>>& graph) {
+        vector<vector<int>> res;
+        vector<int> path;
+        n = graph.size();
+        path.emplace_back(0);
+        dfs(graph, res, path, 0);
+        return res;
+    }
+private:
+    void dfs(vector<vector<int>>& graph, vector<vector<int>>& res, vector<int>& path, int idx){
+        for(int v: graph[idx]){
+            path.emplace_back(v);
+            if (v == n-1) res.emplace_back(path);
+            else dfs(graph, res, path, v);
+            path.pop_back();
+        }
+    }
+};
+```         
+Runtime: 22 ms, faster than 46.76% of C++ online submissions for All Paths From Source to Target.         
+Memory Usage: 10.6 MB, less than 85.49% of C++ online submissions for All Paths From Source to Target.       
+
+虽然用了深搜，但这道题也带着回溯的要素。       
+先将零元素入容器，开始深搜 dfs 。深搜终点为 元素值等于 n-1 。**如果达不到（else）** n-1 ，将当前元素值作为当前迭代深搜的 idx （由于所有元素值 0 到 n-1，idx 为 i 的 graph 子元素容器存储着 i 节点的出度）继续深搜；如果为 n-1 ，加入 res。递归调用完 dfs，将本次 dfs 加入的元素 pop 出去，为下一轮 dfs做准备。最后一部是回溯的思想。       
