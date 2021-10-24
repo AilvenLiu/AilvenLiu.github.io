@@ -163,6 +163,8 @@ Memory Usage: 10 MB, less than 77.46% of C++ online submissions for Surrounded R
 用广搜。这题没什么意思。           
 考虑一种特殊情况：行列有一个值小于等于二，这意味着每个元素都是边界元素，直接返回原矩阵即可。否则，执行以下程序：       
 先遍历边界元素，将每一个值为 'O' 的元素重新赋值（作为 visited），加入队列。while(!q.empty()) 读写队列，队列内每一个元素的值为零的毗邻元素同样重新赋值，继续加入队列，直到队列为空。遍历矩阵，被重新复制的元素恢复到原值，其他元素置 'X'。        
+
+
 ### 797. All Paths From Source to Target           
 Given a directed acyclic graph (DAG) of n nodes labeled from 0 to n - 1, find all possible paths from node 0 to node n - 1 and return them in any order.          
 The graph is given as follows: graph[i] is a list of all nodes you can visit from node i (i.e., there is a directed edge from node i to node graph[i][j]).          
@@ -216,4 +218,117 @@ Runtime: 22 ms, faster than 46.76% of C++ online submissions for All Paths From 
 Memory Usage: 10.6 MB, less than 85.49% of C++ online submissions for All Paths From Source to Target.       
 
 虽然用了深搜，但这道题也带着回溯的要素。       
-先将零元素入容器，开始深搜 dfs 。深搜终点为 元素值等于 n-1 。**如果达不到（else）** n-1 ，将当前元素值作为当前迭代深搜的 idx （由于所有元素值 0 到 n-1，idx 为 i 的 graph 子元素容器存储着 i 节点的出度）继续深搜；如果为 n-1 ，加入 res。递归调用完 dfs，将本次 dfs 加入的元素 pop 出去，为下一轮 dfs做准备。最后一部是回溯的思想。       
+先将零元素入容器，开始深搜 dfs 。深搜终点为 元素值等于 n-1 。**如果达不到（else）** n-1 ，将当前元素值作为当前迭代深搜的 idx （由于所有元素值 0 到 n-1，idx 为 i 的 graph 子元素容器存储着 i 节点的出度）继续深搜；如果为 n-1 ，加入 res。递归调用完 dfs，将本次 dfs 加入的元素 pop 出去，为下一轮 dfs 做准备。最后一步是回溯的思想。       
+
+
+## Day 9 Recursion / Backtracking             
+[GitHub 连接](https://github.com/OUCliuxiang/leetcode/blob/master/StudyPlan/Algo2/day09)          
+
+### 78. Subsets         
+Given an integer array nums of unique elements, return all possible subsets (the power set).         
+
+The solution set must not contain duplicate subsets. Return the solution in any order.         
+
+Example 1:           
+Input: nums = [1,2,3]            
+Output: [[],[1],[2],[1,2],[3],[1,3],[2,3],[1,2,3]]          
+
+Example 2:       
+Input: nums = [0]          
+Output: [[],[0]]            
+ 
+Constraints:          
+* 1 <= nums.length <= 10            
+* -10 <= nums[i] <= 10            
+* All the numbers of nums are unique.      
+
+#### My AC Version           
+```c++           
+class Solution {
+public:
+    int n;
+    vector<vector<int>> subsets(vector<int>& nums) {
+        vector<vector<int>> res;
+        n = nums.size();
+        vector<int> cur;
+        res.emplace_back(cur);
+        for (int i = 0; i < n; i++){
+            cur.emplace_back(nums[i]);
+            res.emplace_back(cur);
+            helper(nums, res, cur, i+1);
+            cur.pop_back();
+        }
+        return res;
+    }
+private:
+    void helper(vector<int>& nums, vector<vector<int>>& res, 
+                vector<int>& cur, int idx){
+        if (idx == n) return;
+        for (int i = idx; i < n; i ++){
+            cur.emplace_back(nums[i]);
+            res.emplace_back(cur);
+            helper(nums, res, cur, i+1);
+            cur.pop_back();
+        }
+    }
+};
+```            
+Runtime: 0 ms, faster than **100.00%** of C++ online submissions for Subsets.         
+Memory Usage: 7.1 MB, less than 83.87% of C++ online submissions for Subsets.         
+
+递归+回溯。        
+先加入空数组到 res ，开始遍历。由于数组内元素无重复，直接从 0 遍历到数组结束，加入当前元素到 cur ，随后加入当前 cur 到 res 。在此（cur 已存在的元素）基础上，从 idx+1 个元素递归调用 helper，以在此基础上继续加入元素且避免重复。完成递归调用后随即将当前加入的元素 pop 出来，给下一个元素留出位置。          
+
+### 90. Subsets II               
+Given an integer array nums that may contain duplicates, return all possible subsets (the power set).             
+The solution set must not contain duplicate subsets. Return the solution in any order.           
+
+Example 1:          
+Input: nums = [1,2,2]            
+Output: [[],[1],[1,2],[1,2,2],[2],[2,2]]            
+
+Example 2:         
+Input: nums = [0]            
+Output: [[],[0]]           
+
+Constraints:             
+* 1 <= nums.length <= 10            
+* -10 <= nums[i] <= 10            
+
+#### My AC Version            
+```c++            
+class Solution {
+public:
+    int n;
+    vector<vector<int>> subsetsWithDup(vector<int>& nums) {
+        vector<vector<int>> res;
+        n = nums.size();
+        sort(nums.begin(), nums.end());
+        vector<int> cur;
+        res.emplace_back(cur);
+        for (int i = 0; i < n; i++){
+            if (i>0 && find(nums.begin(), nums.begin()+i, nums[i]) != nums.begin()+i) continue;
+            cur.emplace_back(nums[i]);
+            res.emplace_back(cur);
+            helper(nums, res, cur, i+1);
+            cur.pop_back();
+        }
+        return res;
+    }
+private:
+    void helper(vector<int>& nums, vector<vector<int>>& res, vector<int>& cur, int idx){
+        if (idx == n) return;
+        for (int i = idx; i < n; i ++){
+            if (i>idx && find(nums.begin()+idx, nums.begin()+i, nums[i]) != nums.begin()+i) continue;
+            cur.emplace_back(nums[i]);
+            res.emplace_back(cur);
+            helper(nums, res, cur, i+1);
+            cur.pop_back();
+        }
+    }
+};
+```         
+Runtime: 0 ms, faster than **100.00%** of C++ online submissions for Subsets II.           
+Memory Usage: 7.5 MB, less than 88.83% of C++ online submissions for Subsets II.           
+
+和上一题没什么区别，唯一不同点是本题存在重复元素，需要避开：在每次执行加入元素到 cur、加入 cur 到 res、pop 出当前添加的一个元素等等一系列操作之前，先做一次判断，判断从当前步骤（添加长度为 x 的数组到 res）的起始元素到当前元素的前一个元素之间有没有元素和当前元素相同，如果有的话，即意味着当前元素在当前一步骤中已经添加过了（for 循环内的第一步操作），可以直接 continue 。       
