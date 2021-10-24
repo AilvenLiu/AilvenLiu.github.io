@@ -332,3 +332,82 @@ Runtime: 0 ms, faster than **100.00%** of C++ online submissions for Subsets II.
 Memory Usage: 7.5 MB, less than 88.83% of C++ online submissions for Subsets II.           
 
 和上一题没什么区别，唯一不同点是本题存在重复元素，需要避开：在每次执行加入元素到 cur、加入 cur 到 res、pop 出当前添加的一个元素等等一系列操作之前，先做一次判断，判断从当前步骤（添加长度为 x 的数组到 res）的起始元素到当前元素的前一个元素之间有没有元素和当前元素相同，如果有的话，即意味着当前元素在当前一步骤中已经添加过了（for 循环内的第一步操作），可以直接 continue 。       
+
+## Day 10 Recursion / Backtracking             
+[GitHub 连接](https://github.com/OUCliuxiang/leetcode/blob/master/StudyPlan/Algo2/day10)          
+
+## 47. Permutations II            
+Given a collection of numbers, nums, that might contain duplicates, return all possible unique permutations in any order.           
+
+Example 1:          
+Input: nums = [1,1,2]          
+Output:            
+[[1,1,2],            
+ [1,2,1],          
+ [2,1,1]]           
+
+Example 2:          
+Input: nums = [1,2,3]              
+Output: [[1,2,3],[1,3,2],[2,1,3],[2,3,1],[3,1,2],[3,2,1]]           
+
+Constraints:          
+* 1 <= nums.length <= 8           
+* -10 <= nums[i] <= 10           
+
+对于排列问题，c++11 提供了现成的轮子 `next_permutations(pos1, pos2)`；基于之，我们可以用寥寥几行代码得出结果：        
+
+#### next_premutation Solution          
+```c++        
+class Solution {
+public:
+    vector<vector<int>> permuteUnique(vector<int>& nums) {
+        std::sort(nums.begin(), nums.end());
+        vector<vector<int>> res;
+        do{
+            res.emplace_back(nums);
+        }while(next_permutation(nums.begin(), nums.end()));
+        return res;
+    }
+};
+```         
+其时间空间表现也不差，甚至当数组越复杂，其表现越好。        
+
+
+上述方法毕竟取巧，无法理解排列问题的本质思想。      
+实际上，这个题是 46题 Permutations 的进阶版本，和 46 的唯一区别就是数组里存在重复元素，我们需要避开。            
+先看一下 46 题无重复元素情况的时间击败 **100%** 的解。         
+
+#### 46 Solution          
+```c++          
+class Solution {
+public:
+    int len;
+    vector<vector<int>> permute(vector<int>& nums) {
+        len = nums.size();
+        sort( nums.begin(), nums.end());
+        vector<vector<int>> res;
+        recursion(res, nums, 0);
+        return res;
+    }
+private:
+    void recursion( vector<vector<int>>& res, 
+                    vector<int>& nums, int idx){
+        if (idx == len){
+            res.emplace_back(nums);
+            return;
+        }
+        for (int i = idx; i < len; i ++){
+            if (i != idx && nums[i] == nums[idx]) continue;
+            swap(nums[i], nums[idx]);
+            recursion(res, nums, idx+1);
+            swap(nums[i], nums[idx]);
+        }
+    }
+};
+```              
+
+Runtime: 0 ms, faster than 100.00% of C++ online submissions for Permutations.         
+Memory Usage: 8.1 MB, less than 29.05% of C++ online submissions for Permutations.           
+
+比较容易理解的一个思路，对从 idx=0 位置开始的每个位置，通过递归调用依次交换该位置和其后面每一个位置的元素的值，就能得到所有不同的排列。对每一个位置，完成一次交换并调用递归后，需要取消交换（再对同一对数 swap 一次） 恢复原来状态，给当前位置的下一次交换做准备。           
+
