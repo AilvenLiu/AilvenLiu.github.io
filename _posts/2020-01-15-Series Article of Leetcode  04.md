@@ -397,7 +397,6 @@ private:
             return;
         }
         for (int i = idx; i < len; i ++){
-            if (i != idx && nums[i] == nums[idx]) continue;
             swap(nums[i], nums[idx]);
             recursion(res, nums, idx+1);
             swap(nums[i], nums[idx]);
@@ -411,3 +410,161 @@ Memory Usage: 8.1 MB, less than 29.05% of C++ online submissions for Permutation
 
 比较容易理解的一个思路，对从 idx=0 位置开始的每个位置，通过递归调用依次交换该位置和其后面每一个位置的元素的值，就能得到所有不同的排列。对每一个位置，完成一次交换并调用递归后，需要取消交换（再对同一对数 swap 一次） 恢复原来状态，给当前位置的下一次交换做准备。           
 
+#### My AC Version            
+```c++
+class Solution {
+public:
+    int len;
+    vector<vector<int>> permuteUnique(vector<int>& nums) {
+        len = nums.size();
+        sort( nums.begin(), nums.end());
+        vector<vector<int>> res;
+        recursion(res, nums, 0);
+        return res;
+    }
+private:
+    void recursion( vector<vector<int>>& res, 
+                    vector<int> nums, int idx){
+        if (idx == len){
+            res.emplace_back(nums);
+            return;
+        }
+        for (int i = idx; i < len; i ++){
+            if (i != idx && nums[i] == nums[idx]) continue;
+            swap(nums[i], nums[idx]);
+            recursion(res, nums, idx+1);
+        }
+    }
+};
+```          
+Runtime: 14 ms, faster than 42.30% of C++ online submissions for Permutations II.          
+Memory Usage: 9.2 MB, less than 55.02% of C++ online submissions for Permutations II.            
+
+在 46 基础上改进的一个解。除了判断相同元素 continue 外，只有两点不同：       
+1. 数组传入是没有使用引用；           
+2. 递归调用后没有再进行进行 swap 操作。       
+
+原因是在于重复元素、尤其是多个重复元素的存在会导致基于不同层的**交换**出现相同的结果，比如对测试样例 [1,1,2,2]， 在当前排列基础上 swap( idx1, idx3) 结果为 [1,2,2,1]；当排列的 idx 1,2 已完成交换，排列变为 [1,2,1,2]，在此基础上 swap( idx3, idx4) 结果也为 [1,2,2,1]。按照无重复元素设计的“依次交换”方案无法避免这种情况，于是，采用一种新的思路：从 idx 开始，将 idx 后每一个和**当前**（当前可能已被交换）元素不相等的元素**往前挪**，也即连续 swap 而不取消。效果为：         
+idx = 0:  [1,2,3,4] --> [2,1,3,4] --> [3,1,2,4] --> [4,1,2,3]          
+于是不使用引用的原因就显而易见了：避免递归调用对当前元素顺序产生影响。           
+
+### 39. Combination Sum            
+Given an array of distinct integers candidates and a target integer target, return a list of all unique combinations of candidates where the chosen numbers sum to target. You may return the combinations in any order.           
+The same number may be chosen from candidates an unlimited number of times. Two combinations are unique if the frequency of at least one of the chosen numbers is different.            
+It is guaranteed that the number of unique combinations that sum up to target is less than 150 combinations for the given input.           
+
+Example 1:           
+Input: candidates = [2,3,6,7], target = 7            
+Output: [[2,2,3],[7]]             
+Explanation:             
+2 and 3 are candidates, and 2 + 2 + 3 = 7. Note that 2 can be used multiple times.            
+7 is a candidate, and 7 = 7.           
+These are the only two combinations.           
+
+Example 2:          
+Input: candidates = [2,3,5], target = 8            
+Output: [[2,2,2,2],[2,3,3],[3,5]]             
+
+Example 3:           
+Input: candidates = [2], target = 1            
+Output: []           
+
+Example 4:         
+Input: candidates = [1], target = 1          
+Output: [[1]]             
+
+Example 5:           
+Input: candidates = [1], target = 2           
+Output: [[1,1]]            
+
+#### My AC Version          
+```c++           
+class Solution {
+public:
+    int len;
+    std::vector<std::vector<int>> combinationSum( 
+    std::vector<int>& nums, int target) {
+        std::sort(nums.begin(), nums.end());
+        len = nums.size();
+        std::vector<int> cur;
+        std::vector<std::vector<int>> res;
+        finder(res, cur, nums, target, 0);
+        return res;
+    }
+private:
+    void finder(std::vector<std::vector<int>>& res, 
+                std::vector<int>& cur, 
+                std::vector<int>& nums, 
+                int target, 
+                int idx){
+        if (target == 0){
+            res.emplace_back(cur);
+            return;
+        }
+        for (int i = idx; i < len && target >= nums[i]; i++){
+            cur.emplace_back(nums[i]);
+            finder(res, cur, nums, target-nums[i], i);
+            cur.pop_back();
+        }
+    }
+};
+```
+Runtime: 9 ms, faster than 55.52% of C++ online submissions for Combination Sum.          
+Memory Usage: 10.7 MB, less than 97.09% of C++ online submissions for Combination Sum.         
+递归回溯去做没什么难理解的。由于元素可以复用，每一次递归调用的 idx 都从当前开始。 注意 for 循环的终止条件有一个 target \< nums[i]，由于 nums 是有序的，如果当前 nums[i] 大于 target，也就没有继续进行下去的必要了。         
+
+### 40. Combination Sum II        
+Given a collection of candidate numbers (candidates) and a target number (target), find all unique combinations in candidates where the candidate numbers sum to target.          
+Each number in candidates may only be used once in the combination.         
+Note: The solution set must not contain duplicate combinations.         
+ 
+Example 1:        
+Input: candidates = [10,1,2,7,6,1,5], target = 8            
+Output:       
+[[1,1,6],       
+ [1,2,5],           
+ [1,7],        
+ [2,6]]       
+
+Example 2:         
+Input: candidates = [2,5,2,1,2], target = 5            
+Output:           
+[[1,2,2],         
+ [5]]          
+
+#### My AC Version         
+```c++           
+class Solution {
+public:
+    int len;
+    std::vector<std::vector<int>> combinationSum2(
+    std::vector<int>& nums, int target) {
+        len = nums.size();
+        std::sort(nums.begin(), nums.end());
+        std::vector<std::vector<int>> res;
+        std::vector<int> cur;
+        finder(res, cur, nums, target, 0);
+        return res;
+    }
+private:
+    void finder(std::vector<std::vector<int>>& res,
+                std::vector<int>& cur,
+                std::vector<int>& nums,
+                int target, 
+                int idx){
+        if(!target){
+            res.emplace_back(cur);
+            return;
+        }
+        for(int i = idx; i < len && target >= nums[i]; i++){
+            if (i != idx && nums[i] == nums[idx]) continue;
+            cur.emplace_back(nums[i]);
+            finder(res, cur, nums, target-nums[i], i+1);
+            cur.pop_back();
+        }
+    }
+};
+```         
+Runtime: 3 ms, faster than 92.41% of C++ online submissions for Combination Sum II.         
+Memory Usage: 10.7 MB, less than 50.62% of C++ online submissions for Combination Sum II.         
+跟上一题一样，也没什么特别难想到的地方。由于元素不能复用，每一次递归调用的 idx 应当从当前 +1 开始。由于存在重复元素，在递归调用前需要判断当前元素值是否与 idx 相同，是则跳过。        
