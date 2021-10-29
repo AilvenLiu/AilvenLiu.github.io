@@ -568,3 +568,266 @@ private:
 Runtime: 3 ms, faster than 92.41% of C++ online submissions for Combination Sum II.         
 Memory Usage: 10.7 MB, less than 50.62% of C++ online submissions for Combination Sum II.         
 跟上一题一样，也没什么特别难想到的地方。由于元素不能复用，每一次递归调用的 idx 应当从当前 +1 开始。由于存在重复元素，在递归调用前需要判断当前元素值是否与 idx 相同，是则跳过。        
+
+### 216. Combination Sum III           
+Find all valid combinations of k numbers that sum up to n such that the following conditions are true:          
+* Only numbers 1 through 9 are used.          
+* Each number is used at most once.        
+
+Return a list of all possible valid combinations. The list must not contain the same combination twice, and the combinations may be returned in any order.          
+ 
+Example 1:            
+Input: k = 3, n = 7          
+Output: [[1,2,4]]            
+Explanation:              
+1 + 2 + 4 = 7           
+There are no other valid combinations.            
+
+Example 2:         
+Input: k = 3, n = 9          
+Output: [[1,2,6],[1,3,5],[2,3,4]]            
+Explanation:           
+1 + 2 + 6 = 9            
+1 + 3 + 5 = 9            
+2 + 3 + 4 = 9          
+There are no other valid combinations.           
+
+Example 3:        
+Input: k = 4, n = 1            
+Output: []          
+Explanation: There are no valid combinations.           
+Using 4 different numbers in the range [1,9], the smallest sum we can get is 1+2+3+4 = 10 and since 10 > 1, there are no valid combination.        
+
+Example 4:           
+Input: k = 3, n = 2         
+Output: []           
+Explanation: There are no valid combinations.           
+
+Example 5:          
+Input: k = 9, n = 45         
+Output: [[1,2,3,4,5,6,7,8,9]]           
+Explanation:            
+1 + 2 + 3 + 4 + 5 + 6 + 7 + 8 + 9 = 45           
+There are no other valid combinations.          
+
+Constraints:            
+* 2 <= k <= 9           
+* 1 <= n <= 60           
+
+#### My AC Version         
+```c++       
+class Solution {
+public:
+    std::vector<std::vector<int>> combinationSum3(int k, int n) {
+        std::vector<std::vector<int>> res;
+        std::vector<int> cur;
+        finder(k,n,res,cur,1);
+        return res;
+    }
+private:
+    void finder(int k, int n, std::vector<std::vector<int>>& res, std::vector<int>& cur, int idx){
+        if (!n && !k){
+            res.emplace_back(cur);
+            return;
+        }
+        for (int i = idx; i < 10 && n >= i && k>0; i ++){
+            cur.emplace_back(i);
+            finder(k-1, n-i, res, cur, i+1);
+            cur.pop_back();
+        }
+    }
+};
+```           
+Runtime: 0 ms, faster than **100.00%** of C++ online submissions for Combination Sum III.         
+Memory Usage: 6.5 MB, less than 58.26% of C++ online submissions for Combination Sum III.          
+
+这题写出来不容易，但理解起来不难。用递归回溯去做，寻找 1 到 9 中 k 个不重复的元素。于是每层递归中 for 从 idx 到 9 依次加入元素，每次递归调用 k-1, n-i, idx=i+1，且递归调用语句后紧跟着将最后加入的一个元素 pop 出来给下一次加入做准备。递归成功终止的条件是 k=0 && n==0，也即在第 k 次加入的时候元素总和等于 n 。           
+
+## Day 11 Recursion / Backtracking             
+[GitHub 连接](https://github.com/OUCliuxiang/leetcode/blob/master/StudyPlan/Algo2/day11)          
+
+### 17. Letter Combinations of a Phone Number         
+Given a string containing digits from 2-9 inclusive, return all possible letter combinations that the number could represent. Return the answer in any order.          
+A mapping of digit to letters (just like on the telephone buttons) is given below. Note that 1 does not map to any letters.         
+
+<div align=center><img src="https://raw.githubusercontent.com/OUCliuxiang/OUCliuxiang.github.io/master/img/leetcode/leetcode17.png"></div>       
+ 
+Example 1:         
+Input: digits = "23"            
+Output: ["ad","ae","af","bd","be","bf","cd","ce","cf"]        
+
+Example 2:        
+Input: digits = ""         
+Output: []         
+ 
+Example 3:          
+Input: digits = "2"       
+Output: ["a","b","c"]          
+
+Constraints:       
+* 0 <= digits.length <= 4           
+* digits[i] is a digit in the range ['2', '9'].       
+
+#### My AC Version     
+```c++        
+class Solution {
+public:
+    std::map<char, std::string> m = {
+        {'2',"abc"},
+        {'3',"def"},
+        {'4',"ghi"},
+        {'5',"jkl"},
+        {'6',"mno"},
+        {'7',"pqrs"},
+        {'8',"tuv"},
+        {'9',"wxyz"}
+    };
+    int len;
+    std::vector<std::string> letterCombinations(std::string digits) {
+        len = digits.size();
+        if(!len) return {};
+        std::vector<std::string> res;
+        std::string cur;
+        helper(res, cur, digits, 0);
+        return res;
+    }
+private:
+    void helper(std::vector<std::string>& res, std::string& cur, 
+                std::string& digits, int idx){
+        if (idx == len){
+            res.emplace_back(cur);
+            return;
+        }
+        for (int i = 0; i < m[digits[idx]].size(); i++){
+            cur += m[digits[idx]][i];
+            helper(res, cur, digits, idx+1);
+            cur.pop_back();
+        }
+    }
+};
+```         
+
+Runtime: 3 ms, faster than 23.54% of C++ online submissions for Letter Combinations of a Phone Number.          
+Memory Usage: 6.7 MB, less than 39.02% of C++ online submissions for Letter Combinations of a Phone Number.           
+
+这题不难，递归回溯去做。把 map 映射写出来一切就迎刃而解了。       
+
+### 22. Generate Parentheses         
+Given n pairs of parentheses, write a function to generate all combinations of well-formed parentheses.         
+
+Example 1:        
+Input: n = 3        
+Output: ["((()))","(()())","(())()","()(())","()()()"]        
+
+Example 2:       
+Input: n = 1        
+Output: ["()"]       
+
+Constraints:        
+1 <= n <= 8
+
+```c++         
+class Solution {
+public:
+    std::vector<std::string> generateParenthesis(int n) {
+        std::vector<std::string> res;
+        recursion(res, "", n, 0);
+        return res;
+    }
+private:
+    void recursion(std::vector<std::string>& res, 
+                   std::string cur,
+                   int lRe, int rRe){
+        if (!lRe && !rRe){
+            res.emplace_back(cur);
+            return;
+        }
+        if(lRe) recursion(res, cur+'(', lRe-1, rRe+1);
+        if(rRe) recursion(res, cur+')', lRe, rRe-1);
+    }
+};
+```       
+Runtime: 4 ms, faster than 72.10% of C++ online submissions for Generate Parentheses.         
+Memory Usage: 13.7 MB, less than 61.59% of C++ online submissions for Generate Parentheses.          
+
+这题比较难，需要想清楚几个条件：       
+1. 右括号只有在少于当前串中左括号数量时才可以添加；       
+2. 当前状态可以添加什么；      
+3. 用回溯还是不加引用。         
+
+先回答最后一个问题，本题不建议使用回溯+引用，一方面我们完全可以在当前状态不回溯的条件下做文章；另一方面，我们也不希望递归调用中引用的存在导致当前状态被破坏。      
+于是给定一个初始状态：可以添加 n 个左括号，0 个右括号；且，当递归调用过程左右括号剩余可添加的数量都为零的时候，递归结束。否则，左括号剩余可添加不为零，递归调用当前串加左括号，左括号剩余数量减一，右加一；右括号同理。 值得注意的是，由于我们不使用引用，同一层递归中添加左右括号是独立的，送入递归中的都是一个新串。          
+
+### 79. Word Search         
+Given an m x n grid of characters board and a string word, return true if word exists in the grid.         
+The word can be constructed from letters of sequentially adjacent cells, where adjacent cells are horizontally or vertically neighboring. The same letter cell may not be used more than once.         
+
+Example 1:       
+<div align=center><img src="https://raw.githubusercontent.com/OUCliuxiang/OUCliuxiang.github.io/master/img/leetcode/leetcode079-1.png"></div>       
+
+Input: board = [["A","B","C","E"],["S","F","C","S"],["A","D","E","E"]], word = "ABCCED"          
+Output: true           
+
+Example 2:           
+<div align=center><img src="https://raw.githubusercontent.com/OUCliuxiang/OUCliuxiang.github.io/master/img/leetcode/leetcode079-2.png"></div>       
+
+Input: board = [["A","B","C","E"],["S","F","C","S"],["A","D","E","E"]], word = "SEE"       
+Output: true        
+
+Example 3:          
+<div align=center><img src="https://raw.githubusercontent.com/OUCliuxiang/OUCliuxiang.github.io/master/img/leetcode/leetcode079-3.png"></div>       
+
+Input: board = [["A","B","C","E"],["S","F","C","S"],["A","D","E","E"]], word = "ABCB"           
+Output: false            
+
+Constraints:        
+* m == board.length           
+* n = board[i].length           
+* 1 <= m, n <= 6           
+* 1 <= word.length <= 15           
+* board and word consists of only lowercase and uppercase English letters.
+
+#### My AC Version           
+```c++          
+class Solution {
+public:
+    int DIRS[5] = {-1,0,1,0,-1};
+    int len, Row, Col;
+    bool exist(std::vector<std::vector<char>>& board, std::string word) {
+        len = word.size();
+        Row = board.size();
+        Col = board[0].size();
+        bool flag = false;
+        for (int i = 0; i < Row; i ++)
+            for (int j = 0; j < Col; j++)
+                if(board[i][j] == word[0]){
+                    dfs(board, word, flag, i, j, 0);
+                    if (flag) return true;
+                }
+        return false;
+    }
+private:
+    void dfs(std::vector<std::vector<char>>& board, 
+             std::string& word, bool& flag, int r, int c, int idx){
+        if(r<0 || c<0 || r>=Row || c>=Col || board[r][c] != word[idx]) return;
+        
+        if(idx == len-1 && word[idx] == board[r][c]){
+            flag = true;
+            return;
+        }
+        
+        char tmp = board[r][c];
+        board[r][c] = '*';
+        if (tmp == word[idx])
+            for(int i = 0; i < 4; i ++)
+                dfs( board, word, flag, r+DIRS[i], c+DIRS[i+1], idx+1);
+        board[r][c] = tmp;
+    }
+};
+```     
+Runtime: 422 ms, faster than 46.05% of C++ online submissions for Word Search.       
+Memory Usage: 7.4 MB, less than 84.32% of C++ online submissions for Word Search.         
+深搜（递归+回溯）去做，这题没什么难度。相对难想到的是 visited 数组的设置：由于深搜过程遍历到但最终决定不使用的位置应当使之下次可以继续使用，而不是简单暴力的就 visited 。所以选择使用在原数组标记的方法：将访问过的元素置特定值（特定值必不可能参与组成目标 word），并在递归调用语句后恢复原值。             
+
+
+
