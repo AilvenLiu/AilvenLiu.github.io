@@ -1,7 +1,7 @@
 ---
 layout:     post
 title:      Series Article of Leetcode Notes -- 04
-subtitle:   Study Plan Algo 2 Day 8-14      
+subtitle:   Study Plan Algo 2 Day 8-11      
 date:       2021-10-13
 author:     OUC_LiuX
 header-img: img/wallpic02.jpg
