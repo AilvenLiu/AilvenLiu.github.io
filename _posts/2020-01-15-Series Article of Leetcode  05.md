@@ -188,3 +188,111 @@ Memory Usage: 16.4 MB, less than 42.07% of C++ online submissions for Jump Game 
 于是，转台转移为：状态 1 最远可达距离和上一题一样每一步更新，状态 2 当前可达距离当且仅当 i 走到 现在的当前距离的时候更新为最远可达距离。解释为：     
 在每一个格子（基准格子），尽力往前跳，直到跳到这个格子能到的最远距离（中间每跳一步除了更新状态1 直到当前格可达最远距离外，还要判断跳到当前格是否到达终点，是的话直接返回步数，不再继续进行）。现在，我们从当前步的基准格子跳到了基准格子可达的最远距离，也找到了从基准格子直到当前格子可跳到的最远距离。注意，我们不关注到底是从那个格子能跳到状态 1 的最远距离，因为都一样，步数都要加一。此时，循环还没有结束、还没有到达终点，更新当前可达距离为直到当前格子的最远可达距离。步数加一继续往前跳。      
 
+### 62. Unique Paths       
+A robot is located at the top-left corner of a m x n grid (marked 'Start' in the diagram below).         
+The robot can only move either down or right at any point in time. The robot is trying to reach the bottom-right corner of the grid (marked 'Finish' in the diagram below).         
+How many possible unique paths are there?      
+
+Example 1:      
+<div align=center><img src="https://raw.githubusercontent.com/OUCliuxiang/OUCliuxiang.github.io/master/img/leetcode/leetcode062.png"></div>       
+Input: m = 3, n = 7          
+Output: 28            
+
+Example 2:        
+Input: m = 3, n = 2           
+Output: 3          
+Explanation:           
+From the top-left corner, there are a total of 3 ways to reach the bottom-right corner:        
+1. Right -> Down -> Down      
+2. Down -> Down -> Right      
+3. Down -> Right -> Down       
+
+Example 3:      
+Input: m = 7, n = 3         
+Output: 28           
+
+Example 4:        
+Input: m = 3, n = 3        
+Output: 6         
+
+Constraints:        
+* 1 <= m, n <= 100              
+* It's guaranteed that the answer will be less than or equal to 2 * 109.          
+
+这道题不难，典型的动态规划。由于每个格子只能尤其上面或左面的格子到达，于是每个格子的 unique path 就等于其左面和上面的格子的 unique path 的加和。特别的，最上面一排和最左面一列格子的 unique path 等于一。从而，建立一个矩阵，从第 （1,1） 个格子开始遍历就好了，最后返回右下角格子的值。      
+这道题可以继续优化其空间性能。注意到，当前格子的值仅有其左边和上面的格子决定，一个自然而然的想法是设定三个变量将空间复杂度降到 O(1) 。但实际情况是，这是个二维的动态，每次要更新三个值，我们很难通过固定数目的几个变量更新有二维方位关系的变量。但退而求其次，又观察到，在更新第 k 行数据时，只使用了 k / k-1 行的数据，跟之前的行没有关系（列也行，这里选行），从而，我们使用两个行向量迭代更新，将复杂度降到 O(n) 级别。           
+
+#### My AC Version         
+```c++      
+class Solution {
+public:
+    int uniquePaths(int m, int n) {
+        vector<int> cur(n, 1), pre(n, 1);
+        for (int i = 1; i < m; i ++){
+            for (int j = 1; j < n; j++)
+                cur[j] = cur[j-1] + pre[j];
+            pre = cur;
+            cur.assign(n,1);
+        }
+        return pre[n-1];
+    }
+};
+```      
+Runtime: 0 ms, faster than 100.00% of C++ online submissions for Unique Paths.      
+Memory Usage: 6.1 MB, less than 50.65% of C++ online submissions for Unique Paths.         
+
+## Day 13 Dynamic Programming           
+[GitHub 连接](https://github.com/OUCliuxiang/leetcode/blob/master/StudyPlan/Algo2/day13)          
+
+### 5. Longest Palindromic Substring          
+Given a string s, return the longest palindromic substring in s.      
+
+Example 1:      
+Input: s = "babad"         
+Output: "bab"       
+Note: "aba" is also a valid answer.         
+
+Example 2:      
+Input: s = "cbbd"           
+Output: "bb"          
+
+Example 3:       
+Input: s = "a"           
+Output: "a"         
+
+Example 4:          
+Input: s = "ac"          
+Output: "a"        
+
+Constraints:           
+* 1 <= s.length <= 1000            
+* s consist of only digits and English letters.          
+
+最长回文子串，经典题目了。这题不用动态做，动态规划是反人类的解法，根本想不明白。这题用中心扩散法，遍历一遍字符串，从当前位置向后寻找连续相同字符，并从相同字符的首尾两端继续向外扩散，寻找相同字符。注意，连续相同字符必是回文子串，所以一定要先找出最长连续相同字符子串，在此基础上再向外扩散。           
+
+#### My AC Version        
+```c++       
+class Solution {
+public:
+    string longestPalindrome(string s) {
+        int len = s.size();
+        if (len <= 1) return s;
+        
+        int subLen = 1, subStart = 0;
+        int i = 0;
+        while(i < len){
+            int start = i, end = i;
+            while( end + 1 < len && s[end+1] == s[end]) end++; 
+            while( end + 1 < len && start > 0 && s[end+1] == s[start-1]){end++;start--;}
+            if(end-start+1 > subLen){
+                subLen = end-start+1;
+                subStart = start;
+            }
+            i++;
+        }
+        return s.substr(subStart, subLen);
+    }
+};
+```         
+Runtime: 18 ms, faster than 84.49% of C++ online submissions for Longest Palindromic Substring.         
+Memory Usage: 7.1 MB, less than 82.88% of C++ online submissions for Longest Palindromic Substring.            
