@@ -296,3 +296,301 @@ public:
 ```         
 Runtime: 18 ms, faster than 84.49% of C++ online submissions for Longest Palindromic Substring.         
 Memory Usage: 7.1 MB, less than 82.88% of C++ online submissions for Longest Palindromic Substring.            
+
+### 413. Arithmetic Slices         
+An integer array is called arithmetic if it consists of at least three elements and if the difference between any two consecutive elements is the same.       
+For example, [1,3,5,7,9], [7,7,7,7], and [3,-1,-5,-9] are arithmetic sequences.       
+
+Given an integer array nums, return the number of arithmetic subarrays of nums.         
+A subarray is a contiguous subsequence of the array.         
+
+Example 1:       
+Input: nums = [1,2,3,4]           
+Output: 3          
+Explanation: We have 3 arithmetic slices in nums: [1, 2, 3], [2, 3, 4] and [1,2,3,4] itself.          
+
+Example 2:      
+Input: nums = [1]        
+Output: 0         
+
+Constraints:         
+* 1 <= nums.length <= 5000           
+* -1000 <= nums[i] <= 1000         
+
+等比数列，这题也是建立了一个 dp 数组，但这道题的解没有那么强的动态规划的味道。      
+#### My AC Version      
+```c++         
+class Solution {
+public:
+    int numberOfArithmeticSlices(vector<int>& nums) {
+        int len = nums.size();
+        if (len<3) return 0;
+        int count = 0;
+        int dp[len];
+        memset(dp, 0, sizeof(int)*len);
+        
+        for (int i = 2; i < len; i++){
+            if (nums[i-1] - nums[i-2] == nums[i] - nums[i-1]) 
+                dp[i] = dp[i-1] + 1;
+            count += dp[i];
+        }
+        return count;
+    }
+};
+```         
+Runtime: 0 ms, faster than 100.00% of C++ online submissions for Arithmetic Slices.      
+Memory Usage: 7.4 MB, less than 53.84% of C++ online submissions for Arithmetic Slices.        
+
+建立一个和原数组等长的 dp 数组用以存储以第 i 个元素为结尾的等比数列的个数：显然，在 `dp[i+1] - dp[i] == dp[i] - dp[i-1]` 的前提下， `dp[i+1] = dp[i] + 1`，后一个元素收尾的等比数列数量完全继承前一个，并比前一个多出一个内容为 `[i-1, i, i+1]` 的等比数列。则最终的结果就是 dp 数组诸值的加和。          
+
+## Day 14 Dynamic Programming           
+[GitHub 连接](https://github.com/OUCliuxiang/leetcode/blob/master/StudyPlan/Algo2/day14)          
+
+### 91. Decode Ways       
+A message containing letters from A-Z can be encoded into numbers using the following mapping:      
+* 'A' -> "1"        
+* 'B' -> "2"        
+* ...           
+* 'Z' -> "26"
+
+To decode an encoded message, all the digits must be grouped then mapped back into letters using the reverse of the mapping above (there may be multiple ways). For example, "11106" can be mapped into:          
+* "AAJF" with the grouping (1 1 10 6)         
+* "KJF" with the grouping (11 10 6)        
+
+Note that the grouping (1 11 06) is invalid because "06" cannot be mapped into 'F' since "6" is different from "06".          
+Given a string s containing only digits, return the number of ways to decode it.        
+The answer is guaranteed to fit in a 32-bit integer.          
+
+Example 1:       
+Input: s = "12"       
+Output: 2        
+Explanation: "12" could be decoded as "AB" (1 2) or "L" (12).       
+
+Example 2:        
+Input: s = "226"       
+Output: 3       
+Explanation: "226" could be decoded as "BZ" (2 26), "VF" (22 6), or "BBF" (2 2 6).          
+
+Example 3:           
+Input: s = "0"           
+Output: 0         
+Explanation: There is no character that is mapped to a number starting with 0.         
+The only valid mappings with 0 are 'J' -> "10" and 'T' -> "20", neither of which start with 0.          
+Hence, there are no valid ways to decode this since all digits need to be mapped.            
+
+Example 4:       
+Input: s = "06"        
+Output: 0      
+Explanation: "06" cannot be mapped to "F" because of the leading zero ("6" is different from "06").          
+
+
+数字编码方式，这题正常人想不出来怎么解。          
+
+#### My AC Version          
+```c++       
+class Solution {
+public:
+    int numDecodings(string s) {
+        if(s[0] == '0') return 0;
+        int len = s.size();
+        int count = 1, pre = 1, ppre=1;
+        for (int i = 1; i < len; i++){
+            if(s[i] == '0' && (s[i-1] == '0' || s[i-1] > '2')) 
+                return 0;
+            if(s[i] == '0' && (s[i-1] == '1' || s[i-1] =='2')) 
+                count = ppre;
+            
+            if(s[i] != '0') count = pre;
+            if(s[i] != '0' && s[i-1] != '0' && 
+               10*(s[i-1]-'0') + s[i]-'0' <= 26) count += ppre;
+            
+            ppre = pre;
+            pre = count;
+        }       
+        return count;
+    }
+};
+```          
+Runtime: 0 ms, faster than **100.00%** of C++ online submissions for Decode Ways.       
+Memory Usage: 6.2 MB, less than 70.64% of C++ online submissions for Decode Ways.           
+要用动态解这个题，明确两点：        
+1. 截至第 i 个位置，编码方式之和（count）只和前两个位置（ppre，pre）有关；         
+2. '0' 是解题的关键。       
+
+我们看这个解，由于 ‘0’ **只能** 和前面一个数字组成一个两位数（10/20）被解码，先把它拿出来讨论。       
+1. 当整个串的首字符就是 ‘0’，无法被解码，直接返回 0；否则进入循环跳到一下选择中。          
+2. 从第 1 个元素开始，当第 i 个元素是 ‘0’，判断其前一个元素能否和 ‘0’ 组成合法的可编码两位数，否，则直接返回 0。        
+3. 当第 i 个元素是 ‘0’，且前一个元素为 ‘1’或‘2’ ，和 ‘0’ 组成了一个合法的两位数，则至此为止的编码方式**只能**是在截至向前数第二个元素的编码后面加一个字符，从而 `count = ppre`。         
+4. 当第 i 个元素非 ‘0’，则无论之前一个元素是什么，截至当前元素的编码都可以在截至上一个元素的编码后加一个字符。也即，编码方式总和继承上一个元素，先来一个 `count = pre`。        
+5. 然后再判断前一个元素是否能和当前元素组成一个合法的可被编码两位数。如果能，总和在上一步基础上再加一个截止到上上个元素的总和（从截止到上上个元素的编码再加一个两位数编码的字符），`count += ppre`。       
+6. 结束系列判断后 做一个 update，`ppre = pre; pre = count;` 继续 for 循环。       
+
+
+### 139. Word Break      
+Given a string s and a dictionary of strings wordDict, return true if s can be segmented into a space-separated sequence of one or more dictionary words.      
+Note that the same word in the dictionary may be reused multiple times in the segmentation.         
+
+Example 1:         
+Input: s = "leetcode", wordDict = ["leet","code"]          
+Output: true          
+Explanation: Return true because "leetcode" can be segmented as "leet code".         
+
+Example 2:          
+Input: s = "applepenapple", wordDict = ["apple","pen"]          
+Output: true           
+Explanation: Return true because "applepenapple" can be segmented as "apple pen apple".        
+Note that you are allowed to reuse a dictionary word.         
+
+Example 3:        
+Input: s = "catsandog", wordDict = ["cats","dog","sand","and","cat"]
+Output: false        
+
+Constraints:          
+* 1 <= s.length <= 300          
+* 1 <= wordDict.length <= 1000           
+* 1 <= wordDict[i].length <= 20           
+* s and wordDict[i] consist of only lowercase English letters.        
+* All the strings of wordDict are unique.      
+
+又一个凡人根本解不出来的题目。讨论区的动态规划解的思路是这样：遍历字符串，从当前字符向前 for 循环查找到当前之前最长模式长度完成匹配的子串的最后字符的后一个字符到当前字符是否能在 wodrDict 中找到相匹配的子串。是的话，把匹配到的子串的最后一个字符对应位置的 dp 数组值置 true，向后寻找。           
+最后一个字符对应位置的 dp 数组值，就对应着直到最后一个字符，是否匹配成功。        
+为了高效 find 查找，显然应当将存储在 vector 容器中的 word 放置到有 hash 关系的 unordered_set 容器中。       
+另，不知道算不算一个技巧，将 dp 数组的长度设定为待匹配字符串长度+1，并 dp[i] 代表直到第 i 个字符 str[i-1] 是否有被匹配；dp[0] 置 true。        
+
+#### My AV Version         
+```c++        
+class Solution {
+public:
+    bool wordBreak(string s, vector<string>& wordDict) {
+        unordered_set<string> wordSet;
+        int maxLen = 0, len = s.size();
+        for(int i = 0; i < wordDict.size(); i++){
+            string word = wordDict[i];
+            wordSet.emplace(word);
+            maxLen = max(maxLen, (int)word.size());
+        }
+        bool dp[len+1];
+        memset(dp, false, sizeof(bool)*(len+1));
+        dp[0] = true;
+        
+        for (int i = 0; i < len; i++){
+            for (int j = i; j >= 0 && i-j < maxLen; j--){
+                if(dp[j] && wordSet.find(s.substr(j,i-j+1))!=wordSet.end()){
+                    dp[i+1] = true;
+                    break;
+                }
+            }
+        }
+        return dp[len];
+    }
+};
+```        
+Runtime: 0 ms, faster than **100.00%** of C++ online submissions for Word Break.         
+Memory Usage: 7.6 MB, less than **96.00%** of C++ online submissions for Word Break.          
+
+## Day 15 Dynamic Programming           
+[GitHub 连接](https://github.com/OUCliuxiang/leetcode/blob/master/StudyPlan/Algo2/day15)          
+
+### 300. Longest Increasing Subsequence          
+Given an integer array nums, return the length of the longest strictly increasing subsequence.       
+A subsequence is a sequence that can be derived from an array by deleting some or no elements without changing the order of the remaining elements. For example, [3,6,2,7] is a subsequence of the array [0,3,1,6,2,2,7].        
+
+Example 1:         
+Input: nums = [10,9,2,5,3,7,101,18]           
+Output: 4         
+Explanation: The longest increasing subsequence is [2,3,7,101], therefore the length is 4.           
+
+Example 2:         
+Input: nums = [0,1,0,3,2,3]       
+Output: 4         
+
+Example 3:         
+Input: nums = [7,7,7,7,7,7,7]          
+Output: 1        
+
+Constraints:          
+* 1 <= nums.length <= 2500           
+* -104 <= nums[i] <= 104         
+
+最长上升子序列，也是个经典题目了。用动态去做，建立一个和 nums 数组等长的 dp 数组存储直到第 i(start @ 0) 个数的最长上升子序列的长度。更新方式则是从当前向前遍历寻找出 nums 小于当前值的最大 dp 值 dpi，当前位置 dp 值则为 dp[i] = dpi+1。 实时更新最大 dp 值。        
+
+不会的看了解析还是不会，会了的多做几遍也没什么进步，嘿。         
+
+#### My AC Version          
+```c++        
+class Solution {
+public:
+    int lengthOfLIS(vector<int>& nums) {
+        int len = nums.size();
+        if(len == 1) return 1;
+        
+        int dp[len], res = 0;
+        for (int i = 0; i < len; i++) dp[i]=1;
+        for (int i = 1; i < len; i++){
+            int dpi = 0;
+            for (int j = i-1; j >= 0; j--)
+                if(nums[i]>nums[j])
+                    dpi = max(dpi, dp[j]);
+            if(dpi>0) dp[i] += dpi;
+            res = max(res, dp[i]);
+        }
+        return res;
+    }
+};
+```         
+Runtime: 345 ms, faster than 24.58% of C++ online submissions for Longest Increasing Subsequence.         
+Memory Usage: 10.2 MB, less than 99.92% of C++ online submissions for Longest Increasing Subsequence.          
+
+
+### 673. Number of Longest Increasing Subsequence         
+Given an integer array nums, return the number of longest increasing subsequences.        
+Notice that the sequence has to be strictly increasing.        
+
+Example 1:        
+Input: nums = [1,3,5,4,7]         
+Output: 2           
+Explanation: The two longest increasing subsequences are [1, 3, 4, 7] and [1, 3, 5, 7].        
+
+Example 2:       
+Input: nums = [2,2,2,2,2]          
+Output: 5            
+Explanation: The length of longest continuous increasing subsequence is 1, and there are 5 subsequences' length is 1, so output 5.       
+
+Constraints:           
+* 1 <= nums.length <= 2000          
+* -106 <= nums[i] <= 106          
+
+上一题的进阶版本，解法也简单。除了用来存储直到当前 idx 的最长上升子序列长度的 dp 数组外，另建一个 cnt 数组存储达到当前 idx 的最长上升子序列的个数。按照讨论区，为了同步更新 dp 和 cnt，这道题我们更新状态数组的方向应当以正序。特别的，无论对 dp 还是 cnt 数组，要分两种情况进行讨论：1. dp[pre]+1 > dp[cur] ，这种情况更新 dp[cur]=dp[pre]+1，cnt当前状态继承前一状态 cnt[cur] = cnt[pre]； 2. dp[pre]+1 == dp[cur]，这种情况 dp 不发生改变，cnt 的选择增加为 cnt[cur] += cnt[pre] 。         
+每个 idx 更新完毕要判断一下最长上上子序列长度有没有变化，有变化的话当前长度和可选择个数都要重新赋值；没有变化且当前 dp[i] 等于当前最长长度，count += cnt[i] 。       
+#### My AC Version             
+```c++          
+class Solution {
+public:
+    int findNumberOfLIS(vector<int>& nums) {
+        int len = nums.size();
+        if (len == 1) return 1; 
+        int dp[len], cnt[len], count=0, maxLen = 0;
+
+        for (int i = 0; i < len; i ++){
+            dp[i] = 1; cnt[i] = 1;
+            for (int j = 0; j < i; j ++){
+                if(nums[j] < nums[i]){
+                    if(dp[j]+1 > dp[i]){
+                        dp[i] = dp[j]+1;
+                        cnt[i] = cnt[j];
+                    }else if(dp[j]+1 == dp[i])
+                        cnt[i] += cnt[j];
+                }
+            }
+            if(dp[i]>maxLen){
+                maxLen = dp[i];
+                count = cnt[i];
+            }else if(dp[i] == maxLen)
+                count += cnt[i];
+        }
+        return count;
+    }
+};
+```          
+Runtime: 174 ms, faster than 37.16% of C++ online submissions for Number of Longest Increasing Subsequence.         
+Memory Usage: 12.7 MB, less than 97.42% of C++ online submissions for Number of Longest Increasing            
