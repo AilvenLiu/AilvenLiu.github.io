@@ -241,8 +241,8 @@ public:
 Runtime: 0 ms, faster than 100.00% of C++ online submissions for Unique Paths.      
 Memory Usage: 6.1 MB, less than 50.65% of C++ online submissions for Unique Paths.         
 
-## Day 13 Dynamic Programming           
-[GitHub 连接](https://github.com/OUCliuxiang/leetcode/blob/master/StudyPlan/Algo2/day13)          
+## Day 14 Dynamic Programming           
+[GitHub 连接](https://github.com/OUCliuxiang/leetcode/blob/master/StudyPlan/Algo2/day14)          
 
 ### 5. Longest Palindromic Substring          
 Given a string s, return the longest palindromic substring in s.      
@@ -343,8 +343,8 @@ Memory Usage: 7.4 MB, less than 53.84% of C++ online submissions for Arithmetic 
 
 建立一个和原数组等长的 dp 数组用以存储以第 i 个元素为结尾的等比数列的个数：显然，在 `dp[i+1] - dp[i] == dp[i] - dp[i-1]` 的前提下， `dp[i+1] = dp[i] + 1`，后一个元素收尾的等比数列数量完全继承前一个，并比前一个多出一个内容为 `[i-1, i, i+1]` 的等比数列。则最终的结果就是 dp 数组诸值的加和。          
 
-## Day 14 Dynamic Programming           
-[GitHub 连接](https://github.com/OUCliuxiang/leetcode/blob/master/StudyPlan/Algo2/day14)          
+## Day 15 Dynamic Programming           
+[GitHub 连接](https://github.com/OUCliuxiang/leetcode/blob/master/StudyPlan/Algo2/day15)          
 
 ### 91. Decode Ways       
 A message containing letters from A-Z can be encoded into numbers using the following mapping:      
@@ -488,8 +488,8 @@ public:
 Runtime: 0 ms, faster than **100.00%** of C++ online submissions for Word Break.         
 Memory Usage: 7.6 MB, less than **96.00%** of C++ online submissions for Word Break.          
 
-## Day 15 Dynamic Programming           
-[GitHub 连接](https://github.com/OUCliuxiang/leetcode/blob/master/StudyPlan/Algo2/day15)          
+## Day 16 Dynamic Programming           
+[GitHub 连接](https://github.com/OUCliuxiang/leetcode/blob/master/StudyPlan/Algo2/day16)          
 
 ### 300. Longest Increasing Subsequence          
 Given an integer array nums, return the length of the longest strictly increasing subsequence.       
@@ -594,3 +594,131 @@ public:
 ```          
 Runtime: 174 ms, faster than 37.16% of C++ online submissions for Number of Longest Increasing Subsequence.         
 Memory Usage: 12.7 MB, less than 97.42% of C++ online submissions for Number of Longest Increasing            
+
+## Day 17 Dynamic Programming           
+[GitHub 连接](https://github.com/OUCliuxiang/leetcode/blob/master/StudyPlan/Algo2/day17)          
+
+### 1143. Longest Common Subsequence         
+Given two strings text1 and text2, return the length of their longest common subsequence. If there is no common subsequence, return 0.         
+A subsequence of a string is a new string generated from the original string with some characters (can be none) deleted without changing the relative order of the remaining characters.        
+For example, "ace" is a subsequence of "abcde".         
+
+A common subsequence of two strings is a subsequence that is common to both strings.           
+
+Example 1:        
+Input: text1 = "abcde", text2 = "ace"           
+Output: 3          
+Explanation: The longest common subsequence is "ace" and its length is 3.            
+
+Example 2:        
+Input: text1 = "abc", text2 = "abc"           
+Output: 3          
+Explanation: The longest common subsequence is "abc" and its length is 3.          
+
+Example 3:           
+Input: text1 = "abc", text2 = "def"          
+Output: 0            
+Explanation: There is no such common subsequence, so the result is 0.          
+
+Constraints:          
+* 1 <= text1.length, text2.length <= 1000          
+* text1 and text2 consist of only lowercase English characters.       
+
+一打眼就是个二维动态规划，要建立 dp 矩阵。直觉来讲，使用有二维坐标 dp 数组形如 dp[i][j] 存储 text1 第 0～i 个字符和 text2 第 0~j 个字符之间共同子串长度。返回 dp[n][m] 也即最右下角的值代表题目所求最长子字符串长度。          
+现在我们已经确定了状态矩阵，接下来就是状态转移方程，也就是，怎么更新状态。事实上，dp[i][j] 的更新只面临两种状态：text1[i] == text2[j] ，则显然此时 dp[i][j] = dp[i-1][j-1] + 1 （此时应考虑 i, j = 0 的情况，于是使 dp 长宽分别为 n+1, m+1，dp 中的 i,j 则对应 text 中的 i,j + 1 ）；或者不等于，此时 dp[i][j] 继承前一状态：max(dp[i-1][j], dp[i][j-1])。          
+
+#### My AC Version         
+```c++           
+class Solution {
+public:
+    int longestCommonSubsequence(string text1, string text2) {
+        int n = text1.size(), m = text2.size();
+        int dp[n+1][m+1];
+        memset(dp, 0, sizeof(int)*(m+1)*(n+1));
+        for (int i = 1; i <= n; i ++)
+            for(int j = 1; j <= m; j ++)
+                dp[i][j] = text1.at(i-1) == text2.at(j-1) ? 
+                    dp[i-1][j-1]+1 : max(dp[i][j-1], dp[i-1][j]);
+        return dp[n][m];
+    }
+};
+```         
+Runtime: 11 ms, faster than 83.85% of C++ online submissions for Longest Common Subsequence.                     
+Memory Usage: 10.5 MB, less than 89.32% of C++ online submissions for Longest Common Subsequence.          
+
+### 583. Delete Operation for Two Strings        
+
+Given two strings word1 and word2, return the minimum number of steps required to make word1 and word2 the same.        
+In one step, you can delete exactly one character in either string.       
+
+Example 1:       
+Input: word1 = "sea", word2 = "eat"          
+Output: 2       
+Explanation: You need one step to make "sea" to "ea" and another step to make "eat" to "ea".        
+
+Example 2:            
+Input: word1 = "leetcode", word2 = "etco"           
+Output: 4         
+
+Constraints:          
+* 1 <= word1.length, word2.length <= 500         
+* word1 and word2 consist of only lowercase English letters.       
+
+这个题跟上一题本质相同，就是寻找最长共同字串长度。不过多加一步操作：返回值为两字符串各自长度减去最长共同字串长度，的加和。         
+
+#### My AC Version           
+```c++         
+class Solution {
+public:
+    int minDistance(string word1, string word2) {
+        int n = word1.size(), m = word2.size();
+        int dp[n+1][m+1];memset(dp, 0, sizeof(int)*(n+1)*(m+1));
+        for (int i = 1; i <= n; i++)
+            for (int j = 1; j <= m; j++)
+                dp[i][j] = word1[i-1] == word2[j-1] ? dp[i-1][j-1] + 1 : 
+                max(dp[i-1][j], dp[i][j-1]);
+        return n+m-2*dp[n][m];
+    }
+};
+```           
+Runtime: 11 ms, faster than 84.10% of C++ online submissions for Delete Operation for Two Strings.          
+Memory Usage: 7.6 MB, less than 67.59% of C++ online submissions for Delete Operation for Two Strings.
+
+## Day 18 Dynamic Programming          
+[GitHub 连接](https://github.com/OUCliuxiang/leetcode/blob/master/StudyPlan/Algo2/day18)          
+
+#### 322. Coin Change           
+You are given an integer array coins representing coins of different denominations and an integer amount representing a total amount of money.            
+Return the fewest number of coins that you need to make up that amount. If that amount of money cannot be made up by any combination of the coins, return -1.             
+You may assume that you have an infinite number of each kind of coin.          
+
+Example 1:        
+Input: coins = [1,2,5], amount = 11         
+Output: 3          
+Explanation: 11 = 5 + 5 + 1           
+
+Example 2:      
+Input: coins = [2], amount = 3           
+Output: -1          
+
+Example 3:          
+Input: coins = [1], amount = 0           
+Output: 0          
+
+Example 4:        
+Input: coins = [1], amount = 1          
+Output: 1           
+
+Example 5:         
+Input: coins = [1], amount = 2            
+Output: 2           
+
+Constraints:           
+* 1 <= coins.length <= 12           
+* 1 <= coins[i] <= 231 - 1        
+* 0 <= amount <= 104         
+
+硬币找零，动态规划最经典的问题了，也是贪心（局部优化）最经典的失败案例。        
+这道题的难点也在于状态和状态转移方程的抽象和确定，的确很突兀，就先硬记吧，可能时间再久一点就会理解了：          
+现在有状态 dp[i] 为找零 i 元所需要的最少硬币数，状态转移（更新）方程为 dp[i+c] = min(dp[i] + 1) 其中 c 是可选择的硬币面额的枚举。            
+
