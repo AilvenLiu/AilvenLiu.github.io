@@ -722,3 +722,26 @@ Constraints:
 这道题的难点也在于状态和状态转移方程的抽象和确定，的确很突兀，就先硬记吧，可能时间再久一点就会理解了：          
 现在有状态 dp[i] 为找零 i 元所需要的最少硬币数，状态转移（更新）方程为 dp[i+c] = min(dp[i] + 1) 其中 c 是可选择的硬币面额的枚举。            
 
+#### My AC Version          
+```c++           
+class Solution {
+public:
+    int coinChange(vector<int>& coins, unsigned int amount) {
+        unsigned int dp[amount+1]; for (int i=1; i<=amount;){
+            dp[i++] = 0xffffffff;
+        }dp[0] = 0;
+        for (unsigned int i = 0; i <= amount; i ++){
+            if (dp[i] == -1) continue;
+            for (int j = 0; j < coins.size(); j ++){
+                if (i+coins[j] > amount) continue;
+                dp[i+coins[j]] = min(dp[i+coins[j]], dp[i]+1);
+            }
+        }
+        return dp[amount] == 0xffffffff ? -1 : dp[amount];
+    }
+};
+```
+
+Runtime: 60 ms, faster than 85.50% of C++ online submissions for Coin Change.          
+Memory Usage: 9.8 MB, less than **99.99%** of C++ online submissions for Coin Change.            
+题解里，代表金额数字的 函数作用域变量 amount 和 循环作用与变量 i ，是 unsigned int 类型，完全是因为案例有这样一个数值：2147483647，是 int 型的最大值，超出了我们的判断界限，无法产生运算结果。其实，这样的案例完全没有必要存在嘛。      
