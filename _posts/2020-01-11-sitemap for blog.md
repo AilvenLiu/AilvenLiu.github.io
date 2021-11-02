@@ -39,9 +39,24 @@ tags:
 7. 验证成功出现以下界面。            
    <div align=center><img src="https://raw.githubusercontent.com/OUCliuxiang/OUCliuxiang.github.io/master/img/sitemap/sitemap06.png"></div>         
 
+8. 在普通收录一栏提交 sitemap 地址即可。由于我们将只放在了根路径，根据我们的实际情况，填入： https://www.ouc-liux.cn/sitemap.xml。        
+9. 结束。           
+
 ## 提交到 google            
 1. 登录 google search console：https://www.google.com/webmasters/tools/home?hl=zh-cn，点击添加资源。              
    <div align=center><img src="https://raw.githubusercontent.com/OUCliuxiang/OUCliuxiang.github.io/master/img/sitemap/sitemap07.png"></div>         
 
 2. 填写网站地址。           
    <div align=center><img src="https://raw.githubusercontent.com/OUCliuxiang/OUCliuxiang.github.io/master/img/sitemap/sitemap08.png"></div>         
+
+3. 验证网站所有权，告诉 google 这个网站是你的。我选择了 HTML 文件方法，具体使用什么方法随意，视个人情况。         
+   <div align=center><img src="https://raw.githubusercontent.com/OUCliuxiang/OUCliuxiang.github.io/master/img/sitemap/sitemap09.png"></div>         
+
+4. 完成验证。            
+   <div align=center><img src="https://raw.githubusercontent.com/OUCliuxiang/OUCliuxiang.github.io/master/img/sitemap/sitemap10.png"></div>         
+
+5. 再打开对应的网站站长后台，点击站点地图。              
+   <div align=center><img src="https://raw.githubusercontent.com/OUCliuxiang/OUCliuxiang.github.io/master/img/sitemap/sitemap11.png"></div>         
+
+6. 会自动显示网址，只需要将sitemap.xml填入，再提交即可。            
+   <div align=center><img src="https://raw.githubusercontent.com/OUCliuxiang/OUCliuxiang.github.io/master/img/sitemap/sitemap12.png"></div>         
