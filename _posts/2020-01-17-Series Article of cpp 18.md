@@ -2,7 +2,7 @@
 layout:     post
 title:      Series Article of cpp -- 18
 subtitle:   C++参数传递，数组引用传递，保护数组退化为指针          
-date:       2021-10-28
+date:       2021-11-02
 author:     OUC_LiuX
 header-img: img/wallpic02.jpg
 catalog: true
