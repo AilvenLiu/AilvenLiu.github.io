@@ -32,4 +32,4 @@ tags:
    sudo make install
    sudo ldconfig
    ```
-5. 如无意外，编译成功。
+5. 如无意外，编译成功。此时通过 `protoc --version` 查看版本，终端打印出信息：`libprotoc 3.11.4`。           
