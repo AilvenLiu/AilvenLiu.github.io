@@ -60,3 +60,23 @@ tags:
 
 6. 会自动显示网址，只需要将sitemap.xml填入，再提交即可。            
    <div align=center><img src="https://raw.githubusercontent.com/OUCliuxiang/OUCliuxiang.github.io/master/img/sitemap/sitemap12.png"></div>         
+
+
+## 提交到 bing            
+
+1. 登录 Bing Webmaster tools             
+   <div align=center><img src="https://raw.githubusercontent.com/OUCliuxiang/OUCliuxiang.github.io/master/img/sitemap/sitemap13.png"></div>         
+
+2. 站点验证。             
+   <div align=center><img src="https://raw.githubusercontent.com/OUCliuxiang/OUCliuxiang.github.io/master/img/sitemap/sitemap14.jpg"></div>         
+   
+3. 站点导入。由于我们已经向 google 提交过网站，可以直接从 GSC（Google Search Console） 导入。             
+   <div align=center><img src="https://raw.githubusercontent.com/OUCliuxiang/OUCliuxiang.github.io/master/img/sitemap/sitemap15.jpg"></div>         
+
+4. 和前面向 baidu google 提交验证一样，验证网站归你所有。        
+5. 点击网站地图项，提交 sitemap。           
+
+
+## 特别注意！         
+搜索引擎会定期自动抓取我们提交的 sitemap，但 sitemap ，你还得自己**手动更新**，好在也不麻烦。             
+一定要自己**手动更新！**             
