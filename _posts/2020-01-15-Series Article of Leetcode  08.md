@@ -327,3 +327,67 @@ public:
     }
 };
 ```
+
+## 第 11 天 树       
+### 102. 二叉树的层序遍历        
+给你一个二叉树，请你返回其按 层序遍历 得到的节点值。 （即逐层地，从左到右访问所有节点）。          
+ 
+示例：         
+二叉树：[3,9,20,null,null,15,7],        
+```
+    3
+   / \
+  9  20
+    /  \
+   15   7
+```       
+返回其层序遍历结果：      
+[[3]     
+,[9,20]      
+,[15,7]]     
+
+#### Thought1       
+有两种实现方案：队列广搜BFS 和 递归深搜DFS。     
+用队列广搜的话，我的视线需要为每个 node 构造为 pair，使用一个额外的变量存储 node 的层数。再设置一个 vector<pair<TreeNode*, int>>，通过队列广搜，将所有的节点 pair 加入到容器。全部加入完毕后，再从 pair 类型容器中将元素一个个取出加入到 res。实现起来相当复杂。             
+
+#### My AC Version1       
+```c++     
+class Solution {
+public:
+    vector<vector<int>> levelOrder(TreeNode* root) {
+        if (!root) return {};
+        vector<vector<int>> res;
+        queue<pair<TreeNode*, int>> q1;
+        vector<pair<TreeNode*, int>> q2;
+        q1.push(make_pair(root, 0));
+        q2.push_back(make_pair(root, 0));
+        while(!q1.empty()){
+            pair<TreeNode*, int> tmp = q1.front();
+            q1.pop();
+            if (get<0>(tmp) -> left){
+                q1.push(make_pair(get<0>(tmp) -> left, get<1>(tmp)+1));
+                q2.push_back(make_pair(get<0>(tmp) -> left, get<1>(tmp)+1));
+            }
+            if (get<0>(tmp) -> right){
+                q1.push(make_pair(get<0>(tmp) -> right, get<1>(tmp)+1));
+                q2.push_back(make_pair(get<0>(tmp) -> right, get<1>(tmp)+1));
+            }
+        }
+        vector<int> tmp;
+        int pre = 0;
+        tmp.emplace_back(root -> val);
+        for (int i = 1; i < q2.size(); i++){
+            int idx = get<1>(q2[i]);
+            TreeNode* node = get<0>(q2[i]);
+            if (idx != pre){
+                res.emplace_back(tmp);
+                tmp.clear();
+            }
+            tmp.emplace_back(node -> val);
+            pre = idx;
+        }
+        res.emplace_back(tmp);
+        return res;
+    }
+};
+```
