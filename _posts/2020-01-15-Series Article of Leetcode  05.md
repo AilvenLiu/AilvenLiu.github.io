@@ -9,7 +9,8 @@ catalog: true
 tags:
     - leetcode      
     - c++     
-    - algorithm            
+    - algorithm           
+    - dynamic programming      
 ---     
 
 > leetcode 刷题笔记，Study Plan Algorithm 2, Day 12 -- Day 18 ，这五天的题全是动态规划，给爷刷吐了。     
