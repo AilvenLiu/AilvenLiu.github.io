@@ -280,4 +280,50 @@ public:
         return instack.empty() && outstack.empty();
     }
 };
+```         
+
+## 第 10 天 树       
+
+今天就是常规树的前中后序遍历，用递归完成。         
+
+#### My AC Version       
+```c++        
+class Solution {
+public:
+    // 前序       
+    
+    vector<int> preTraver;    
+    vector<int> preorderTraversal(TreeNode* root) {
+        if (root){
+            preTraver.emplace_back(root -> val);
+            preorderTraversal(root -> left);
+            preorderTraversal(root -> right);
+        }
+        return preTraver;
+    }
+
+    // 中序
+    
+    vector<int> inTraver;
+    vector<int> inorderTraversal(TreeNode* root) {
+         if (root){
+            inorderTraversal(root -> left);
+            inTraver.emplace_back(root -> val);
+            inorderTraversal(root -> right);
+        }
+        return inTraver;
+    }
+
+    // 后续
+
+    vector<int> posTraver;
+    vector<int> postorderTraversal(TreeNode* root) {
+        if(root){
+            postorderTraversal(root -> left);
+            postorderTraversal(root -> right);
+            posTraver.emplace_back(root -> val);
+        }
+        return posTraver;
+    }
+};
 ```
