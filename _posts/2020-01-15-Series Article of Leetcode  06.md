@@ -672,17 +672,25 @@ public:
 
 #### Thought        
 一个无环的链表一只 Next 走下去的终点是 nullptr。建立一个 unordered_set 存储链表节点，从头开始遍历链表。没走过一个节点都将该节点加入到 set ，并 next 到下一个。如果当前未加入到 set 的节点在 set 中被找到，证明是有环链表，返回 false 。否则，链表会走到终点 nullptr 完整结束遍历，返回 true 。          
-2       
+       
 #### My AC Version       
 ```cpp
 /**         
+
  * Definition for singly-linked list.          
+
  * struct ListNode {          
+
  *     int val;       
+
  *     ListNode *next;        
+
  *     ListNode(int x) : val(x), next(NULL) {}        
+
  * };          
+
  */
+
 class Solution {
 public:
     bool hasCycle(ListNode *head) {
@@ -698,3 +706,141 @@ public:
     }
 };
 ```
+
+### 21. 合并两个有序链表           
+将两个升序链表合并为一个新的 升序 链表并返回。新链表是通过拼接给定的两个链表的所有节点组成的。        
+
+示例 1：        
+<div align=center><img src="https://raw.githubusercontent.com/OUCliuxiang/OUCliuxiang.github.io/master/img/leetcode/leetcode021.jpg"></div>       
+
+输入：l1 = [1,2,4], l2 = [1,3,4]         
+输出：[1,1,2,3,4,4]        
+
+示例 2：         
+输入：l1 = [], l2 = []          
+输出：[]        
+
+示例 3：         
+输入：l1 = [], l2 = [0]         
+输出：[0]         
+
+提示：      
+* 两个链表的节点数目范围是 [0, 50]        
+* -100 <= Node.val <= 100        
+* l1 和 l2 均按 非递减顺序 排列       
+
+#### Thought        
+可以容器，但更效的做法明显是递归。综合考虑四种情况：       
+1. l1 不存在，则直接返回 l2，而和 l2 是否存在或什么取值无关。       
+2. l2 不存在，则直接返回 l2，而和 l2 是否存在或什么取值无关。      
+3. l1 值小于 l2，令 l1 -> next = mergeTwoLists(l1 -> next, l2)，返回 l1。      
+4. 否则令 l2 -> next = mergeTwoKists(l1, l2 -> next)，返回 l2 。      
+
+即每次只考虑未合并的两链表头，头的下一节点调用函数自身去做。       
+
+#### My AC Version      
+```cpp      
+/**
+
+ * Definition for singly-linked list.
+
+ * struct ListNode {
+
+ *     int val;
+
+ *     ListNode *next;
+
+ *     ListNode() : val(0), next(nullptr) {}
+
+ *     ListNode(int x) : val(x), next(nullptr) {}
+
+ *     ListNode(int x, ListNode *next) : val(x), next(next) {}
+
+ * };
+
+ */
+
+class Solution {
+public:
+    ListNode* mergeTwoLists(ListNode* l1, ListNode* l2) {
+        if (!l1) return l2;
+        if (!l2) return l1; 
+        if (l1 -> val < l2 -> val) {
+            l1 -> next = mergeTwoLists(l1 -> next, l2);
+            return l1;
+        }
+        else {
+            l2 -> next = mergeTwoLists(l1, l2 -> next);
+            return l2;
+        }
+    }
+};
+```
+
+### 203. 移除链表元素         
+给你一个链表的头节点 head 和一个整数 val ，请你删除链表中所有满足 Node.val == val 的节点，并返回 新的头节点 。       
+
+示例 1：        
+<div align=center><img src="https://raw.githubusercontent.com/OUCliuxiang/OUCliuxiang.github.io/master/img/leetcode/leetcode203.jpg"></div>       
+输入：head = [1,2,6,3,4,5,6], val = 6        
+输出：[1,2,3,4,5]         
+
+示例 2：         
+输入：head = [], val = 1        
+输出：[]        
+
+示例 3：       
+输入：head = [7,7,7,7], val = 7         
+输出：[]           
+
+提示：        
+* 列表中的节点数目在范围 [0, 104] 内      
+* 1 <= Node.val <= 50      
+* 0 <= val <= 50
+
+#### Thought         
+显然要 while 走一遍链表。先得有一个 while 找出真实的头节点，也即如果开头就是需要被删除的元素，需要通过 while 一步一步往后走，使这个 while 循环结束的 node 才是真正的 head。再来一个 while 才遍历链表查找非头节点，条件自然是当前 node 及其 next 都存在；里面再套一层 while （由于可能有连续多个目标元素）判断当前节点的 next 是不是需要被删除的元素，是则 next = next -> next。           
+
+#### My AC Version     
+```c++        
+/**
+
+ * Definition for singly-linked list.
+
+ * struct ListNode {
+
+ *     int val;
+
+ *     ListNode *next;
+
+ *     ListNode() : val(0), next(nullptr) {}
+
+ *     ListNode(int x) : val(x), next(nullptr) {}
+
+ *     ListNode(int x, ListNode *next) : val(x), next(next) {}
+
+ * };
+
+ */
+
+class Solution {
+public:
+    ListNode* removeElements(ListNode* head, int val) {
+        if (!head) return head;
+
+        ListNode* node = head;
+        while(node && node -> val == val)
+            node = node -> next;
+        head = node;
+        while(node && node -> next){
+            while (node -> next && node -> next -> val == val) 
+                node -> next = node -> next -> next;
+            node = node -> next;
+        }
+        return head;
+    }
+};
+```    
+执行用时：16 ms, 在所有 C++ 提交中击败了95.11% 的用户        
+内存消耗：14.6 MB, 在所有 C++ 提交中击败了84.69% 的用户        
+
