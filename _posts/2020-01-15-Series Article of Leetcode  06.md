@@ -652,11 +652,15 @@ public:
 解释：链表中有一个环，其尾部连接到第二个节点。        
 
 示例 2：      
+<div align=center><img src="https://raw.githubusercontent.com/OUCliuxiang/OUCliuxiang.github.io/master/img/leetcode/leetcode141-2.png"></div>       
+
 输入：head = [1,2], pos = 0        
 输出：true       
 解释：链表中有一个环，其尾部连接到第一个节点。          
 
 示例 3：       
+<div align=center><img src="https://raw.githubusercontent.com/OUCliuxiang/OUCliuxiang.github.io/master/img/leetcode/leetcode141-2.png"></div>       
+
 输入：head = [1], pos = -1      
 输出：false       
 解释：链表中没有环。      
@@ -666,3 +670,31 @@ public:
 * -105 <= Node.val <= 105      
 * pos 为 -1 或者链表中的一个 有效索引 。        
 
+#### Thought        
+一个无环的链表一只 Next 走下去的终点是 nullptr。建立一个 unordered_set 存储链表节点，从头开始遍历链表。没走过一个节点都将该节点加入到 set ，并 next 到下一个。如果当前未加入到 set 的节点在 set 中被找到，证明是有环链表，返回 false 。否则，链表会走到终点 nullptr 完整结束遍历，返回 true 。          
+
+#### My AC Version       
+```c++
+/**
+ * Definition for singly-linked list.
+ * struct ListNode {
+ *     int val;
+ *     ListNode *next;
+ *     ListNode(int x) : val(x), next(NULL) {}
+ * };
+ */
+class Solution {
+public:
+    bool hasCycle(ListNode *head) {
+        ListNode* node =  head;
+        unordered_set<ListNode*> pool;
+        while(node){
+            pool.emplace(node);
+            node = node -> next;
+            if (pool.find(node) != pool.end())
+                return true;
+        }
+        return false;
+    }
+};
+```
