@@ -672,16 +672,16 @@ public:
 
 #### Thought        
 一个无环的链表一只 Next 走下去的终点是 nullptr。建立一个 unordered_set 存储链表节点，从头开始遍历链表。没走过一个节点都将该节点加入到 set ，并 next 到下一个。如果当前未加入到 set 的节点在 set 中被找到，证明是有环链表，返回 false 。否则，链表会走到终点 nullptr 完整结束遍历，返回 true 。          
-
+1       
 #### My AC Version       
 ```c++
-/**
- * Definition for singly-linked list.
- * struct ListNode {
- *     int val;
- *     ListNode *next;
- *     ListNode(int x) : val(x), next(NULL) {}
- * };
+/**         
+ * Definition for singly-linked list.          
+ * struct ListNode {          
+ *     int val;       
+ *     ListNode *next;        
+ *     ListNode(int x) : val(x), next(NULL) {}        
+ * };          
  */
 class Solution {
 public:
