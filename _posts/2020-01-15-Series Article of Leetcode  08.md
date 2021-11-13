@@ -566,3 +566,96 @@ private:
 
 ## 第 12 天 树       
 
+### 226. 翻转二叉树        
+翻转一棵二叉树。       
+示例：     
+输入：
+```
+     4
+   /   \
+  2     7
+ / \   / \
+1   3 6   9
+```
+输出：      
+```
+     4
+   /   \
+  7     2
+ / \   / \
+9   6 3   1
+```      
+
+#### Thought & AC      
+没什么说的，递归。     
+```c++       
+class Solution {
+public:
+    TreeNode* invertTree(TreeNode* root) {
+        invertNode(root);
+        return root;
+    }
+private:
+    void invertNode(TreeNode* node){
+        if (!node) return;
+        TreeNode* tmp = node -> left;
+        node -> left = node -> right;
+        node -> right = tmp;
+        invertNode(node -> left);
+        invertNode(node -> right);
+    }
+};
+```      
+执行用时：4 ms, 在所有 C++ 提交中击败了59.01% 的用户        
+内存消耗：9.4 MB, 在所有 C++ 提交中击败了87.74% 的用户       
+
+### 112. 路径总和        
+给你二叉树的根节点 root 和一个表示目标和的整数 targetSum ，判断该树中是否存在 根节点到叶子节点 的路径，这条路径上所有节点值相加等于目标和 targetSum 。        
+叶子节点 是指没有子节点的节点。      
+ 
+示例 1：       
+<div align=center><img src="https://raw.githubusercontent.com/OUCliuxiang/OUCliuxiang.github.io/master/img/leetcode/leetcode112-1.jpg"></div>       
+
+输入：root = [5,4,8,11,null,13,4,7,2,null,null,null,1], targetSum = 22        
+输出：true        
+
+示例 2：    
+<div align=center><img src="https://raw.githubusercontent.com/OUCliuxiang/OUCliuxiang.github.io/master/img/leetcode/leetcode112-2.jpg"></div>       
+
+输入：root = [1,2,3], targetSum = 5           
+输出：false       
+
+示例 3：        
+输入：root = [1,2], targetSum = 0       
+输出：false        
+ 
+提示：        
+* 树中节点的数目在范围 [0, 5000] 内        
+* -1000 <= Node.val <= 1000        
+* -1000 <= targetSum <= 1000
+
+#### Thought & AC         
+深搜，没什么说的。      
+
+```c++       
+class Solution {
+public:
+    bool hasPathSum(TreeNode* root, int targetSum) {
+        if (!root) return false;
+        bool flag = false;
+        find(root, flag, targetSum - root->val);
+        return flag;
+    }
+private:
+    void find(TreeNode* node, bool& flag, int target){
+        if (!node->left && !node -> right){
+            if (!(target)) flag = true;
+            return;
+        }
+        if (node -> left) 
+            find(node -> left, flag, target - node -> left -> val);
+        if (node -> right) 
+            find(node -> right, flag, target - node-> right -> val);
+    }
+};
+```     
