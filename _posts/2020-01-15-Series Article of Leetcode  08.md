@@ -426,6 +426,7 @@ public:
 #### Thought3         
 
 这道题，其实天然适合用深搜去做：给定一个初始 layer = 0，每递归调用一次深搜函数，其实都是再往下走一层，也即给出参数为 layer+1。递归函数内考虑 layer == res.size() 的情况：res 中尚没有当前层记录，需要先手动扩容 push 进去一个新的空 vector<int> 数组。       
+
 #### My AC Version 3
 ```c++
 class Solution {
@@ -448,3 +449,120 @@ private:
     }
 };
 ```     
+
+### 104. 二叉树的最大深度         
+给定一个二叉树，找出其最大深度。       
+二叉树的深度为根节点到最远叶子节点的最长路径上的节点数。        
+说明: 叶子节点是指没有子节点的节点。       
+
+示例：      
+给定二叉树 [3,9,20,null,null,15,7]，          
+```
+    3
+   / \
+  9  20
+    /  \
+   15   7
+```
+返回它的最大深度 3 。          
+
+#### Thought & AC 1        
+
+可以跟上一题一样用有层数控制（每层 node 数量变量）的 BFS 广搜。       
+
+```c++    
+class Solution {
+public:
+    int maxDepth(TreeNode* root) {
+        if (!root) return 0;
+        int maxLen = 0, count = 1;
+        queue<TreeNode*> q;
+        q.push(root);
+        while(!q.empty()){
+            maxLen ++;
+            int count_ = 0;
+            for (int i = 0 ;i < count; i ++){
+                TreeNode* tmp = q.front();
+                q.pop();
+                if (tmp -> left){count_++; q.push(tmp->left);}
+                if (tmp ->right){count_++; q.push(tmp->right);}
+            }
+            count = count_;
+        }
+        return maxLen;
+    }
+};
+```     
+
+#### Thought & AC 2       
+也可以用深搜，且由于是求深度信息，深搜应当更加直观。      
+
+```c++
+class Solution {
+public:
+    int maxDepth(TreeNode* root) {
+        if (!root) return 0;
+        int ans = 1;
+        resolv(root, 1, ans);
+        return ans;
+    }
+private:
+    void resolv(TreeNode* node, int curDep, int& maxDep){
+        if(!node) return;
+        maxDep = max(maxDep, curDep);
+        resolv(node -> left, curDep+1, maxDep);
+        resolv(node-> right, curDep+1, maxDep);
+    }
+};
+```       
+执行用时：4 ms, 在所有 C++ 提交中击败了95.07% 的用户         
+内存消耗：18.3 MB, 在所有 C++ 提交中击败了95.25% 的用户       
+
+### 101. 对称二叉树       
+给定一个二叉树，检查它是否是镜像对称的。        
+例如，二叉树 [1,2,2,3,4,4,3] 是对称的。         
+```
+    1
+   / \
+  2   2
+ / \ / \
+3  4 4  3
+```       
+但是下面这个 [1,2,2,null,3,null,3] 则不是镜像对称的:       
+```
+    1
+   / \
+  2   2
+   \   \
+   3    3
+```         
+
+#### Thought      
+非常自然的想法是用递归：一个树对称，当且仅当其左子树和右子树成镜像对称：       
+1. 当左右子树均为空，镜像对称；        
+2. 有一个非空，非对称；      
+3. 均非空，节点值不相等，非对称；     
+4. 节点值相等，当左子树的左分支与右子树的右分支镜像对称，且，左子树的右分支与右子树的左分支镜像对称。      
+
+#### My AC Version        
+```c++    
+class Solution {
+public:
+    bool isSymmetric(TreeNode* root) {
+        if (!root) return true;
+        else return isSymmetric(root -> left, root -> right); 
+    }
+private:
+    bool isSymmetric(TreeNode* le, TreeNode* ri){
+        if (!le && !ri) return true;
+        if (!le || !ri) return false;
+        if (le -> val == ri -> val) 
+            return isSymmetric(le->left, ri->right) &&
+                   isSymmetric(le->right, ri->left);
+        else return false;
+    }
+};
+```        
+
+## 第 12 天 树       
+
