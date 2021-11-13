@@ -1,7 +1,7 @@
 ---
 layout:     post
 title:      Series Article of Leetcode Notes -- 08
-subtitle:   动态规划——股票买卖系列问题专题博客      
+subtitle:   Study Plan DS I 08-14      
 date:       2021-11-12
 author:     OUC_LiuX
 header-img: img/wallpic02.jpg
@@ -611,15 +611,15 @@ private:
 
 ### 112. 路径总和        
 给你二叉树的根节点 root 和一个表示目标和的整数 targetSum ，判断该树中是否存在 根节点到叶子节点 的路径，这条路径上所有节点值相加等于目标和 targetSum 。        
-叶子节点 是指没有子节点的节点。      
- 
+叶子节点 是指没有子节点的节点。       
+
 示例 1：       
 <div align=center><img src="https://raw.githubusercontent.com/OUCliuxiang/OUCliuxiang.github.io/master/img/leetcode/leetcode112-1.jpg"></div>       
 
 输入：root = [5,4,8,11,null,13,4,7,2,null,null,null,1], targetSum = 22        
 输出：true        
 
-示例 2：    
+示例 2：     
 <div align=center><img src="https://raw.githubusercontent.com/OUCliuxiang/OUCliuxiang.github.io/master/img/leetcode/leetcode112-2.jpg"></div>       
 
 输入：root = [1,2,3], targetSum = 5           
