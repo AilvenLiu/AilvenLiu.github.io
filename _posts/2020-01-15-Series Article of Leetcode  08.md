@@ -348,9 +348,9 @@ public:
 
 #### Thought1       
 有两种实现方案：队列广搜BFS 和 递归深搜DFS。     
-用队列广搜的话，我的视线需要为每个 node 构造为 pair，使用一个额外的变量存储 node 的层数。再设置一个 vector<pair<TreeNode*, int>>，通过队列广搜，将所有的节点 pair 加入到容器。全部加入完毕后，再从 pair 类型容器中将元素一个个取出加入到 res。实现起来相当复杂。             
+用队列广搜的话，我的实现需要为每个 node 构造为 pair，使用一个额外的变量存储 node 的层数。再设置一个 vector<pair<TreeNode*, int>>，通过队列广搜，将所有的节点 pair 加入到容器。全部加入完毕后，再从 pair 类型容器中将元素一个个取出加入到 res。实现起来略复杂了些。             
 
-#### My AC Version1       
+#### My AC Version 1       
 ```c++     
 class Solution {
 public:
@@ -390,4 +390,61 @@ public:
         return res;
     }
 };
+```        
+
+#### Thought2      
+但实际上广搜实现方案可以更简便的使用一个 int 变量记录每层元素的数量，然后通过 for 循环一次性 pop 出一整层的 node，而不必通过 pair 这样复杂的操作记录当前在第几层。         
+
+#### My AC Version 2       
+```c++
+class Solution {
+public:
+    vector<vector<int>> levelOrder(TreeNode* root) {
+        vector<vector<int>> res;
+        if (!root) return res;
+        queue<TreeNode*> q;
+        q.push(root);
+        int count = 1;
+        while(!q.empty()){
+            vector<int> tmp;
+            int count_ = 0;
+            for (int i = 0; i < count; i++){
+                TreeNode* node = q.front();
+                q.pop();
+                tmp.emplace_back(node -> val);
+                if (node -> left) {count_ ++; q.push(node -> left);}
+                if (node -> right) {count_++; q.push(node -> right);}
+            }
+            count = count_;
+            res.emplace_back(tmp);
+        }
+        return res;
+    }
+};
 ```
+
+#### Thought3         
+
+这道题，其实天然适合用深搜去做：给定一个初始 layer = 0，每递归调用一次深搜函数，其实都是再往下走一层，也即给出参数为 layer+1。递归函数内考虑 layer == res.size() 的情况：res 中尚没有当前层记录，需要先手动扩容 push 进去一个新的空 vector<int> 数组。       
+#### My AC Version 3
+```c++
+class Solution {
+public:
+    vector<vector<int>> levelOrder(TreeNode* root) {
+        vector<vector<int>> res;
+        if (!root) return res;
+        resGen(res, root, 0);
+        return res;
+    }
+private:
+    void resGen(vector<vector<int>>& res, TreeNode* node, int layer){
+        if (layer == res.size()){
+            vector<int> t;
+            res.emplace_back(t);
+        }
+        res[layer].emplace_back(node -> val);
+        if (node -> left) resGen(res, node -> left, layer + 1);
+        if (node ->right) resGen(res, node ->right, layer + 1);
+    }
+};
+```     
