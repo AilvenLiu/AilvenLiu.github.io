@@ -265,7 +265,6 @@ public:
 class Solution {
 public:
     // 前序       
-    
     vector<int> preTraver;    
     vector<int> preorderTraversal(TreeNode* root) {
         if (root){
@@ -276,8 +275,7 @@ public:
         return preTraver;
     }
 
-    // 中序
-    
+    // 中序        
     vector<int> inTraver;
     vector<int> inorderTraversal(TreeNode* root) {
          if (root){
@@ -288,8 +286,7 @@ public:
         return inTraver;
     }
 
-    // 后续
-
+    // 后续           
     vector<int> posTraver;
     vector<int> postorderTraversal(TreeNode* root) {
         if(root){
