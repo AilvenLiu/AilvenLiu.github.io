@@ -42,21 +42,21 @@ tags:
 ```c++        
 /**
 
- * Definition for singly-linked list.
+ * Definition for singly-linked list.           
 
- * struct ListNode {
+ * struct ListNode {            
 
- *     int val;
+ *     int val;          
 
- *     ListNode *next;
+ *     ListNode *next;          
 
- *     ListNode() : val(0), next(nullptr) {}
+ *     ListNode() : val(0), next(nullptr) {}           
 
- *     ListNode(int x) : val(x), next(nullptr) {}
+ *     ListNode(int x) : val(x), next(nullptr) {}         
 
- *     ListNode(int x, ListNode *next) : val(x), next(next) {}
+ *     ListNode(int x, ListNode *next) : val(x), next(next) {}       
 
- * };
+ * };         
 
  */
 class Solution {
@@ -103,25 +103,25 @@ public:
 #### My AC Version        
 
 ```c++      
-/**
+/**            
 
- * Definition for singly-linked list.
+ * Definition for singly-linked list.           
 
- * struct ListNode {
+ * struct ListNode {           
 
- *     int val;
+ *     int val;          
 
- *     ListNode *next;
+ *     ListNode *next;         
 
- *     ListNode() : val(0), next(nullptr) {}
+ *     ListNode() : val(0), next(nullptr) {}          
 
- *     ListNode(int x) : val(x), next(nullptr) {}
+ *     ListNode(int x) : val(x), next(nullptr) {}         
 
- *     ListNode(int x, ListNode *next) : val(x), next(next) {}
+ *     ListNode(int x, ListNode *next) : val(x), next(next) {}         
 
- * };
+ * };         
 
- */
+ */             
 
 class Solution {
 public:
@@ -219,16 +219,11 @@ public:
 解释：
 ```c++
 MyQueue myQueue = new MyQueue();
-myQueue.push(1); // queue is: [1]
-
-myQueue.push(2); // queue is: [1, 2] (leftmost is front of the queue)
-
-myQueue.peek(); // return 1
-
-myQueue.pop(); // return 1, queue is [2]
-
-myQueue.empty(); // return false
-
+myQueue.push(1); // queue is: [1]        
+myQueue.push(2); // queue is: [1, 2] (leftmost is front of the queue)      
+myQueue.peek(); // return 1          
+myQueue.pop(); // return 1, queue is [2]           
+myQueue.empty(); // return false         
 ```      
 
 提示：        
