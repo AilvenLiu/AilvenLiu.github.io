@@ -1,6 +1,6 @@
 ---
 layout:     post
-title:      Series Article of cpp -- 22
+title:      Series Article of cpp -- 23
 subtitle:   异常处理与函数调用           
 date:       2021-11-15
 author:     OUC_LiuX
