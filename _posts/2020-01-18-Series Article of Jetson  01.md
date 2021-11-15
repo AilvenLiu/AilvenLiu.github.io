@@ -1,6 +1,6 @@
 ---
 layout:     post
-title:      Series Article of RasPi -- 01
+title:      Series Article of Jetson -- 01
 subtitle:   Jetson Nano 使用实录01 -- Linux 编译 protobuf         
 date:       2021-11-02
 author:     OUC_LiuX
