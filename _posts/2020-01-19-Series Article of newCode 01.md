@@ -58,17 +58,23 @@ tags:
 11. 当各边上的权值(均相等)时，BFS算法可用来解决单源最短路径问题。由于此时最短路径问题已变成求边最少的路径问题。       
 
 12. c++ 中 strlen 接受的参数是字符常量 const char*，通常是字符数组的首地址 。如：        
-   ```c++   
-   #include <stdio.h>
-   #include <string.h>
+    ```c++       
+    #include <stdio.h>
+    #include <string.h>
    
-   int main (){        
-      char szInput[256];       
-      gets (szInput);        
-      printf ("The sentence entered is %u characters long.\n",(unsigned)strlen(szInput));      
-      return 0;        
+    int main (){        
+       char szInput[256];       
+       gets (szInput);        
+       printf ("The sentence entered is %u characters long.\n",(unsigned)strlen(szInput));      
+       return 0;        
       }
-   ```
-   当输入 testing 时，打印为 The sentence entered is 7 characters long.      
+    ```        
+    当输入 testing 时，打印为 The sentence entered is 7 characters long.      
 
-13. 决定局域网特性的主要技术要素有：传输介质、网络拓扑结构和介质访问控制方法。其中最为重要的是 **介质访问控制方法** 。常用的介质访问控制方式有时分多路复用（TDM）、带冲突检测的载波监听多路访问介质控制（CSMA/CD）和令牌环（Token Ring）。同一种拓扑结构也可以采用不同的介质访问控制方法，如分别在总线型网络上采用Aloha和CSMA/CD，两者通信效率就差很多。可见介质访问控制方法才是最重要的。
+13. 决定局域网特性的主要技术要素有：传输介质、网络拓扑结构和介质访问控制方法。其中最为重要的是 **介质访问控制方法** 。常用的介质访问控制方式有时分多路复用（TDM）、带冲突检测的载波监听多路访问介质控制（CSMA/CD）和令牌环（Token Ring）。同一种拓扑结构也可以采用不同的介质访问控制方法，如分别在总线型网络上采用Aloha和CSMA/CD，两者通信效率就差很多。可见介质访问控制方法才是最重要的。    
+
+14. 原子操作：成功则完全成功，失败则全部回滚。        
+
+15. STL 容器是线程不安全的。比如，线程A和线程B共享一个stl::map。其中线程A对map有查找的操作，线程B对map有删除的操作。收集其core文件后发现线程A一直在map的查找中循环（调用while进行查找操作）。原因既是线程B删除了线程A查找的值导致线程A中陷入了map表查找死循环中。       
+   通过通常加锁的方式避免多线程下的不安全。关于锁，简单介绍于[多线程与锁](https://www.ouc-liux.cn/2021/11/15/Series-Article-of-cpp-22/)。         
+   

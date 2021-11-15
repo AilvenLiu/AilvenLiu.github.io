@@ -186,4 +186,6 @@ int main(int argc, char** argv) {
 ```      
 结果如下：   
 <div align=center><img src="https://raw.githubusercontent.com/OUCliuxiang/OUCliuxiang.github.io/master/img/cpp/cpp09.png"></div>       
-符合预期。       
+符合预期。      
+
+关于 异常处理与函数调用、资源释放，[异常处理与函数调用](https://www.ouc-liux.cn/2021/11/15/Series-Article-of-cpp-23/) 有简略介绍。      
