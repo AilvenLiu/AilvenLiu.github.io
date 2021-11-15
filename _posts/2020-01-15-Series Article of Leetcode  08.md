@@ -708,4 +708,118 @@ public:
         return root;
     }
 };
+```     
+
+## 第 14 天 树      
+
+### 98. 验证二叉搜索树       
+给你一个二叉树的根节点 root ，判断其是否是一个有效的二叉搜索树。     
+有效 二叉搜索树定义如下：         
+
+* 节点的左子树只包含 小于 当前节点的数。      
+* 节点的右子树只包含 大于 当前节点的数。         
+* 所有左子树和右子树自身必须也是二叉搜索树。       
+  
+示例 1：        
+<div align=center><img src="https://raw.githubusercontent.com/OUCliuxiang/OUCliuxiang.github.io/master/img/leetcode/leetcode098.jpg"></div>       
+
+输入：root = [2,1,3]      
+输出：true        
+
+示例 2：      
+<div align=center><img src="https://raw.githubusercontent.com/OUCliuxiang/OUCliuxiang.github.io/master/img/leetcode/leetcode098-2.jpg"></div>       
+
+输入：root = [5,1,4,null,null,3,6]      
+输出：false      
+解释：根节点的值是 5 ，但是右子节点的值是 4 。       
+  
+
+提示：       
+* 树中节点数目范围在[1, 104] 内          
+* -231 <= Node.val <= 231 - 1        
+
+#### Thought         
+用中序遍历做。由于中序遍历先访问左子树，再访问当前节点，最后是右子树节点。这也就是说，对合法的二叉搜索树而言，中序遍历天然升序。则只需要用一个变量记录上一次访问的值，访问当前节点时进行比较（也需再赋值）即可。考虑这道题疯狂卡边界值，我们使用 long long 型变量存储最小值，初始化为 INT_MIN-1 = -2^32-1 = -2147483679 。            
+
+#### My AC Version           
+```c++       
+class Solution {
+public:
+    long long pre = -2147483649;
+    bool isValidBST(TreeNode* root) {
+        if (!root) return true;
+        if (!isValidBST(root->left)) return false;
+        if (pre >= (long long)root -> val) return false;
+        pre = (long long)root -> val;
+        if (!isValidBST(root->right)) return false;
+        return true;
+    }
+};
+```          
+
+### 653. 两数之和 IV - 输入 BST           
+给定一个二叉搜索树 root 和一个目标结果 k，如果 BST 中存在两个元素且它们的和等于给定的目标结果，则返回 true。          
+
+#### Thought & AC        
+
+本质就是求两数之和。由于二叉搜索树中序遍历天然升序，先用一次中序遍历填充一个有序数组 vector，在使用双指针方法在 vector 中作两数和查找。         
+
+```c++    
+class Solution {
+public:
+    bool findTarget(TreeNode* root, int k) {
+        vector<int> pool;
+        getValues(pool, root);
+        int i = 0, j = pool.size()-1;
+        while(i<j){
+            int res = pool.at(i) + pool.at(j);
+            if (res == k) return true;
+            else if (res < k) i++;
+            else if (res > k) j--;
+        }
+        return false;
+    }
+private:
+    void getValues(vector<int>& pool, TreeNode* node){
+        if (!node) return;
+        getValues(pool, node->left);
+        pool.emplace_back(node -> val);
+        getValues(pool, node->right);
+    }
+};
+```      
+
+### 235. 二叉搜索树的最近公共祖先          
+给定一个二叉搜索树, 找到该树中两个指定节点的最近公共祖先。        
+百度百科中最近公共祖先的定义为：“对于有根树 T 的两个结点 p、q，最近公共祖先表示为一个结点 x，满足 x 是 p、q 的祖先且 x 的深度尽可能大（一个节点也可以是它自己的祖先）。”           
+例如，给定如下二叉搜索树:  root = [6,2,8,0,4,7,9,null,null,3,5]
+
+<div align=center><img src="https://raw.githubusercontent.com/OUCliuxiang/OUCliuxiang.github.io/master/img/leetcode/leetcode235.png"></div>       
+
+示例 1:      
+输入: root = [6,2,8,0,4,7,9,null,null,3,5], p = 2, q = 8      
+输出: 6         
+解释: 节点 2 和节点 8 的最近公共祖先是 6。       
+示例 2:       
+
+输入: root = [6,2,8,0,4,7,9,null,null,3,5], p = 2, q = 4      
+输出: 2      
+解释: 节点 2 和节点 4 的最近公共祖先是 2, 因为根据定义最近公共祖先节点可以为节点本身。       
+
+#### Thought & AC         
+用递归，思路也很清晰。      
+如果两个值分别在当前节点的左侧和右侧（包括含当前节点），则当前节点是公共祖先。两值都小于当前节点，对左子树进行搜索；均大于，对右子树进行搜索。       
+```c++      
+class Solution {
+public:
+    TreeNode* lowestCommonAncestor(TreeNode* root, TreeNode* p, TreeNode* q) {
+        if (!root || (!root->left && !root->right)) return nullptr;
+        if (p->val <= root->val && q->val >= root->val) return root;
+        if (p->val < root->val && q->val < root->val) 
+            return lowestCommonAncestor(root->left, p, q);
+        if (p->val > root->val && q->val > root->val) 
+            return lowestCommonAncestor(root->right, p, q);
+        return root;
+    }
+};
 ```
