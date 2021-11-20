@@ -414,7 +414,7 @@ public:
 
 示例 3 ：        
 输入：matrix = [[1]]        
-输出：[[1]]        
+输出：[[1]]         
 
 示例 4：       
 输入：matrix = [[1,2],[3,4]]        
@@ -447,3 +447,22 @@ public:
     }
 };
 ```          
+
+### 59. 螺旋矩阵 II         
+给你一个正整数 n ，生成一个包含 1 到 n2 所有元素，且元素按顺时针顺序螺旋排列的 n x n 正方形矩阵 matrix 。       
+
+示例 1：       
+<div align=center><img src="https://raw.githubusercontent.com/OUCliuxiang/OUCliuxiang.github.io/master/img/leetcode/leetcode059.jpg"></div>       
+
+输入：n = 3        
+输出：[[1,2,3],[8,9,4],[7,6,5]]         
+
+示例 2：      
+输入：n = 1      
+输出：[[1]]          
+ 
+提示：         
+* 1 <= n <= 20         
+
+#### Thought       
+没有什么技巧，就建立一个空矩阵，一个一个往里填元素。按照最上一行从左到右，最右一行从上到下，最下一行从右到左，嘴做一行从下往上，的顺序， 在 while 循环里写四个 for 循环。同时为了明确需要维护
