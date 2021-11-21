@@ -93,7 +93,7 @@ cmake -D CMAKE_BUILD_TYPE=RELEASE\
 -D WITH_FFMPEG=OFF          \  # ffmpeg for video I/O，似乎 jetson nano 不支持 ffmpeg，不编译          
 -D BUILD_EXAMPLES           \  # 官方解释为生成 样例代码，且 default=OFF ，但我们没有加这一项也找到了 examples 例程。可尝试加上。      
 ..                             # CMakeList.txt 在上一级目录
-```      
+```    
 
 5. make && sudo make install 编译安装。在 jetson nano 上，这一过程通常会超过十个小时。          
    

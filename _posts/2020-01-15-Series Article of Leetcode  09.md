@@ -719,7 +719,27 @@ public:
 * -107 <= k <= 107          
 
 
-#### Thought & AC           
+#### Thought                 
 一个比较朴素的思想是，新建一数组存储第 0 项到当前项的元素和，然后用一个双层 for 循环查找数组中差为 k 的项。如此，时间复杂度 O(n^2)，TLE 超时。          
 一个比较绕的想法是，使用哈希映射保存第 0 项到当前项的元素和的个数，（初始为 map[0] = 1，为了应对第一项就是 k 的情况），每次向 map 里添加新元素之前，查找现在有没有或者有几个值（元素和）为 sum - k 的项，如果有（或有几个），则从该项到当前项的加和 sum - (sum-k) == k 。      
-为什么要在 map[] 更新之前进行查找？ 隐约能明白，但不完全明明。
+为什么要在 map[] 更新之前进行查找？ 隐约能明白，但不完全明白。      
+
+#### AC Version          
+```c++
+class Solution {
+public:
+    int subarraySum(vector<int>& nums, int k) {
+        unordered_map<int, int> pool;
+        pool[0] = 1;
+        int res = 0, sum = 0;
+        for(int v: nums){
+            sum += v;
+            if (pool.find(sum-k) != pool.end())
+                res += pool[sum-k];
+            pool[sum] ++;
+        }
+        return res;
+    }
+};
+```        
+
