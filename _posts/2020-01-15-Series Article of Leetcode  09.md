@@ -1,7 +1,7 @@
 ---
 layout:     post
 title:      Series Article of Leetcode Notes -- 09
-subtitle:   Study Plan DS II 01-07      
+subtitle:   Study Plan DS II 01-05 数组      
 date:       2021-11-16
 author:     OUC_LiuX
 header-img: img/wallpic02.jpg
@@ -12,7 +12,7 @@ tags:
     - data structure      
 ---     
 
-> leetcode 刷题笔记，Study Plan Data Structure 2, Day 1 -- Day 7 。         
+> leetcode 刷题笔记，Study Plan Data Structure 2, Day 1 -- Day 5 ： 数组 。         
 
 ## 第 1 天 数组           
 
@@ -465,4 +465,261 @@ public:
 * 1 <= n <= 20         
 
 #### Thought       
-没有什么技巧，就建立一个空矩阵，一个一个往里填元素。按照最上一行从左到右，最右一行从上到下，最下一行从右到左，嘴做一行从下往上，的顺序， 在 while 循环里写四个 for 循环。同时为了明确需要维护
+没有什么技巧，就建立一个空矩阵，一个一个往里填元素。按照最上一行从左到右，最右一行从上到下，最下一行从右到左，最左一行从下往上，的顺序， 在 while 循环里写四个 for 循环进行元素填充。为了明确需要当前行（列）的位置（i.e. 这次我填上了最上面一行，那么走完三个 for 循环再填充最上一行的时候，需要填充的“最上一行”实际上就是第二行了），则需要维护四个变量指定记录当前行（列）的位置，且每完成一次整行（列） 的填充，这个变量都需要向相应方向移动。如初始“最上一行”的记录值是 0 ，填完当前的最上一行后，这个值就应当变成 1 。      
+
+#### AC Version          
+```c++        
+class Solution {
+public:
+    vector<vector<int>> generateMatrix(int n) {
+        vector<vector<int>> mat(n, vector<int>(n));
+        int t = 0, b = n-1, l = 0, r = n-1;
+        int val = 1, tar = n*n;
+        while(t<=b || l<=r){
+            for (int i = l; i<=r; i++) mat[t][i] = val++;
+            t++;
+            for (int i = t; i<=b; i++) mat[i][r] = val++;
+            r--;
+            for (int i = r; i>=l; i--) mat[b][i] = val++;
+            b--;
+            for (int i = b; i>=t; i--) mat[i][l] = val++;
+            l++;
+        }
+        return mat;
+    }
+};
+```        
+
+## 第 4 天 数组           
+
+### 240. 搜索二维矩阵 II             
+编写一个高效的算法来搜索 m x n 矩阵 matrix 中的一个目标值 target 。该矩阵具有以下特性：            
+* 每行的元素从左到右升序排列。         
+* 每列的元素从上到下升序排列。          
+
+示例 1：         
+<div align=center><img src="https://raw.githubusercontent.com/OUCliuxiang/OUCliuxiang.github.io/master/img/leetcode/leetcode240.jpg"></div>       
+
+输入：matrix = [[1,4,7,11,15],[2,5,8,12,19],[3,6,9,16,22],[10,13,14,17,24],[18,21,23,26,30]], target = 5             
+输出：true           
+
+示例 2：
+输入：（同 示例 1）, target = 20           
+输出：false          
+
+提示：         
+* m == matrix.length          
+* n == matrix[i].length            
+* 1 <= n, m <= 300          
+* -109 <= matrix[i][j] <= 109           
+* 每行的所有元素从左到右升序排列             
+* 每列的所有元素从上到下升序排列           
+* -109 <= target <= 109            
+
+#### Thought & AC          
+也没什么说的，由于每一行内部都是有序的，则先行遍历，如果 target 在 行首元素和行尾元素之间，在该行内进行二分搜索。         
+
+```c++          
+class Solution {
+public:
+    int m, n;
+    bool searchMatrix(vector<vector<int>>& matrix, int target) {
+        m = matrix.size();
+        n = matrix[0].size();
+        if (target < matrix[0][0] || target > matrix[m-1][n-1]) return false;
+        bool flag = false;
+        for (int i = 0; i < m; i ++){
+            if (target >= matrix[i][0] && target<=matrix[i][n-1])
+                searchMatrix(matrix[i], target, flag);
+            if (flag) return true;
+        }
+        return false;
+    }
+private:
+    void searchMatrix(vector<int>& row, const int& target, bool& flag){
+        int l = 0, r = n-1;
+        while(l <= r){
+            int mid = (l+r)/2;
+            if (target == row[mid]){flag = true; return;}
+            else if (target < row[mid]) r = mid-1;
+            else l = mid + 1;
+        }
+    }
+};
+```         
+
+### 435. 无重叠区间          
+给定一个区间的集合，找到需要移除区间的最小数量，使剩余区间互不重叠。       
+
+注意:         
+* 可以认为区间的终点总是大于它的起点。         
+* 区间 [1,2] 和 [2,3] 的边界相互“接触”，但没有相互重叠。         
+
+示例 1:          
+输入: [ [1,2], [2,3], [3,4], [1,3] ]        
+输出: 1             
+解释: 移除 [1,3] 后，剩下的区间没有重叠。             
+
+示例 2:         
+输入: [ [1,2], [1,2], [1,2] ]             
+输出: 2         
+解释: 你需要移除两个 [1,2] 来使剩下的区间没有重叠。           
+
+示例 3:          
+输入: [ [1,2], [2,3] ]                       
+输出: 0        
+解释: 你不需要移除任何区间，因为它们已经是无重叠的了。
+ 
+
+#### Thought         
+用贪心来解。还是需要先给元素排好序，维护两个变量：cnt 记录需要移除的区间数量，end 记录当前所有区间的最后一位（初始为首区间的 end 位 ）。从 idx = 1 开始遍历所有区间，如果当前区间 start 小于 end，说明必有重叠，需要移除一个区间，于是 cnt ++。但是，移除哪一个却不确定：需要使移除后的新的 end 尽量小 —— end = min(end, currEnd)，也即贪心思想，从而留给后来区间的可选择余地尽量大，也就移除尽可能少的区间而保持不重叠。       
+如果没有 start < end，也即当前区间和此前区间群不重叠，只更新 end 为 当前 end 即可。      
+
+#### AC Version           
+
+```c++        
+class Solution {
+public:
+    int eraseOverlapIntervals(vector<vector<int>>& intervals) {
+        sort(intervals.begin(), intervals.end());
+        int cnt = 0, end = intervals[0][1];
+        for (int i = 1; i < intervals.size(); ++i){
+            if (intervals[i][0] < end) {
+                cnt ++; 
+                end = min(intervals[i][1], end);
+            }
+            else end = intervals[i][1];
+        }
+        return cnt;
+    }
+};
+```        
+
+## 第 5 天 数组             
+
+### 334. 递增的三元子序列            
+给你一个整数数组 nums ，判断这个数组中是否存在长度为 3 的递增子序列。        
+如果存在这样的三元组下标 (i, j, k) 且满足 i < j < k ，使得 nums[i] < nums[j] < nums[k] ，返回 true ；否则，返回 false 。          
+
+示例 1：      
+输入：nums = [1,2,3,4,5]         
+输出：true         
+解释：任何 i < j < k 的三元组都满足题意        
+
+示例 2：          
+输入：nums = [5,4,3,2,1]          
+输出：false      
+解释：不存在满足题意的三元组           
+
+示例 3：          
+输入：nums = [2,1,5,0,4,6]         
+输出：true          
+解释：三元组 (3, 4, 5) 满足题意，因为 nums[3] == 0 < nums[4] == 4 < nums[5] == 6          
+ 
+
+提示：          
+* 1 <= nums.length <= 105          
+* -231 <= nums[i] <= 231 - 1            
+
+#### Thought          
+维护两个变量：minEmem 存储三元组最小值，midElem 存储三元组中间值，均初始化为 INT_MAX。遍历原始数组，由于 if-else 语句中先判断当前元素是不是小于等于（一定要是小于等于，这样可以保证多个相等值都可以先被前一个 if 捕获而不至于将后一个语句复制形成两值相等之不严格递增局面） minElem，然后在判断是不是小于等于 midElem 。从而，只要，midElem 被赋值，就证明数组中已经存在两个递增元素了，跟其后 minElem 是否被再次赋值无关。       
+最后，else，如果元素值比 minElem，midElem 都大，则必然形成一个递增三元组子序列。     
+
+#### AC Version         
+```c++        
+class Solution {
+public:
+    bool increasingTriplet(vector<int>& nums) {
+        int minElem = INT_MAX, midElem = INT_MAX;
+        for (int i: nums){
+            if (i <= minElem) minElem = i;
+            else if (i <= midElem) midElem = i;
+            else return true;
+        }
+        return false;
+    }
+};
+```
+
+### 238. 除自身以外数组的乘积          
+给你一个长度为 n 的整数数组 nums，其中 n > 1，返回输出数组 output ，其中 output[i] 等于 nums 中除 nums[i] 之外其余各元素的乘积。         
+
+示例:          
+输入: [1,2,3,4]       
+输出: [24,12,8,6]         
+ 
+提示：题目数据保证数组之中任意元素的全部前缀元素和后缀（甚至是整个数组）的乘积都在 32 位整数范围内。       
+说明: 请不要使用除法，且在 O(n) 时间复杂度内完成此题。      
+
+#### Thought & AC         
+本题禁止使用除法，且要求 O(n) 时间复杂度，于是只能走一层循环。直观上的想法是，数组内每个元素的除了它自己的乘积，就是其左侧元素乘积再乘上右侧元素乘积，如：          
+```
+原数组：       [1       2       3       4]
+左部分的乘积：   1       1      1*2    1*2*3
+右部分的乘积： 2*3*4    3*4      4      1
+结果：        1*2*3*4  1*3*4   1*2*4  1*2*3*1
+```
+于是，可以建立两个数组，分别存储原数组每个元素的左乘积和右乘积：         
+```c++       
+vector<int> leftMultiply(nums.size(), 1), rightMultiply(nums.size(), 1);
+int left = 1, right = 1;
+for (int i = 0; i < n; i ++){
+    leftMultiply[i] *= left;
+    left *= nums[i];
+}
+for (int i = n-1; i >= 0; i --){
+    rightMultiply[i] *= right;
+    right *= nums[i];
+}
+```         
+
+进一步地我们发现，求左右乘积数组的两个 for 循环可以合并成一个：       
+```c++       
+for (int i = 0; i < n; i++){
+    leftMultiply[i] *= left;
+    left *= nums[i];
+    rightMultiply[n-1-i] *= right;
+    right = nums[n-1-i];
+}
+for (int i = 0; i < n; i++)
+    res[i] = leftMultiply[i] * rightMultiply[i];
+```          
+我们又发现，leftMuliply 和 rightMultiply 两数组的计算过程相互独立，只和 left, right 两变量相关而不受彼此影响，于是可以进一步优化为：         
+```c++
+class Solution {
+public:
+    vector<int> productExceptSelf(vector<int>& nums) {
+        int left = 1, right = 1;
+        vector<int> res(nums.size(), 1);
+        for (int i = 0; i < nums.size(); i++){
+            res[i] *= left;
+            left *= nums[i];
+            res[nums.size()-1-i] *= right;
+            right *= nums[nums.size()-1-i];
+        }
+        return res;
+    }
+};
+```       
+
+### 560. 和为 K 的子数组          
+给你一个整数数组 nums 和一个整数 k ，请你统计并返回该数组中和为 k 的连续子数组的个数。        
+
+示例 1：        
+输入：nums = [1,1,1], k = 2        
+输出：2      
+
+示例 2：       
+输入：nums = [1,2,3], k = 3        
+输出：2       
+
+提示：       
+* 1 <= nums.length <= 2 * 104         
+* -1000 <= nums[i] <= 1000         
+* -107 <= k <= 107          
+
+
+#### Thought & AC           
+一个比较朴素的思想是，新建一数组存储第 0 项到当前项的元素和，然后用一个双层 for 循环查找数组中差为 k 的项。如此，时间复杂度 O(n^2)，TLE 超时。          
+一个比较绕的想法是，使用哈希映射保存第 0 项到当前项的元素和的个数，（初始为 map[0] = 1，为了应对第一项就是 k 的情况），每次向 map 里添加新元素之前，查找现在有没有或者有几个值（元素和）为 sum - k 的项，如果有（或有几个），则从该项到当前项的加和 sum - (sum-k) == k 。      
+为什么要在 map[] 更新之前进行查找？ 隐约能明白，但不完全明明。
