@@ -22,4 +22,4 @@ tags:
    ```c++       
    cv::videoCapture cap("rtspsrc location=rtsp://admin:123456@192.168.1.12/stream0 ! rtph264depay ! h264parse ! omxh264dec ! nvvidconv ! video/x-raw, width=1920, height=1056, format=BGRx ! videoconvert ! appsink", cv::CAP_GSTREAMER);
    ```         
-   不要问为什么，这样能运行，只有这样能运行。可能换个摄像头又不行了，和摄像头也有关系。       
+   不要问为什么，这样能运行。试了几百次不同的参数组合，只有这样能运行。可能换个摄像头又不行了，和摄像头也有关系。       
