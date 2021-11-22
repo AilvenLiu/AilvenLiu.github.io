@@ -1,7 +1,7 @@
 ---
 layout:     post
 title:      Series Article of Jetson -- 05
-subtitle:   Jetson Nano 使用实录05 -- shouxieAI-tensorRT 框架编译和网络部署问题记录         
+subtitle:   Jetson Nano 使用实录05 -- shouxieAI-tensorRT 框架编译和网络部署过程记录         
 date:       2021-11-22
 author:     OUC_LiuX
 header-img: img/wallpic02.jpg
@@ -227,4 +227,5 @@ bash onnx_parser/use_tensorrt_7.x.sh
 bash onnx_parser/use_tensorrt_8.x.sh：
 ```       
 
-###
+### Makefile         
+不用动。如果编译过程
