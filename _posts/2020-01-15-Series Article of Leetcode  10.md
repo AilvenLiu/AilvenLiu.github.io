@@ -2,7 +2,7 @@
 layout:     post
 title:      Series Article of Leetcode Notes -- 10
 subtitle:   Study Plan DS II 06-09 字符串      
-date:       2021-11-16
+date:       2021-11-21
 author:     OUC_LiuX
 header-img: img/wallpic02.jpg
 catalog: true
@@ -101,6 +101,112 @@ public:
                 res += it -> second - 1;
         }
         return res+maxOdd;
+    }
+};
+```        
+
+## 第 7 天 字符串          
+
+### 290. 单词规律         
+给定一种规律 pattern 和一个字符串 str ，判断 str 是否遵循相同的规律。       
+这里的 遵循 指完全匹配，例如， pattern 里的每个字母和字符串 str 中的每个非空单词之间存在着双向连接的对应规律。         
+
+示例1:      
+输入: pattern = "abba", str = "dog cat cat dog"       
+输出: true          
+ 
+示例 2:      
+输入:pattern = "abba", str = "dog cat cat fish"       
+输出: false        
+
+示例 3:     
+输入: pattern = "aaaa", str = "dog cat cat dog"       
+输出: false     
+
+示例 4:       
+输入: pattern = "abba", str = "dog dog dog dog"          
+输出: false       
+
+说明:       
+* 你可以假设 pattern 只包含小写字母， str 包含了由单个空格分隔的小写字母。             
+
+#### Thought      
+这题实际考察 unordered_map 映射。首先通过空格字符把一个字符串按照单词分割成由多个单词组成的 vector<string> 数组，确认 pattern 和数组的长度一致后，遍历 pattern 和数组使用 map<char, string> 将 pattern 中的字符和 vector 中的 string 联系起来。     
+如果找到未出现在 map 中的 Pattern 字符，先查找 map 已存在的字符中有没有和当前 idx 对应的字符串，有的话说明存在不同的 pattern 字符对应同一个单词的情况，直接返回 false；否则，加入 char-string (字符单词对) 到 map。      
+否则（遍历过程当前出现的 pattern 字符已经出现过，被存储到了 map），如果存储在 map 中的对应关系和当前 char-string 对应关系不一致，直接返回 false.           
+
+#### AC Version           
+```c++      
+class Solution {
+public:
+    bool wordPattern(string pattern, string s) {
+        vector<string> ss;
+        int space = 0;
+        for (int i = 0; i < s.size(); i++){
+            if (s[i] == ' '){
+                ss.emplace_back(s.substr(space, i-space));
+                space = i+1;
+            }
+        }
+        ss.emplace_back(s.substr( space, s.size()-space));
+
+        if (pattern.size() != ss.size()) return false;
+
+        unordered_map<char, string> p2s;
+        for (int i = 0; i < pattern.size(); i++){
+            if (p2s.find(pattern[i]) == p2s.end()){
+                for (int j = 0; j < i; j++)
+                    if (p2s[pattern[j]] == ss[i])
+                        return false;
+                p2s[pattern[i]] = ss[i];
+            }
+            else if (p2s[pattern[i]] != ss[i])
+                return false;
+        }
+        return true;
+    }
+};
+```       
+
+### 763. 划分字母区间       
+字符串 S 由小写字母组成。我们要把这个字符串划分为尽可能多的片段，同一字母最多出现在一个片段中。返回一个表示每个字符串片段的长度的列表。        
+
+示例：             
+输入：S = "ababcbacadefegdehijhklij"       
+输出：[9,7,8]         
+解释：划分结果为 "ababcbaca", "defegde", "hijhklij"。
+每个字母最多出现在一个片段中。像 "ababcbacadefegde", "hijhklij" 的划分是错误的，因为划分的片段数较少。           
+ 
+
+#### Thought          
+找出每个字符首次和最后一次出现的 idx ，这个题就变成了合并区间形成最多不重复区间。        
+
+#### My AC Version          
+```c++         
+class Solution {
+public:
+    vector<int> partitionLabels(string s) {
+        vector<vector<int>> partition;
+        vector<int> res;
+        unordered_set<char> pool;
+        for (int i = 0; i< s.size(); i++){
+            char ch = s[i];
+            if (pool.find(ch) == pool.end()){
+                int last = s.rfind(ch);
+                partition.emplace_back(vector<int>{i, last});
+            }
+        }
+        int start = 0, end = partition[0][1];
+        for (int i = 0; i < partition.size(); i++){
+            if (partition[i][0] > end){
+                res.emplace_back(end-start+1);
+                start = partition[i][0];
+                end  = partition[i][1];
+            }
+            else end = max(end, partition[i][1]);
+        }
+        res.emplace_back(end - start +1);
+        return res; 
     }
 };
 ```
