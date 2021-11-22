@@ -1,7 +1,7 @@
 ---
 layout:     post
 title:      Series Article of UbuntuOS -- 25         
-subtitle:   Ubuntu 无法挂载或无法写入外部存储设备问题                   
+subtitle:   Ubuntu 挂载外部存储设备相关问题                   
 date:       2021-11-11      
 author:     OUC_LiuX     
 header-img: img/wallpic02.jpg     
@@ -28,4 +28,28 @@ tags:
    其位置为 /dev/sda1，于是将 path 替换为 sda1 。执行完命令后重新挂载即可正常写入。      
 
    如果是服务端系统，可通过 fdisk -l 命令查看。但 fdisk 不能显示 win 系统下设定的分区（磁盘），只能通过分区大小进行判断。       
-   
+
+3. 新挂载硬盘非 root 无法写入
+   挂载点路径没有开放写入权限，赋予完全开放权限即可。比如我挂载了一个硬盘到 /data/disk2 路径，则：        
+   ```
+   sudo chmod 777 /data/disk2 
+   ```
+   就可了。        
+
+4. 实现开机自动挂载和所有用户可读写：           
+   查找分区 id：        
+   ```
+   sudo blkid
+   ```   
+   找到需要自动挂载的分区/dev/sda2的UUID=“xxxxx” TYPE=“ext4”,这里的type如果是ext4，后边文件中选择ext4,否则选择对应的文件格式。       
+   编辑/etc/fstab文件：       
+   ```bash
+   sudo vim /etc/fstab
+   # 在启动或在终端中输入mount -a时自动挂载，或者为noauto         
+
+   # user 允许任何用户挂载设备,可选nouser，这样仅仅允许root用户挂载         
+
+   # rw 挂载为读写权限，可选ro挂载为只读权限      
+      
+   UUID=xxx /mnt/disk1 ext4 auto,user,rw 0 0        
+   ```
