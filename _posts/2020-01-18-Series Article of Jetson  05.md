@@ -15,8 +15,12 @@ tags:
 git clone https://github.com/shouxieai/tensorRT_Pro.git
 ```      
 
-## CMakeLisk.txt 配置          
-在项目主路径找到 CMakeLists.txt 文件，需要面向 jetson nano 做一些具体的配置如下。      
+## 编译前配置      
+###  protubuf      
+一定要编译 3.11.4 版本，编译过程见[Linux 编译 protobuf](https://www.ouc-liux.cn/2021/11/02/Series-Article-of-Jetson-01/) 。     
+
+### CMake      
+在项目主路径找到 CMakeLists.txt 文件，需要面向 jetson nano 做一些具体的配置如下。不保证一下配置是最优配置，也不保证以下配置是唯一正确配置，但它可以运行。            
 ```sh
 cmake_minimum_required(VERSION 2.6)
 project(pro)
@@ -26,31 +30,25 @@ option(CUDA_USE_STATIC_CUDA_RUNTIME OFF)
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_BUILD_TYPE Debug)
 set(EXECUTABLE_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/workspace)
-set(HAS_PYTHON OFF)
+set(HAS_PYTHON OFF) # 项目不需要 Python，关掉。       
+
 
 # 如果要支持python则设置python路径
 # set(PythonRoot "/data/datav/newbb/lean/anaconda3/envs/torch1.8")
 # set(PythonName "python3.9")
 
 # 如果你是不同显卡，请设置为显卡对应的号码参考这里：https://developer.nvidia.com/zh-cn/cuda-gpus#compute         
+# jetson nano 的 gpu 算力为 53，填入即可。      
 set(CUDA_GEN_CODE "-gencode=arch=compute_53,code=sm_53")
 
-# 如果你的opencv找不到，可以自己指定目录
+# 如果你的opencv找不到，可以自己指定目录         
+# 编译 opencv 时指定的 prefix 是 /usr/local，但这里写填写 /usr/include 可以成功编译；换成 /usr/local/include/是否可以成功未知。      
 set(OpenCV_DIR   "/usr/include")
 
 set(CUDA_DIR     "/usr/local/cuda")
 set(CUDNN_DIR    "/usr/")
-# set(TENSORRT_DIR "/data/sxai/lean/TensorRT-8.0.1.6-cuda10.2-cudnn8.2")
 set(TENSORRT_LIB "/usr/lib/aarch64-linux-gnu")
 set(TENSORRT_INC "/usr/include/aarch64-linux-gnu")
-
-# set(CUDA_DIR     "/data/sxai/lean/cuda-10.2")
-# set(CUDNN_DIR    "/data/sxai/lean/cudnn7.6.5.32-cuda10.2")
-# set(TENSORRT_DIR "/data/sxai/lean/TensorRT-7.0.0.11")
-
-# set(CUDA_DIR     "/data/sxai/lean/cuda-11.1")
-# set(CUDNN_DIR    "/data/sxai/lean/cudnn8.2.2.26")
-# set(TENSORRT_DIR "/data/sxai/lean/TensorRT-7.2.1.6")
 
 # 因为protobuf，需要用特定版本，所以这里指定路径
 set(PROTOBUF_INC "/usr/local/include")
@@ -217,4 +215,16 @@ add_custom_target(
     WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}/python
     COMMAND python test_centernet.py
 )
+```       
+
+### TensorRT 版本号           
+最新的 jetson nano 系统镜像默认安装的是 tRT8.x 版本，项目默认支持的也是 8.x 。如果需要项目转换为 7.x 支持：    
 ```
+bash onnx_parser/use_tensorrt_7.x.sh
+```        
+同理，如果需要项目转换为 7.x 支持：       
+```
+bash onnx_parser/use_tensorrt_8.x.sh：
+```       
+
+###
