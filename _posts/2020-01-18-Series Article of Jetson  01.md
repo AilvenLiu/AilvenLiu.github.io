@@ -24,7 +24,7 @@ tags:
    ```
 4. 依照 github readme.md 文档依次运行以下命令：
    ```
-   cd protobuf-3.7.1
+   cd protobuf-3.11.4
    ./autogen.sh
    ./configure
    make

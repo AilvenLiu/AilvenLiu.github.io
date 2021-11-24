@@ -228,4 +228,63 @@ bash onnx_parser/use_tensorrt_8.x.sh：
 ```       
 
 ### Makefile         
-不用动。如果编译过程
+不用动。如果（jetson nano）编译过程出现“找不到 -m64 指令”类似的错误，可以尝试将项目根路径 Makefile 中 74 行左右的 cu/cpp_compile_flags 两项中的 `-m64` 去掉，并按照上文中 CMakeFile.txt 的配置修改 Malefile，然后直接从 根路径 make。       
+但，如果机器正常，项目也正常，不会出现错误。       
+
+## yolov5 模型转为项目可接受的 onnx         
+优先选择 v6.0 版本的 yolov5，效果好而且稳定。pytorch 版本应当1.8 及以上，低版本低了，可能会出错。onnx 需要 1.9.0 及以上，一般来说直接 `pip install onnx onnx-simplifier` 默认即可。        
+
+### 训练     
+
+正常训练，可以微调一下模型，不要大改源代码。       
+### 针对导出 onnx 做的源码的改动          
+主要是 `model/yolo.py` 和 `export.py`。         
+
+```python       
+# line 55 forward function in yolov5/models/yolo.py 
+# bs, _, ny, nx = x[i].shape  # x(bs,255,20,20) to x(bs,3,20,20,85)
+# x[i] = x[i].view(bs, self.na, self.no, ny, nx).permute(0, 1, 3, 4, 2).contiguous()
+# modified into:
+
+bs, _, ny, nx = x[i].shape  # x(bs,255,20,20) to x(bs,3,20,20,85)
+bs = -1
+ny = int(ny)
+nx = int(nx)
+x[i] = x[i].view(bs, self.na, self.no, ny, nx).permute(0, 1, 3, 4, 2).contiguous()
+
+# line 70 in yolov5/models/yolo.py
+#  z.append(y.view(bs, -1, self.no))
+# modified into：
+z.append(y.view(bs, self.na * ny * nx, self.no))
+
+############# for yolov5-6.0 #####################
+# line 65 in yolov5/models/yolo.py
+# if self.grid[i].shape[2:4] != x[i].shape[2:4] or self.onnx_dynamic:
+#    self.grid[i], self.anchor_grid[i] = self._make_grid(nx, ny, i)
+# modified into:
+if self.grid[i].shape[2:4] != x[i].shape[2:4] or self.onnx_dynamic:
+    self.grid[i], self.anchor_grid[i] = self._make_grid(nx, ny, i)
+
+    # disconnect for pytorch trace
+    anchor_grid = (self.anchors[i].clone() * self.stride[i]).view(1, -1, 1, 1, 2)
+
+# line 70 in yolov5/models/yolo.py
+# y[..., 2:4] = (y[..., 2:4] * 2) ** 2 * self.anchor_grid[i]  # wh
+# modified into:
+y[..., 2:4] = (y[..., 2:4] * 2) ** 2 * anchor_grid  # wh
+
+# line 73 in yolov5/models/yolo.py
+# wh = (y[..., 2:4] * 2) ** 2 * self.anchor_grid[i]  # wh
+# modified into:
+wh = (y[..., 2:4] * 2) ** 2 * anchor_grid  # wh
+############# for yolov5-6.0 #####################
+
+
+# line 52 in yolov5/export.py
+# torch.onnx.export(dynamic_axes={'images': {0: 'batch', 2: 'height', 3: 'width'},  # shape(1,3,640,640)
+#                                'output': {0: 'batch', 1: 'anchors'}  # shape(1,25200,85)  修改为
+# modified into:
+torch.onnx.export(dynamic_axes={'images': {0: 'batch'},  # shape(1,3,640,640)
+                                'output': {0: 'batch'}  # shape(1,25200,85) 
+
+```         

@@ -358,3 +358,142 @@ private:
 
 };
 ```
+
+## 第 9 天 字符串          
+### 187. 重复的DNA序列       
+
+所有 DNA 都由一系列缩写为 'A'，'C'，'G' 和 'T' 的核苷酸组成，例如："ACGAATTCCG"。在研究 DNA 时，识别 DNA 中的重复序列有时会对研究非常有帮助。       
+编写一个函数来找出所有目标子串，目标子串的长度为 10，且在 DNA 字符串 s 中出现次数超过一次。         
+
+示例 1：       
+输入：s = "AAAAACCCCCAAAAACCCCCCAAAAAGGGTTT"          
+输出：["AAAAACCCCC","CCCCCAAAAA"]          
+
+示例 2：         
+输入：s = "AAAAAAAAAAAAA"          
+输出：["AAAAAAAAAA"]        
+
+#### Thought         
+这道题，一眼看上去很唬人，实际上，只要想到建立一个固定长度 string 做 Key 的 哈希映射 unordered_map<string, int> ，一切就迎刃而解了。     
+由于题目要求找出长度为十且出现次数大于一次的子串，则长度小于等于十的字符串必不可能存在这样的子串，直接 return。然后就是符合长度条件的字符串的遍历，其实就是边界条件的考虑。从头 (idx=0) 开始，到末尾(idx = size-10)结束；由于 idx = size-10 的时候是取到最后一个长度为 10 的字串，则 for 中间项条件为 `i<=n-10`。         
+然后从 mmap 里面找 it -> second >1 的项加入就可了。        
+
+#### My AC Version         
+```c++      
+class Solution {
+public:
+    vector<string> findRepeatedDnaSequences(string s) {
+        int n = s.size();
+        if (n <= 10) return {};
+        unordered_map<string, int> mmap;
+        vector<string> res;
+        for (int i = 0; i <= n-10; i ++)
+            mmap[s.substr(i, 10)] ++;
+        for (auto it = mmap.begin(); it != mmap.end(); it++)
+            if (it -> second > 1) res.emplace_back(it -> first);
+        return res;
+    }
+};
+```        
+
+### 5. 最长回文子串        
+给你一个字符串 s，找到 s 中最长的回文子串。        
+
+示例 1：       
+输入：s = "babad"         
+输出："bab"     
+解释："aba" 同样是符合题意的答案。         
+
+示例 2：       
+输入：s = "cbbd"        
+输出："bb"       
+
+示例 3：      
+输入：s = "a"       
+输出："a"      
+
+示例 4：      
+输入：s = "ac"         
+输出："a"       
+
+提示：       
+* 1 <= s.length <= 1000          
+* s 仅由数字和英文字母（大写和/或小写）组成      
+
+#### Thought1         
+这题同样是看着唬人，只要能想到分两种情况（奇数回文和偶数回文） 和一个注意事项，一切问题就迎刃而解了。        
+初始化返回字符串为 s[0] ，从idx = 1 遍历字符串。两种情况：      
+1. 偶数回文。判断下标 idx-1 和 idx 都没有越界，且值相等，以 idx-1, idx 作为 i, j 参数，调用 findPal 函数。      
+2. 奇数回文。判断下标 idx-1 和 idx+1 都没有越界，且值相等，以 idx-1, idx+1 作为 i, j 参数，调用 findPal 函数。       
+
+辅助函数 findPal 要自己实现，内容有二：      
+1. 更新最长长度 len 和最长子串 res 。        
+2. 使 --i & ++j，并判断是否越界和值是否相等，若满足条件则说明自当前子串前后各在延扩一个字符依然满足回文，递归调用。       
+
+一个注意点：     
+奇数回文和偶数回文不冲突，**不冲突！** 不要使用 if-elseif，两者都 if 即可。    
+一旦使用 if-elseif 语句，像 "aaa", "aaaa" 这种字符串，势必会有一个解答错误，不是丢掉偶回文就是丢掉奇回文。两者平行而独立地进行判断，由于辅助函数 findPal 的存在，算法始终会保持 回文子串最长。           
+
+#### AC Version 1          
+```c++
+class Solution {
+public:
+    string longestPalindrome(string s) {
+        string res; res.push_back(s[0]);
+        int len = 1;
+        for (int i = 1; i < s.size(); i++){
+            if (s[i] == s[i-1]) findPal(s, i-1, i, len, res);
+            if (i+1 < s.size() && s[i-1] == s[i+1])
+                findPal(s, i-1, i+1, len, res);
+        }
+        return res;
+    }
+
+private:
+    void findPal(string& s, int i, int j, int& len, string& res){
+        if(j-i+1 > len){
+            len = j-i+1;
+            res = s.substr(i, len);
+        }
+        if (--i >= 0 && ++j < s.size() && s[i] == s[j]) 
+            findPal(s, i, j, len, res);
+    }
+};
+```       
+
+#### Thought 2: dynamic programming        
+这题有一个显著的特征：一个字串是不是回文，依赖于其掐头去尾的子串而判断。如果其掐头去尾的子串是回文，则可以进一步，通过判断当前子串的首尾元素是否相等从而确定其是不是回文。且每一步判断依赖于也仅仅依赖其上一状态（掐头去尾的子串）。于是，这种依赖于其子问题、上一状态的的题，显然可以使用动态规划。          
+构建一个布尔型二维数组 dp[n][n]，初始化为全 false。dp[j][i] 的 false/true 记录以 i,j 为首尾 idx 的子串是不是回文。显然应当保持 j>=i，也即 j 的遍历应当自 j= i 开始。       
+状态转移方程，或状态更新仅发生在 s[i] == s[j] 的情况，则：       
+1. `j-i<=1`，也即同一个字符或紧邻在一起的两个字符相等，则自然回文。         
+2. 否则，若有 `dp[i+1][j-1]` ，也即当前子串的掐头去尾子串回文，则当前子串自然也回文。      
+
+显然可以注意到：情况 2 依赖于 row=i+1, col=j-1 状态，表现在二维数组中，就是当前状态的左下元素。于是，状态更新的顺序自然不能按照惯例上下左右，而应当按照 **从下往上、从左向右** 的顺序。         
+
+#### My AC Version 2           
+
+```c++      
+class Solution {
+public:
+    string longestPalindrome(string s) {
+        string res;
+        int len = 0;
+        int n = s.size();
+        bool dp[n][n]; memset(dp, false, sizeof(dp));
+        for (int i = n-1; i >=0; --i){
+            for (int j = i; j < n; ++j){
+                if (s[j] == s[i]){
+                    if (j-i <= 1) dp[i][j] = true;
+                    else if (dp[i+1][j-1]) dp[i][j] = true;
+                }
+
+                if (dp[i][j] && j-i+1 > len){
+                    len = j-i+1;
+                    res = s.substr(i, len);
+                }
+            }
+        }
+        return res;
+    }
+};
+```
