@@ -9,7 +9,7 @@ catalog: true
 tags:
     - Life       
 ---
-中文网络世界越来越恶心了，随便搜一点程序设计相关的东西，就是成百上千的“小 X 百科网”、“小 X 知识网”，恶心。       
+中文网络世界越来越恶心了，随便搜一点程序设计相关的资料，就是成百上千的“小 X 百科网”、“小 X 知识网”，恶心。       
 浏览器下载添加 uBlacklisk 插件，[Chrome Web Store](https://chrome.google.com/webstore/detail/ublacklist/pncfbmialoiaghdehhbnbhkkgmjanfhe)，[Firefox Add-ons](https://addons.mozilla.org/en-US/firefox/addon/ublacklist/)，[Mac App Store](https://apps.apple.com/app/ublacklist-for-safari/id1547912640)。将以下 2 个链接，通过点击 Add a subscription 添加到 Subscription 分类下。      
 1. [精确匹配](https://raw.githubusercontent.com/cobaltdisco/Google-Chinese-Results-Blocklist/master/uBlacklist_subscription.txt)：该匹配方式主要是通过 `*://*.xxxx.com/*` 的方式来匹配搜索结果，进行过滤。基本不会有误杀。       
 2. [模糊匹配](https://raw.githubusercontent.com/cobaltdisco/Google-Chinese-Results-Blocklist/master/uBlacklist_match_patterns.txt)：该匹配方式主要是通过如 `//*/list.php?s=*`、`title/小.(百科|知识)网/` 的方式来匹配搜索结果，进行过滤。存在小范围的误杀。
