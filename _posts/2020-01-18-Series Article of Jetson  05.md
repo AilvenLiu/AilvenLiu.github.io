@@ -231,6 +231,13 @@ bash onnx_parser/use_tensorrt_8.x.sh：
 不用动。如果（jetson nano）编译过程出现“找不到 -m64 指令”类似的错误，可以尝试将项目根路径 Makefile 中 74 行左右的 cu/cpp_compile_flags 两项中的 `-m64` 去掉，并按照上文中 CMakeFile.txt 的配置修改 Malefile，然后直接从 根路径 make。       
 但，如果机器正常，项目也正常，不会出现错误。       
 
+### cmake 以生成 MakeFile          
+```bash        
+mkdir build
+cd build 
+cmake ..
+```
+
 ## yolov5 模型转为项目可接受的 onnx         
 优先选择 v6.0 版本的 yolov5，效果好而且稳定。pytorch 版本应当1.8 及以上，低版本低了，可能会出错。onnx 需要 1.9.0 及以上，一般来说直接 `pip install onnx onnx-simplifier` 默认即可。        
 
@@ -294,3 +301,111 @@ mv model/yolo.py model/yolo_4_train.py
 mv model/yolo_4_export.py model/yolo.py      
 ```      
 
+### 导出 .pt 为 .onnx         
+需要保证yolov5 根目录下的 export.py 已经按照以上内容完成修改，需要保证 >=1.9.0 的 onnx 和 onnx-simplifier 已经通过 pip 正确安装。          
+```bash             
+python export.py --weights=/give/your/.pt/path --imgsz=416 --dynamic --opset=11 --include=onnx 
+```           
+由于默认的 img size 是 640，我们需要指定为自己训练的尺寸；--opset 要指定为 11，不知道为什么，但如果不这样做的话，会爆出一长串 wraning ； --include=onnx 指定只导出 onnx，防止混入其他奇奇怪怪的东西；--dynamic 不知道为什么加入，教程上这样做成功了。         
+
+好了，现在可以把 onnx 模型 copy 到 jetson nano 板子上了。          
+
+## 在板子上推理                      
+
+假设现在已经完成了 onnx 模型转化和 jetson nano + shouxieAI 项目的配置。        
+
+### onnx -> trtmodel        
+编辑 `src/application/app_yolo.cpp` 文件：          
+添加如下内容：        
+```c++        
+void onnx2trt(){
+    INFO("Compile start.");
+    TRT::Compile(
+        TRT::Mode::FP16,    // FP32 or FP16, INT8 is not suggested      
+        1,              // max batch size. if more than 1 image are 
+                        // feed into engine each time, modify it.    
+        "/path/to/onnx",    // path of onnx (imput) and trtmodel 
+        "/path/to/trtmodel" // (output). Absolute path is required if
+                            // in/out put models are not in workspace.    
+    );
+    INFO("Compile done");
+}
+```           
+
+onnx 模型会从 “path/to/onnx” 读入，编译后的 trtmodel 模型会存储在 “path/to/trtmodel”。 如果输入输出模型不在项目根目录下的 workspace 路径，一定要使用绝对路径。相反的，如果不使用绝对路径，则默认从 workspace 读取、写入。             
+模型可以选半精度 FP16，或全精度 FP32，具体效果和性能自己试验。       
+参数第二项是 batch size ，我们设置为 1 ，这是由于我们一次性只喂入一张图片。如果有多路同步视频，需要一次性喂给引擎两张及以上的图片，按照实际情况设置。        
+
+然后划到最下面 `app_yolo()` 函数，注释掉所有内容，只留一个      
+```c++      
+onnx2trt();
+```    
+
+回到 `build` 路径，执行：         
+```bash         
+make yolo -j3
+```     
+
+等很长一段时间，trt 模型就出来了。          
+
+### 推理几张图片         
+
+可以自己写一个推理函数，实际体验一下从 `Yolo::create_infer()` 到保存画好框的图像的过程，但没必要。可以直接调用 `app_yolo.cpp` 中写好的 `inference_and_performance()` 函数。          
+
+在 `app_yolo.cpp` 添加如下内容：        
+```c++       
+void validation(){
+    int deviceid = 0;   // jetson nano 没有多显卡，指定 0 即可         
+    string model_file = "path/to/trtmodel"; // 如果模型不在 workspace 路径，
+    // 要使用绝对路径
+    TRT::Mode mode = TRT::Mode::FP16;   // 和导出的 trt 模型保持一致
+    Yolo::Type type = Yolo::Type::V5;   // 如果训练的是 yolox，V5 换 X     
+    const char* name = "your model";    // 给自己的模型取个名字。      
+    inference_and_performance(
+        deviceid,
+        mode,
+        type,
+        name
+    );
+}
+```           
+
+还要微调一下 `inference_and_performance()` 函数的内容：          
+```c++    
+// engine define, row 27                   
+auto engine = Yolo::create_infer(
+    engine_file,    // 不用动，就是上面部分的 model_file           
+    type,           // 不用动，就是上面部分的 type       
+    deviceid,       // 不用动，就是上面部分的 deviceid           
+    0.25f,          // 置信度阈值，自己调，建议不动，甚至可以低一点        
+    0.45f,          // 非极大值抑制阈值，建议不动，动不动用处不明显        
+    Yolo::NMSMethod::FaseGPU,   // FastGPU 可以换成 CPU，建议不动        
+    1,              // 关键：一个图片里最多出现几个目标。之所以说上面置
+                    // 信度阈值可以不用动甚至可以低一点，正是基于此。由于
+                    // 我们的项目同一张图像里应当只出现一个饮料（目前是这
+                    // 样），就强制置 1，nms 会自己选择置信度最大的那个目
+                    // 标作为这个 1 。
+    false,          // perprocess use multi stream。不知道什么意思，
+                    // 不要动。          
+)
+
+// file path,row 42           
+auto files = iLogger::find_files("/path/to/images", argv[...]);     
+// 如果要测试的图片文件夹的路径不在 workspace，需要给出绝对路径           
+```
+
+依然，划到最下面 `app_yolo()` 函数，注释掉所有内容，只留一个      
+```c++      
+validation();
+```    
+
+回到 `build` 路径，执行：         
+```bash         
+make yolo -j3
+```     
+
+推理的结果在 workspace 一个名字里包含 `name` 的文件夹。      
+完工。           
+
+## 个性化定制        
+自己按照 app_yolo.cpp 定制即可。回头有时间了再写个博客。      
