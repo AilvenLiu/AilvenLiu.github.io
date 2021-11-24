@@ -288,3 +288,9 @@ torch.onnx.export(dynamic_axes={'images': {0: 'batch'},  # shape(1,3,640,640)
                                 'output': {0: 'batch'}  # shape(1,25200,85) 
 
 ```         
+这些改动只针对模型导出。建议是将这一份 `model/yolo.py` 保存为 `model/yolo_4_export.py`，训练的时候用正常的 `model/yolo.py` ，训练完要导出模型的时候：      
+```bash     
+mv model/yolo.py model/yolo_4_train.py      
+mv model/yolo_4_export.py model/yolo.py      
+```      
+
