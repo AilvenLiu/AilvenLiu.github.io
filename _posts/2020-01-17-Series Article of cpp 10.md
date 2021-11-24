@@ -1,7 +1,7 @@
 ---
 layout:     post
 title:      Series Article of cpp -- 10
-subtitle:   不建议使用\ \<bits/stdc++.h\>        
+subtitle:   不建议使用"<bits/stdc++.h>"        
 date:       2021-10-10
 author:     OUC_LiuX
 header-img: img/wallpic02.jpg
