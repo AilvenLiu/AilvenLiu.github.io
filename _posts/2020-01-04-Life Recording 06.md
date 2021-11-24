@@ -1,6 +1,6 @@
 ---
 layout:     post
-title:      Life Recording -- 05 
+title:      Life Recording -- 06 
 subtitle:   ubuntu 下 vscode 禁用 gpu 加速 / 节约显存空间     
 date:       2021-11-24
 author:     OUC_LiuX
