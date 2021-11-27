@@ -166,4 +166,257 @@ public:
         }return nullptr;
     }
 };
+```       
+
+### 82. 删除排序链表中的重复元素 II          
+存在一个按升序排列的链表，给你这个链表的头节点 head ，请你删除链表中所有存在数字重复情况的节点，只保留原始链表中 没有重复出现 的数字。    
+返回同样按升序排列的结果链表。       
+示例 1：      
+<div align=center><img src="https://raw.githubusercontent.com/OUCliuxiang/OUCliuxiang.github.io/master/img/leetcode/leetcode082.png"></div>        
+
+输入：head = [1,2,3,3,4,4,5]        
+输出：[1,2,5]       
+
+示例 2：     
+输入：head = [1,1,1,2,3]      
+输出：[2,3]      
+ 
+提示：         
+* 链表中节点数目在范围 [0, 300] 内       
+* -100 <= Node.val <= 100      
+* 题目数据保证链表已经按升序排列       
+
+#### Thought      
+这题，做过一次，，再遇到还是不会做。         
+用递归去做，递归退出条件是当前节点 node 或下一节点已经不存在，则直接返回节点。取出当前节点的值 nodeValue，并获取下一节点 p。考虑两种情况：        
+1. p 存在且值与 nodeValue 相等。则一直往后走，直到 p 为空或节点值不再等于 nodeValue，返回递归调用当前 p （第一个与当前节点值不一致的节点，或空节点）的返回值。      
+2. 不相等，则 node -> next = 递归调用 node -> next，然后返回当前节点 node。             
+
+有点绕，看代码就清楚了。        
+
+#### AC Version         
+```c++      
+class Solution {
+public:
+    ListNode* deleteDuplicates(ListNode* head) {
+        if (!head || !head->next) return head;
+        int headVal = head -> val;
+        ListNode* p = head -> next;
+        if (p && p->val == headVal){
+            while (p && p -> val == headVal)
+                p = p->next;
+            return deleteDuplicates(p);
+        }
+        else {
+            head -> next = deleteDuplicates(head -> next);
+            return head;
+        }
+    }
+};
+```          
+
+## 第 12 天 链表       
+### 24. 两两交换链表中的节点          
+给定一个链表，两两交换其中相邻的节点，并返回交换后的链表。          
+你不能只是单纯的改变节点内部的值，而是需要实际的进行节点交换。        
+
+示例 1：         
+输入：head = [1,2,3,4]         
+输出：[2,1,4,3]      
+
+示例 2：       
+输入：head = []        
+输出：[]         
+
+示例 3：      
+输入：head = [1]       
+输出：[1]       
+
+提示：       
+* 链表中节点的数目在范围 [0, 100] 内        
+* 0 <= Node.val <= 100       
+
+#### Thought & AC       
+用递归去做，没什么好说的。递归退出条件是当前节点或下一节点不存在，也即走到末端或者最后只剩一个节点茕茕孑立。         
+交换当前两节点，然后后面那个（交换前前面那个）的 next 是递归调用其 next 的返回值。      
+
+```c++       
+class Solution {
+public:
+    ListNode* swapPairs(ListNode* head) {
+        if (!head || !head -> next) return head;
+        ListNode* tmp = head -> next;
+        head -> next = swapPairs(tmp -> next);
+        tmp -> next = head;
+        return tmp;
+    }
+};
+```      
+
+### 707. 设计链表          
+设计链表的实现。您可以选择使用单链表或双链表。单链表中的节点应该具有两个属性：val 和 next。val 是当前节点的值，next 是指向下一个节点的指针/引用。如果要使用双向链表，则还需要一个属性 prev 以指示链表中的上一个节点。假设链表中的所有节点都是 0-index 的。       
+
+在链表类中实现这些功能：       
+* get(index)：获取链表中第 index 个节点的值。如果索引无效，则返回-1。     
+* addAtHead(val)：在链表的第一个元素之前添加一个值为 val 的节点。插入后，新节点将成为链表的第一个节点。         
+* addAtTail(val)：将值为 val 的节点追加到链表的最后一个元素。          
+* addAtIndex(index,val)：在链表中的第 index 个节点之前添加值为 val  的节点。如果 index 等于链表的长度，则该节点将附加到链表的末尾。如果 index 大于链表长度，则不会插入节点。如果index小于0，则在头部插入节点。         
+* deleteAtIndex(index)：如果索引 index 有效，则删除链表中的第 index 个节点。
+ 
+示例：           
+```c++
+MyLinkedList linkedList = new MyLinkedList();
+linkedList.addAtHead(1);
+linkedList.addAtTail(3);
+linkedList.addAtIndex(1,2);   //链表变为1-> 2-> 3
+linkedList.get(1);            //返回2
+linkedList.deleteAtIndex(1);  //现在链表是1-> 3
+linkedList.get(1);            //返回3
+```
+
+提示：         
+* 所有val值都在 [1, 1000] 之内。           
+* 操作次数将在  [1, 1000] 之内。      
+* 请不要使用内置的 LinkedList 库。         
+
+#### Thought       
+这题，是真没意思。构造链表本身没什么难度。主要是各种边界条件，要费尽心力避开。哦对了，双向链表更省事儿。          
+#### My AC Version          
+```c++       
+class MyLinkedList {
+public:
+    struct Node{
+        int val;
+        int idx;
+        Node* next;
+        Node* prev;
+        Node(): val(0), idx(0), next(nullptr), prev(nullptr){}
+    };
+    Node *head, *tail;
+    bool empty;
+
+    MyLinkedList() {
+        head = new Node();
+        tail = head; 
+        empty = true;
+    }
+    
+    int get(int index) {
+        // printf("get\n");
+        if (empty) return -1;
+        Node* node = head;
+        while(node){
+            // printf("idx: %d, val: %d\n", node -> idx, node -> val);
+            if (node -> idx == index)
+                return node -> val;
+            node = node -> next;
+        }
+        return -1;
+    }
+    
+    void addAtHead(int val) {
+        // printf("addAtHead\n");
+        if (empty){
+            head -> val = val;
+            empty = false;
+            return;
+        }
+        Node* node = new Node;
+        node -> val = val;
+        node -> idx = 0;
+        node -> next = head;
+        node -> prev = nullptr;
+        head -> prev = node;
+        Node* tmp = head;
+        while(tmp){
+            tmp -> idx ++;
+            tmp = tmp -> next;
+        }
+        head = node;
+    }
+    
+    void addAtTail(int val) {
+        if (empty){
+            tail -> val = val;
+            empty = false;
+            return;
+        }
+        Node* node = new Node;
+        node -> val = val;
+        node -> idx = tail -> idx +1;
+        tail -> next = node;
+        node -> prev = tail;
+        node -> next = nullptr;
+        tail = node;
+    }
+    
+    void addAtIndex(int index, int val) {
+        // printf("addAtIndex\n");
+        if (index <= 0 ) addAtHead(val);
+        else if (index == tail -> idx + 1) {
+            if (empty) return;
+            addAtTail(val);
+        }
+        else if (index > tail -> idx + 1 ) return;
+        else{
+            Node* node = new Node;
+            node -> val = val;
+            node -> idx = index;
+            Node* tmp = head -> next;
+            while(tmp){
+                if (tmp -> idx == index){
+                    node -> next = tmp;
+                    node -> prev = tmp -> prev;
+                    tmp -> prev -> next = node;
+                    tmp -> prev = node;
+                    while(tmp){
+                        tmp -> idx ++;
+                        tmp = tmp -> next;
+                    }
+                    return;
+                }
+                tmp = tmp -> next;
+            }
+        }
+    }
+    
+    void deleteAtIndex(int index) {
+        if (index < 0 || index > tail -> idx || empty) return;
+        if (index == 0){
+            head = head -> next;
+            if (!head) return;
+            head -> prev = nullptr;
+            Node* node = head;
+            while(node){
+                node -> idx --;
+                node = node -> next;
+            }
+            return;
+        }
+
+        if (index == tail -> idx){
+            tail = tail -> prev;
+            if (!tail) return;
+            tail -> next = nullptr;
+            return;
+        }
+
+        Node* node = head;
+        while (node){
+            if (node -> idx == index){
+                Node* tmp = node -> next;
+                node -> prev -> next = node -> next;
+                node -> next -> prev = node -> prev;
+                node -> next = nullptr;
+                node -> prev = nullptr;
+                while (tmp){
+                    tmp -> idx --;
+                    tmp = tmp -> next;
+                }
+                return;
+            }
+            node = node -> next;
+        }
+    }
+};
 ```
