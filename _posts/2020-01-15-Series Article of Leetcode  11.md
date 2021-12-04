@@ -420,3 +420,97 @@ public:
     }
 };
 ```
+
+## 第 13 天 链表       
+
+### 25. K 个一组翻转链表        
+给你一个链表，每 k 个节点一组进行翻转，请你返回翻转后的链表。          
+k 是一个正整数，它的值小于或等于链表的长度。            
+如果节点总数不是 k 的整数倍，那么请将最后剩余的节点保持原有顺序。            
+ 
+示例 1：           
+<div align=center><img src="https://raw.githubusercontent.com/OUCliuxiang/OUCliuxiang.github.io/master/img/leetcode/leetcode082.png"></div>        
+
+输入：head = [1,2,3,4,5], k = 2        
+输出：[2,1,4,3,5]           
+
+示例 2：           
+输入：head = [1,2,3,4,5], k = 3          
+输出：[3,2,1,4,5]         
+
+示例 3：           
+输入：head = [1,2,3,4,5], k = 1           
+输出：[1,2,3,4,5]           
+
+示例 4：         
+输入：head = [1], k = 1          
+输出：[1]           
+
+提示：        
+* 列表中节点的数量在范围 sz 内          
+* 1 <= sz <= 5000           
+* 0 <= Node.val <= 1000          
+* 1 <= k <= sz          
+
+#### Thought         
+这个题是翻转链表的变体。         
+对于反转链表而言，极为关键的一点是虚拟头结点的使用：维护一个虚拟节点 pre，它的位置在 head 之前，初始化为 nullptr，于是对于原有的 head 不需要另外考虑，只需要也使他正常的指向其前驱节点 pre，最后的结果就变成了一个指向 nullptr 的尾节点。        
+而翻转链表的过程，就是 `pre`, `head`, `nxt = head -> next` 这三个节点的不断变换：     
+* nxt = head -> next;         
+* head -> next = pre;         
+* pre = head;        
+* head = nxt;        
+
+直到 head == nullptr，链表完全翻转，此时 pre 处于原始链表的尾节点，也即完成翻转后的链表的头结点。          
+
+对于该题来说，只是整体翻转变成了区域翻转，其本质是没有变换的。只是又多了几条注意点：        
+1. 需要维护一个反转函数，参数是当前需要翻转区域的 head 和 tail ，返回值仍需要是顺序的：tail, head。这样方便找到新的 tail (原始 head) 的下一节点作为下一区域的 head。         
+2. 由于是区域翻转，决不能时 head 翻转后直接指向 nullptr，这样完成当前区域翻转后，链表就断了。希望的结果是原始的 head 继承原始 tail 的后继：初始化pre = tail -> next。       
+3. 翻转过程的 while 循环，**绝对不要** 以 cur（初始为 head）== tail -> next 作为判断标志！这是由于在 cur = tail 这一次循环过程中，cur 会走到原始的 tail -> next 节点（nxt = cur -> next），但！！ cur -> next 他会变为 pre，也就是 cur 的前驱。如此，while 循环永无终止。但，由于 tail 对我们是已知的，完全可以使用，也最好使用 pre = tail 作为 while 循环的判断标准。          
+4. 外层循环里，维护一个 pre 作为整个链表的虚拟头结点，一旦满足条件，无脑返回 pre -> next 准没错，而不用考虑 pre -> next 到底是何方神圣。         
+5. 始终维护一个 cur 作为当前需要翻转的区域的前驱节点，区域翻转的 head 参数既是 cur -> next。于是区域翻转完成后，只需要让 cur -> next 指向新的 head（原来的 tail ）；并，cur 赋值为新的 tail（原来的 head），即可以保证整个链表一个接一个区域依次翻转。cur 初始化显然为外层 pre。        
+6. tail 的获取，和剩余节点数量的判断显然应当同步进行。外层循环每次维护一个 tail 节点，从 cur 开始向后走 k 步。这样一来，如果正常走完，也就走到了目标 tail。如果走不完，则中间过程必有 tail == nullptr，于是可直接返回 pre -> next。             
+
+#### AC Version           
+```c++        
+/**
+ * Definition for singly-linked list.
+ * struct ListNode {
+ *     int val;
+ *     ListNode *next;
+ *     ListNode() : val(0), next(nullptr) {}
+ *     ListNode(int x) : val(x), next(nullptr) {}
+ *     ListNode(int x, ListNode *next) : val(x), next(next) {}
+ * };
+ */
+class Solution {
+public:
+    ListNode* reverseKGroup(ListNode* head, int k) {
+        ListNode* pre = new ListNode(0);
+        pre -> next = head;
+        ListNode* cur = pre;
+        while(cur){
+            ListNode* tail = cur;
+            for (int i = 0; i < k; ++i){
+                tail = tail -> next;
+                if (!tail) return pre -> next;
+            }
+            pair<ListNode*, ListNode*> nodes = reverseKGroup(cur -> next, tail);
+            cur -> next = nodes.first;
+            cur = nodes.second;
+        }
+        return pre -> next;
+    }
+    pair<ListNode*, ListNode*> reverseKGroup(ListNode* head, ListNode* tail){
+        ListNode* pre = tail -> next;
+        ListNode* cur = head;
+        while(pre != tail){
+            ListNode* node = cur -> next;
+            cur -> next = pre;
+            pre = cur;
+            cur = node;
+        }
+        return make_pair(tail, head);
+    }
+};
+```
