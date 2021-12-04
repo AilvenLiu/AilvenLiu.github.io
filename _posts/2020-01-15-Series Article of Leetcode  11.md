@@ -429,7 +429,7 @@ k 是一个正整数，它的值小于或等于链表的长度。
 如果节点总数不是 k 的整数倍，那么请将最后剩余的节点保持原有顺序。            
  
 示例 1：           
-<div align=center><img src="https://raw.githubusercontent.com/OUCliuxiang/OUCliuxiang.github.io/master/img/leetcode/leetcode082.png"></div>        
+<div align=center><img src="https://raw.githubusercontent.com/OUCliuxiang/OUCliuxiang.github.io/master/img/leetcode/leetcode25.jpg"></div>        
 
 输入：head = [1,2,3,4,5], k = 2        
 输出：[2,1,4,3,5]           
@@ -473,16 +473,6 @@ k 是一个正整数，它的值小于或等于链表的长度。
 
 #### AC Version           
 ```c++        
-/**
- * Definition for singly-linked list.
- * struct ListNode {
- *     int val;
- *     ListNode *next;
- *     ListNode() : val(0), next(nullptr) {}
- *     ListNode(int x) : val(x), next(nullptr) {}
- *     ListNode(int x, ListNode *next) : val(x), next(next) {}
- * };
- */
 class Solution {
 public:
     ListNode* reverseKGroup(ListNode* head, int k) {
@@ -513,4 +503,83 @@ public:
         return make_pair(tail, head);
     }
 };
+```       
+
+### 143. 重排链表           
+给定一个单链表 L 的头节点 head ，单链表 L 表示为：         
 ```
+L0 → L1 → … → Ln - 1 → Ln        
+```          
+请将其重新排列后变为：         
+```
+L0 → Ln → L1 → Ln - 1 → L2 → Ln - 2 → …
+```          
+不能只是单纯的改变节点内部的值，而是需要实际的进行节点交换。
+
+示例 1：
+<div align=center><img src="https://raw.githubusercontent.com/OUCliuxiang/OUCliuxiang.github.io/master/img/leetcode/leetcode143.png"></div>       
+
+输入：head = [1,2,3,4]           
+输出：[1,4,2,3]           
+
+示例 2：         
+输入：head = [1,2,3,4,5]          
+输出：[1,5,2,4,3]        
+ 
+提示：         
+* 链表的长度范围为 [1, 5 * 104]           
+* 1 <= node.val <= 1000            
+
+#### Thought        
+这道题可以分解为三道完全独立的简单题：         
+1. 链表切割。用快慢指针解。             
+2. 链表翻转。就是上一题的原型。           
+3. 链表融合。迭代求解。        
+
+#### AC Version          
+```c++       
+class Solution {
+public:
+    void reorderList(ListNode* head) {
+        if (!head || !head->next) return;
+        ListNode* mid = findMiddle(head);
+        ListNode* reverseMid = reverse(mid -> next);
+        mid -> next = nullptr;
+        ListNode* node = head;
+        merge(node, reverseMid);
+    }
+private:
+    ListNode* findMiddle(ListNode* head){
+        ListNode* slow = head;
+        ListNode* fast = head;
+        while(fast -> next && fast -> next -> next){
+            slow = slow -> next;
+            fast = fast -> next -> next;
+        }
+        return slow;
+    }
+    ListNode* reverse(ListNode* mid){
+        ListNode* pre = nullptr;
+        ListNode* cur = mid;
+        while(cur){
+            ListNode* nxt = cur -> next;
+            cur -> next = pre;
+            pre = cur; 
+            cur = nxt;
+        }
+        return pre;
+    }
+    void merge(ListNode* node1, ListNode* node2){
+        while(node1 && node2){
+            ListNode* tmp1 = node1 -> next;
+            ListNode* tmp2 = node2 -> next;
+
+            node1 -> next = node2;
+            node2 -> next = tmp1;
+
+            node1 = tmp1;
+            node2 = tmp2;
+        }
+    }
+};
+```         
