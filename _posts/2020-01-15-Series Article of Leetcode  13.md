@@ -323,31 +323,81 @@ private:
 示例 1:           
 <div align=center><img src="https://raw.githubusercontent.com/OUCliuxiang/OUCliuxiang.github.io/master/img/leetcode/leetcode450.jpg"></div>       
 
-输入：root = [5,3,6,2,4,null,7], key = 3
-输出：[5,4,6,2,null,null,7]
-解释：给定需要删除的节点值是 3，所以我们首先找到 3 这个节点，然后删除它。
-一个正确的答案是 [5,4,6,2,null,null,7], 如下图所示。
-另一个正确答案是 [5,2,6,null,4,null,7]。
+输入：root = [5,3,6,2,4,null,7], key = 3          
+输出：[5,4,6,2,null,null,7]         
+解释：给定需要删除的节点值是 3，所以我们首先找到 3 这个节点，然后删除它。       
+一个正确的答案是 [5,4,6,2,null,null,7]。        
+另一个正确答案是 [5,2,6,null,4,null,7]。            
+
+示例 2:        
+输入: root = [5,3,6,2,4,null,7], key = 0           
+输出: [5,3,6,2,4,null,7]         
+解释: 二叉树不包含值为 0 的节点         
+
+示例 3:        
+输入: root = [], key = 0         
+输出: []           
+
+提示:           
+* 节点数的范围 [0, 104].           
+* -105 <= Node.val <= 105          
+* 节点值唯一                
+* root 是合法的二叉搜索树           
+* -105 <= key <= 105            
+
+要求算法时间复杂度为 O(h)，h 为树的高度。           
+
+#### Thought           
+用递归。          
+key 小于当前 node -> val，则 `node -> left = deleteNode(node -> left, key)；`      
+key 大于当前 node -> val，则 `node ->right = deleteNode(node ->right, key)；`      
+key 等于当前 node -> val，则要执行删除操作。也要分情况讨论：           
+node 左右子树都不存在，返回 nullptr；         
+只有一侧子树存在，返回该侧子树（相当于绕过了该节点，父节点直接连接到其子节点，也即 **从树中** 删除了该节点）。             
+难点在于有双子树的节点的删除。需要：           
+1. 左子树打包交付给新的 node 继续做左子树。          
+2. 右子树中的最小值，也即从 node -> right 一直向左 while 循环找到最左的 left，我们记之为 tmp， 作为转移到新的 node 位置。       
+3. tmp 必然没有左子树，其 left 直接指向原 node -> left 即可。         
+4. tmp 有可能有右子树，还要分情况讨论：           
+4.1. tmp 本身就是 node -> right，则不作任何改变。           
+4.2. tmp 是 node -> right 的左子树中的节点。则需要将 tmp -> right （即使是 nullptr） 作为其父结点的 新的 left；而 tmp -> right 接收 node -> right。        
+4.3. 为了判断 tmp 是否是 node -> right 本身，需要维护一个初始化为 nullptr 的 tmp2 跟随 tmp 一起更新，始终作为 tmp 的父节点；当 tmp 走到最左节点，若 tmp2 仍不存在，则 tmp == node -> right。          
+5. 此时 node 的左右子树都已经被新的 tmp 接收，原来 tmp 的位置和子树也已妥善处置。可以使 node = nullptr，并返回 tmp 作为 node 父节点的新的子节点。        
+   
+画图示意如下：         
+<div align=center><img src="https://raw.githubusercontent.com/OUCliuxiang/OUCliuxiang.github.io/master/img/leetcode/leetcode450-1.jpg"></div>       
 
 
-示例 2:
-
-输入: root = [5,3,6,2,4,null,7], key = 0
-输出: [5,3,6,2,4,null,7]
-解释: 二叉树不包含值为 0 的节点
-示例 3:
-
-输入: root = [], key = 0
-输出: []
- 
-
-提示:
-
-节点数的范围 [0, 104].
--105 <= Node.val <= 105
-节点值唯一
-root 是合法的二叉搜索树
--105 <= key <= 105
- 
-
-进阶： 要求算法时间复杂度为 O(h)，h 为树的高度。
+#### AC Version          
+```c++       
+class Solution {
+public:
+    TreeNode* deleteNode(TreeNode* root, int key) {
+        if (!root) return nullptr;
+        if (key < root->val) root -> left = deleteNode(root -> left, key);
+        else if (key > root->val) root -> right = deleteNode(root -> right, key);
+        else{
+            if (!root -> left && !root -> right) return nullptr;
+            if (!root -> left &&  root -> right) return root -> right;
+            if ( root -> left && !root -> right) return root -> left;
+            else{
+                TreeNode* left = root -> left;
+                TreeNode* tmp = root -> right;
+                TreeNode* tmp2= nullptr;
+                while(tmp->left) {
+                    tmp2 = tmp;
+                    tmp = tmp -> left;
+                }
+                tmp -> left = left;
+                if (tmp2){
+                    tmp2 -> left = tmp -> right; 
+                    tmp -> right = root -> right;
+                }
+                root = nullptr;
+                return tmp;
+            }
+        }
+        return root;
+    }
+};
+```
