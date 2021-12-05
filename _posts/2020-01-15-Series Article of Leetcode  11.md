@@ -429,7 +429,8 @@ k 是一个正整数，它的值小于或等于链表的长度。
 如果节点总数不是 k 的整数倍，那么请将最后剩余的节点保持原有顺序。            
  
 示例 1：           
-<div align=center><img src="https://raw.githubusercontent.com/OUCliuxiang/OUCliuxiang.github.io/master/img/leetcode/leetcode25.jpg"></div>        
+<div align=center><img src="https://raw.githubusercontent.com/OUCliuxiang/OUCliuxiang.github.io/master/img/leetcode/leetcode025.jpg"></div>        
+
 
 输入：head = [1,2,3,4,5], k = 2        
 输出：[2,1,4,3,5]           
