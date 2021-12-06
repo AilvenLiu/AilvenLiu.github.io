@@ -362,10 +362,10 @@ node 左右子树都不存在，返回 nullptr；
 4.1. tmp 本身就是 node -> right，则不作任何改变。           
 4.2. tmp 是 node -> right 的左子树中的节点。则需要将 tmp -> right （即使是 nullptr） 作为其父结点的 新的 left；而 tmp -> right 接收 node -> right。        
 4.3. 为了判断 tmp 是否是 node -> right 本身，需要维护一个初始化为 nullptr 的 tmp2 跟随 tmp 一起更新，始终作为 tmp 的父节点；当 tmp 走到最左节点，若 tmp2 仍不存在，则 tmp == node -> right。          
-5. 此时 node 的左右子树都已经被新的 tmp 接收，原来 tmp 的位置和子树也已妥善处置。可以使 node = nullptr，并返回 tmp 作为 node 父节点的新的子节点。        
+5. 此时 node 的左右子树都已经被新的 tmp 接收，原来 tmp 的位置和子树也已妥善处置。可以使 node = nullptr，并返回 tmp 作为 node 父节点的新的子节点。         
    
 画图示意如下：         
-<div align=center><img src="https://raw.githubusercontent.com/OUCliuxiang/OUCliuxiang.github.io/master/img/leetcode/leetcode450-1.jpg"></div>       
+<div align=center><img src="https://raw.githubusercontent.com/OUCliuxiang/OUCliuxiang.github.io/master/img/leetcode/leetcode450-1.jpg"></div>        
 
 
 #### AC Version          
@@ -398,6 +398,46 @@ public:
             }
         }
         return root;
+    }
+};
+```    
+
+## 第 17 天 树            
+### 230. 二叉搜索树中第K小的元素
+给定一个二叉搜索树的根节点 root ，和一个整数 k ，请你设计一个算法查找其中第 k 个最小元素（从 1 开始计数）。            
+
+示例 1：
+<div align=center><img src="https://raw.githubusercontent.com/OUCliuxiang/OUCliuxiang.github.io/master/img/leetcode/leetcode230.jpg"></div>        
+
+输入：root = [3,1,4,null,2], k = 1           
+输出：1           
+
+示例 2：         
+输入：root = [5,3,6,2,4,null,null,1], k = 3          
+输出：3          
+
+提示：          
+* 树中的节点数为 n 。          
+* 1 <= k <= n <= 104         
+* 0 <= Node.val <= 104           
+
+#### Thought & AC          
+二叉搜索树的中序遍历是升序数组，于是进行中序遍历。       
+维护一个 vec 按照中序遍历的顺序升序存储节点值，当 vec.size() == k ，vec.back() 就是第 k 小的数。于是在递归函数中需要设计返回条件为 vec.size()>=k ，也即无论递归进行到哪一层，我始终按照 vec 的长度判断是否要继续向 vec 添加元素。              
+```c++         
+class Solution {
+public:
+    int kthSmallest(TreeNode* root, int k) {
+        vector<int> vec;
+        preorderTravel(root, vec, k);
+        return vec.back();
+    }
+private:
+    void preorderTravel(TreeNode* node, vector<int>& vec, int k){
+        if(node -> left) preorderTravel(node -> left, vec, k);
+        if (vec.size() >= k) return;
+        vec.emplace_back(node -> val);
+        if (node -> right) preorderTravel(node -> right, vec, k);
     }
 };
 ```
