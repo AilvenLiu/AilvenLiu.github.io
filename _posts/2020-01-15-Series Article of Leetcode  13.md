@@ -1,7 +1,7 @@
 ---
 layout:     post
 title:      Series Article of Leetcode Notes -- 15
-subtitle:   Study Plan DS II 15 - 18 树      
+subtitle:   Study Plan DS II 15 - 19 树和图      
 date:       2021-11-30
 author:     OUC_LiuX
 header-img: img/wallpic02.jpg
@@ -12,7 +12,7 @@ tags:
     - data structure      
 ---     
 
-> leetcode 刷题笔记，Study Plan Data Structure 2, Day 15 - 18 ： 树 。     
+> leetcode 刷题笔记，Study Plan Data Structure 2, Day 15 - 19 ： 树和图 。     
 
 ## 第 15 天 树            
 ### 108. 将有序数组转换为二叉搜索树             
@@ -665,6 +665,165 @@ public:
         root -> left = build_tree(ss);
         root -> right = build_tree(ss);
         return root;
+    }
+};
+```            
+
+## 第 19 天 树           
+
+### 997. 找到小镇的法官
+在一个小镇里，按从 1 到 n 为 n 个人进行编号。传言称，这些人中有一个是小镇上的秘密法官。如果小镇的法官真的存在，那么：           
+* 小镇的法官不相信任何人。           
+* 每个人（除了小镇法官外）都信任小镇的法官。           
+* 只有一个人同时满足条件 1 和条件 2 。           
+
+给定数组 trust，该数组由信任对 trust[i] = [a, b] 组成，表示编号为 a 的人信任编号为 b 的人。         
+如果小镇存在秘密法官并且可以确定他的身份，请返回该法官的编号。否则，返回 -1。           
+
+示例 1：          
+输入：n = 2, trust = [[1,2]]         
+输出：2           
+
+示例 2：          
+输入：n = 3, trust = [[1,3],[2,3]]          
+输出：3         
+
+示例 3：          
+输入：n = 3, trust = [[1,3],[2,3],[3,1]]          
+输出：-1          
+
+示例 4：          
+输入：n = 3, trust = [[1,2],[2,3]]          
+输出：-1            
+
+示例 5：         
+输入：n = 4, trust = [[1,3],[1,4],[2,3],[2,4],[4,3]]          
+输出：3           
+ 
+提示：          
+* 1 <= n <= 1000            
+* 0 <= trust.length <= 104           
+* trust[i].length == 2           
+* trust[i] 互不相同            
+* trust[i][0] != trust[i][1]            
+* 1 <= trust[i][0], trust[i][1] <= n             
+
+#### Thought & AC          
+建立一个二维数组，存储每个公民的出度（相信别人）和入度（被别人相信）。遍历这个数组，如果有一组数据其出度为 0 ，入度为 n-1，返回其 idx，就是法官。如果遍历过程中没有发生返回，代表没有法官，返回 -1。          
+
+```c++        
+class Solution {
+public:
+    int findJudge(int n, vector<vector<int>>& trust) {
+        int graph[n+1][2];
+        memset(graph, 0, sizeof(graph));
+        for (auto vec: trust){
+            graph[vec[0]][0]++;
+            graph[vec[1]][1]++;
+        }
+        for (int i = 1; i <= n; i++)
+            if (graph[i][0] == 0 && graph[i][1] == n-1) return i;
+        return -1;
+    }
+};
+```
+
+### 1557. 可以到达所有点的最少点数目           
+给你一个 有向无环图 ， n 个节点编号为 0 到 n-1 ，以及一个边数组 edges ，其中 edges[i] = [fromi, toi] 表示一条从点  fromi 到点 toi 的有向边。找到最小的点集使得从这些点出发能到达图中所有点。题目保证解存在且唯一。你可以以任意顺序返回这些节点编号。          
+
+示例 1：
+<div align=center><img src="https://raw.githubusercontent.com/OUCliuxiang/OUCliuxiang.github.io/master/img/leetcode/leetcode1557.png"></div>        
+
+输入：n = 6, edges = [[0,1],[0,2],[2,5],[3,4],[4,2]]        
+输出：[0,3]           
+解释：从单个节点出发无法到达所有节点。从 0 出发我们可以到达 [0,1,2,5] 。从 3 出发我们可以到达 [3,4,2,5] 。所以我们输出 [0,3] 。           
+
+示例 2：         
+输入：n = 5, edges = [[0,1],[2,1],[3,1],[1,4],[2,4]]         
+输出：[0,2,3]          
+解释：注意到节点 0，3 和 2 无法从其他节点到达，所以我们必须将它们包含在结果点集中，这些点都能到达节点 1 和 4 。         
+
+提示：            
+* 2 <= n <= 10^5            
+* 1 <= edges.length <= min(10^5, n * (n - 1) / 2)          
+* edges[i].length == 2         
+* 0 <= fromi, toi < n           
+* 所有点对 (fromi, toi) 互不相同。              
+
+
+#### Thought & AC           
+本质就是找到所有入度为零的节点。        
+遍历数组，用一个 unordered_set 哈希集合存储所有入度不为 0 的节点。遍历节点 [0,n-1]，如果该编号不存在于哈希集合，加入到结果 res 。         
+```c++          
+class Solution {
+public:
+    vector<int> findSmallestSetOfVertices(int n, vector<vector<int>>& edges) {
+        unordered_set<int> with_indegree;
+        vector<int> res;
+        for (auto node: edges)
+            with_indegree.insert(node[1]);
+        for (int i = 0; i < n; ++i)
+            if (with_indegree.find(i) == with_indegree.end())
+                res.emplace_back(i);
+        return res;
+    }
+};
+```       
+
+### 841. 钥匙和房间
+有 n 个房间，房间按从 0 到 n - 1 编号。最初，除 0 号房间外的其余所有房间都被锁住。你的目标是进入所有的房间。然而，你不能在没有获得钥匙的时候进入锁住的房间。               
+当你进入一个房间，你可能会在里面找到一套不同的钥匙，每把钥匙上都有对应的房间号，即表示钥匙可以打开的房间。你可以拿上所有钥匙取解锁其他房间。          
+给你一个数组 rooms 其中 rooms[i] 是你进入 i 号房间可以获得的钥匙集合。如果能进入 所有 房间返回 true，否则返回 false。           
+ 
+示例 1：         
+```
+输入：rooms = [[1],[2],[3],[]]
+输出：true
+解释：
+我们从 0 号房间开始，拿到钥匙 1。
+之后我们去 1 号房间，拿到钥匙 2。
+然后我们去 2 号房间，拿到钥匙 3。
+最后我们去了 3 号房间。
+由于我们能够进入每个房间，我们返回 true。
+```
+
+示例 2：          
+```
+输入：rooms = [[1,3],[3,0,1],[2],[0]]
+输出：false
+解释：我们不能进入 2 号房间。
+```
+
+提示：           
+* n == rooms.length          
+* 2 <= n <= 1000          
+* 0 <= rooms[i].length <= 1000         
+* 1 <= sum(rooms[i].length) <= 3000         
+* 0 <= rooms[i][j] < n        
+* 所有 rooms[i] 的值 互不相同            
+
+#### Thought & AC          
+用一个布尔型数组 flags 记录每个房间访问过与否。初始化为全 false：        
+0号房间是唯一入口，从0开始递归遍历图（访问房间）。如果该房间已经访问过，直接退出，以防程序死循环。       
+否则，该房间访问布尔值置 true 。同时，判断该房间是否存有钥匙，也即idx为该房间的rooms元素数组是否为空。若空，直接退出；否则，递归调用访问该房间存有的钥匙对应的房间。          
+```c++        
+class Solution {
+public:
+    bool canVisitAllRooms(vector<vector<int>>& rooms) {
+        int n = rooms.size();
+        vector<bool> flags(n, false);
+        travel(rooms, flags, 0);
+
+        for (bool flag: flags) if (!flag) return false;
+        return true;
+    }
+private:
+    void travel(vector<vector<int>>& rooms, vector<bool>& flags, int node){
+        if (flags[node]) return;
+        flags[node] = true;
+        if (!rooms[node].size()) return;
+        for (int n: rooms[node])
+            travel(rooms, flags, n);
     }
 };
 ```
