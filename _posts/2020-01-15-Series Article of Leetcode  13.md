@@ -1,6 +1,6 @@
 ---
 layout:     post
-title:      Series Article of Leetcode Notes -- 15
+title:      Series Article of Leetcode Notes -- 13
 subtitle:   Study Plan DS II 15 - 19 树和图      
 date:       2021-11-30
 author:     OUC_LiuX
