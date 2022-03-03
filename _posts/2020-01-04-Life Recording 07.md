@@ -17,6 +17,6 @@ Vscode远程登录服务器出现重复要求输入密码的现象。可能的�
 
 <div align=center><img src="https://raw.githubusercontent.com/OUCliuxiang/OUCliuxiang.github.io/master/img/life/vscode01.png"></div>      
 
-然后选择对应的服务器地确认即可。          
+然后选择对应的服务器地确认，再次输入密码重新登录即可。          
 
-不仅仅是重复输入密码问题，可能很多问题都可以依靠这个方案去解决
+不仅仅是重复输入密码问题，可能很多问题都可以依靠这个方案去解决。
