@@ -93,3 +93,10 @@ void insert(vector<int>& nums){
 }
 ```    
 
+### 归并排序        
+归并排序是建立在归并操作上的一种有效的排序算法。该算法是分治法（Divide and Conquer）的一个非常典型的应用。将已有序的子序列合并同时排序，可以得到一个完全有序的序列；即先使每个子序列有序，再使子序列段间有序。将两个有序表合并成一个有序表，称为2-路归并。        
+
+```c++        
+template<typename T>
+void mergeSort(vector<int>& nums)
+```
