@@ -119,5 +119,7 @@ chmod +x tcp.sh
 **不要运行“系统配置优化”！！** 使用之后容易不稳定。        
 **安装中提示Abort kernel removal? 选择No**
 
-
+## 检测服务器是否被 ban       
+来 https://www.vps234.com/ipchecker/ 这个网站检查一下国内能否连接所购服务器 ip。如果不能，换服务器重新部署。        
+现部署新服务器，在 destroy 老服务器。否则分配的新服务器 IP 还是原来的。
 
