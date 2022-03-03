@@ -8,6 +8,7 @@ header-img: img/wallpic02.jpg
 catalog: true
 tags:
     - Ubuntu OS
+    - Work Space
 ---
 
 Nvidia cuDNN 加速库自 v8.x 开始不再支持 tar 包通过验证 /usr/local/cuda/include/cudnn.h 文件中是否存在 CUDNN_MAJOR 信息的方式确认是否成功安装。这是因为在cudnn8里面cudnn.h已经没有CUDNN_MAJOR这个信息。我们强烈建议使用更方便快捷简单有效的 deb 方法安装。          
