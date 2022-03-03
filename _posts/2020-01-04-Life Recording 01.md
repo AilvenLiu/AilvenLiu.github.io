@@ -7,7 +7,7 @@ author:     OUC_LiuX
 header-img: img/wallpic02.jpg
 catalog: true
 tags:
-    - Life
+    - Work Space
 ---
 
 一个壁纸网站[wallhaven](https://wallhaven.cc/)，纯粹，简单，没别的，各种各样好看的壁纸。   

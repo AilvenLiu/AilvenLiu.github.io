@@ -6,8 +6,8 @@ date:       2021-11-15
 author:     OUC_LiuX
 header-img: img/wallpic02.jpg
 catalog: true
-tags:
-    - Life       
+tags: 
+    - Work Space
 ---
 中文网络世界越来越恶心了，随便搜一点程序设计相关的资料，就是成百上千的“小 X 百科网”、“小 X 知识网”，恶心。       
 浏览器下载添加 uBlacklisk 插件，[Chrome Web Store](https://chrome.google.com/webstore/detail/ublacklist/pncfbmialoiaghdehhbnbhkkgmjanfhe)，[Firefox Add-ons](https://addons.mozilla.org/en-US/firefox/addon/ublacklist/)，[Mac App Store](https://apps.apple.com/app/ublacklist-for-safari/id1547912640)。将以下 2 个链接，通过点击 Add a subscription 添加到 Subscription 分类下。      

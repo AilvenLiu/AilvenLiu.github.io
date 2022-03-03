@@ -7,8 +7,7 @@ author:     OUC_LiuX
 header-img: img/wallpic02.jpg
 catalog: true
 tags:
-    - Life       
-    - Ubuntu OS            
+    - Work Space       
 ---
 
 ubuntu 系统中 vscode 默认 gpu enable，如果打开窗口过多，编辑文件过长，很容易出现卡顿的情况。可以通过添加 `--disable-gpu` 使禁用 gpu 加速。                         

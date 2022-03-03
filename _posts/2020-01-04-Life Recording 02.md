@@ -7,7 +7,7 @@ author:     OUC_LiuX
 header-img: img/wallpic02.jpg
 catalog: true
 tags:
-    - Life
+    - Work Space
 ---
 
 > 火狐浏览器跨平台设置和账号通用，于是在 linux 系统用习惯了，到了 win 也想配置个火狐，但登陆的时候显示账号不存在。   
