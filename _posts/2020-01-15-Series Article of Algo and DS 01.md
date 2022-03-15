@@ -10,13 +10,13 @@ tags:
     - Algorithm      
 --- 
 
-> from ACWing [797. 差分](https://www.acwing.com/problem/content/description/799/)           
+> from ACWing [797. 差分](https://www.acwing.com/problem/content/description/799/)， [798. 差分矩阵](https://www.acwing.com/activity/content/problem/content/832/)           
 
 ### 差分基础       
 
 差分是前缀和的逆操作。设有原数组 a[N] 和其差分数组 b[N]，则：　　　　　　
-1. a[n] = a[n-1] + b[n];          
-2. b[n] = a[n] - a[n-1];      
+1. `a[n] = a[n-1] + b[n];`          
+2. `b[n] = a[n] - a[n-1];`      
 
 现有问题如下：　　　　　　　　
 
@@ -100,4 +100,70 @@ int main(){
 }
 ```   
 
-复杂度 O(m+n) ，通过。
+复杂度 O(m+n) ，通过。        
+
+### 二维矩阵情况            
+
+同一维数组类似，二维差分是二维前缀和的逆操作， 二维矩阵是其差分矩阵的前缀和矩阵。     
+对二维矩阵 a[N][M] 和其差分矩阵 b[N][M] ，有以下性质：       
+1. `a[i][j] = a[i][j-1] + a[i-1][j] - a[i-1][j-1] + b[i][j];`                 
+2. `b[i][j] = a[i][j] - a[i][j-1] - a[i-1][j] + a[i-1][j-1];`         
+
+同样的，对于以下类型题目：           
+给定矩阵 a[N][M] ，并进行 q 次操作，每次操作将[x1y1, x2y2] 范围元素值加 c。      
+若使用原矩阵操作，时间复杂度为 O(mnq)，而使用差分矩阵 b[N][M] 操作相当于：          
+```
+b[x1][y1] += c，       
+b[x1][y2+1] -= c,      
+b[x2+1][y1] -= c,          
+b[x2+1][y2+1] += c；        
+```
+
+时间复杂度可降为 O(q+mn) 。           
+
+给出差分矩阵解：         
+
+```c++
+#include<iostream>
+
+using namespace std;
+
+const int N = 1010;
+int a[N][N], b[N][N];
+
+int main(){
+    int n, m, q; 
+    scanf("%d%d%d", &n, &m, &q);
+    
+    for (int i = 1; i <= n; i++){
+        for (int j = 1; j <= m; j++){
+            scanf("%d", &a[i][j]);
+            b[i][j] = a[i][j] + a[i-1][j-1] - a[i-1][j] - a[i][j-1];
+        }
+    }
+    
+    while(q--){
+        int x1, y1, x2, y2, c;
+        scanf("%d%d%d%d%d", &x1, &y1, &x2, &y2, &c);
+        
+        b[x1][y1] += c, b[x2+1][y2+1] += c, b[x1][y2+1] -= c, b[x2+1][y1] -= c;
+    }
+    
+    for (int i = 1; i <= n; i++){
+        for (int j = 1; j <= m; j++){
+            a[i][j] = a[i][j-1] + a[i-1][j] - a[i-1][j-1] + b[i][j];
+        }
+    }
+    
+    for (int i = 1; i <= n; i++){
+        for (int j = 1; j <= m; j++){
+            printf("%d ", a[i][j]);
+        }
+        printf("\n");
+    }
+    // printf("\n");
+    
+    return 0;
+}
+```     
+
