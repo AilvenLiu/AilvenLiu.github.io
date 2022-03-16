@@ -10,7 +10,7 @@ tags:
     - Algorithm      
 --- 
 
-> from ACWing [797. 差分](https://www.acwing.com/problem/content/description/799/)， [798. 差分矩阵](https://www.acwing.com/activity/content/problem/content/832/)           
+> from ACWing [797. 差分](https://www.acwing.com/problem/content/description/799/)， [798. 差分矩阵](https://www.acwing.com/problem/content/832/)           
 
 ### 差分基础       
 
