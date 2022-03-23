@@ -1,15 +1,14 @@
 ---
 layout:     post
-title:      Markdown Grammar
+title:      Life Recording -- 10
 subtitle:   一些Markdown语法记录
 date:       2021-04-27
 author:     OUC_LiuX
 header-img: img/wallpic02.jpg
 catalog: true
 tags:
-    - 博客
-    - Github
-    - Markdown
+    - Blog        
+    - Work Space
 ---
 
 <head>

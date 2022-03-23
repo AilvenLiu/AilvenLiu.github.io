@@ -1,13 +1,13 @@
 ---
 layout:     post
-title:      Sitemap for blog
+title:      Life Recording -- 11
 subtitle:   为博客生成站点地图并通知搜索引擎及时收录
 date:       2021-11-02
 author:     OUC_LiuX
 header-img: img/wallpic02.jpg
 catalog: true
 tags:
-    - 博客
+    - Blog       
 ---
 
 用以解决搜索引擎无法检索到个人博客或不能及时更新检索内容等问题。               

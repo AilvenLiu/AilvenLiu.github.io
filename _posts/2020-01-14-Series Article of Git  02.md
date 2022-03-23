@@ -9,6 +9,7 @@ catalog: true
 tags:
     - Ubuntu OS
     - Github   
+    - Work Space
 ---     
 
 通过修改 hosts 文件方式加速 github 的访问。[github520](https://github.com/521xueweihan/GitHub520) 项目提供了定时更新的 hosts 数据。截至，2022年3月3日，最新的 hosts 内容如下：           
