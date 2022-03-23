@@ -1,8 +1,8 @@
 ---
 layout:     post
-title:      Series Article of Algorithm and Data Structure -- 02 
-subtitle:   快排和归并     
-date:       2022-03-16
+title:      Series Article of Algorithm and Data Structure -- 03 
+subtitle:   静态链表     
+date:       2022-03-23
 author:     OUC_LiuX
 header-img: img/wallpic02.jpg
 catalog: true
@@ -10,197 +10,156 @@ tags:
     - Algorithm      
 --- 
 
-> from ACWing [785. 快速排序](https://www.acwing.com/problem/content/819/)， [787. 归并排序](https://www.acwing.com/problem/content/821/)， [788. 逆序对的数量](https://www.acwing.com/problem/content/790/)， [803. 区间合并](https://www.acwing.com/problem/content/description/805/)。          
+> from ACWing [826. 单链表](https://www.acwing.com/problem/content/863/)， [827. 双链表](https://www.acwing.com/problem/content/864/)。          
 
-### 快排基础        
-快排基于分治策略：先保证大区间相对有序，在保证子区间内部有序。         
-给定数组 `arr[]` 和区间 `[l, r]`，在该区间内随机找一个锚定点 `x = arr[idx]`。需要保证某一个下标点 i ，此点之前元素值均小于等于 x， 此点之后均大于等于 x 。这样就将数组划分成了两个区间：[l, i], [i, r]，其中前一个区间全部元素小于等于后一个区间全部元素，然后递归调用，对被划分的两个子区间排序，直到数组整体有序。           
+静态链表增删改时间复杂度 O(1)， 查询需要遍历。可以用来存储树和图。       
 
-#### 实现方案        
+## 静态单链表
 
-使用随机数随机选取 [l, r] 中的坐标点： `idx = rand() % (r-l+1) + l;`。            
-初始化上下界下标为 `i = l-1, j = r+1;` 以方便 `do-while` 处理。             
-`i, j` 分别向后向前逼近，直到发生交叉。期间如果存在 `arr[i] < x, arr[j] > x`，交换 `arr[i]` 和 `arr[j]` 。          
-下标逼近过程停止的位置，要么 `i = j`, 要么 `i = j+1`。以 `j, j+1` 作为下一次细分区间的上下界，可以避免边界问题如下：       
-对形如`[a, a]` 的只有两元素的子序列，下标逼近的结果必然是 `j=0, i=1;`，若以`i` 为下次细分数组的上界，则左子序列陷入循环处理 `[a, a]` 的死循环。          
+静态单链表需要维护 值数组 `e[N]` 和 后向节点数组 `ne[N]` 两个静态数组。两个数组通过 idx 对应。idx 是全局变量，代表加入链表元素的顺序（从 1 开始），插入元素时 idx 增加，删除不减。后向节点存储的是 idx 。         
+`idx = 0` 是头结点的位置，头结点没有值属性，只有后向节点 `ne[0]` 指向第一个元素。初始化为尾节点，也就是空节点，`ne[0]=-1` 作为链表结束判断标志。           
 
+### 例题          
 
-#### 模板           
+对于如下例题：          
 
+> 第一行包含整数 M，表示操作次数。     
+> 接下来 M 行，每行包含一个操作命令，操作命令可能为以下几种：          
+> 1. `H x`，表示向链表头插入一个数 x。         
+> 2. `D k`，表示删除第 k 个插入的数后面的数（当 k 为 0 时，表示删除头结点）。               
+> 3. `I k x`，表示在第 k 个插入的数后面插入一个数 x（此操作中 k 均大于 0）。      
+> 
+> 将整个链表从头到尾输出。          
+
+给出示例代码如下：           
 ```c++
-int arr[N];
+#include<iostream>
 
-void quick_sort(int l, int r){
-    if (l >= r) return; // 区间没有或只有一个元素         
-    int idx = rand() % (r - l + 1) + l;
+using namespace std;
 
-    int x = arr[idx], i = l - 1, j = r + 1;
+const int N = 100010;
 
-    while( i < j){
-        do i++; while ( arr[i] < x);
-        do j--; while ( arr[j] > x);
-        if (i < j)  swap(arr[i], arr[j]);
+int idx, e[N], ne[N];
+char ch;
+
+int main(){
+    int n;  scanf("%d", &n);
+    ne[0] = -1, idx = 1;
+    
+    while(n--){
+        getchar();  scanf("%c", &ch);
+        
+        if (ch == 'H'){
+            int x;  scanf("%d", &x);
+            e[idx] = x;
+            ne[idx] = ne[0];
+            ne[0] = idx++;
+        }
+        else if (ch == 'I'){
+            int k, x;   scanf("%d%d", &k, &x);
+            e[idx] = x;
+            ne[idx] = ne[k];
+            ne[k] = idx++;
+        }
+        else if (ch == 'D'){
+            int k;  scanf("%d", &k);
+            ne[k] = ne[ne[k]];
+        }
+        
+        else printf("error occured\n");
     }
-
-    quick_sort(l, j);
-    quick_sort(j+1, r);
+    
+    for(int i = ne[0]; i != -1; i = ne[i])
+        printf("%d ", e[i]);
+    
+    return 0;
 }
 ```
 
-### 归并基础           
+## 静态双链表        
 
-归并基于分治策略。和快排不同的是，归并排序需要先保证子区间有序，再通过辅助数组使得大区间整体有序。                
+静态双链表是单链表的扩展。需要维护三个静态数组：值数组、前向元素数组、后向元素数组。同样使用 idx 对应这三个数组。`idx = 0` 为头结点，`idx = N-1` 代表尾节点。正式操作元素从 `idx=1` 开始。          
+前向节点和后向节点存储的是 idx 。头尾节点不具有值属性，头结点的前向节点和尾节点的后向节点恒为 -1 ，作为链表结束标志。初始化时，头结点的后向节点是尾节点，尾节点前向节点为头结点。       
 
-给定数组 `arr[]` 和上下界 `l, r` ， 设计 `merge_sort(l, r)` 函数，认为该函数可以完成对数组 `arr[]` 在 `[l, r]` 区间内的排序。于是将大数组对半分为 `[l, mid]`， 和 `[mid, r]`  两个子区间，并递归调用 `merge_sort` 完成子区间内部排序。将两个各自内部有序的子区间按照顺序放入辅助数组，然后再从辅助数组恢复到原数组，完成排序。                  
+### 例题       
+
+对于如下例题：          
+> 第一行包含整数 M，表示操作次数。            
+> 接下来 M 行，每行包含一个操作命令，操作命令可能为以下几种：          
+> 1. `L x`，表示在链表的最左端插入数 x。           
+> 2. `R x`，表示在链表的最右端插入数 x。           
+> 3. `D k`，表示将第 k 个插入的数删除。           
+> 4. `IL k x`，表示在第 k 个插入的数左侧插入一个数。         
+> 5. `IR k x`，表示在第 k 个插入的数右侧插入一个数。          
+> 
+> 将整个链表从左到右输出。            
 
 
-#### 实现方案              
-
-给定数组 `arr[]` 和上下界 `l, r` ，并找到对半分的中点下标 `mid = l+r >> 1` 。此时 `mid` 一定是中间或中间偏左的点，于是划分子区间为`[l, mid], [mid+1, r]` 从而避免边界问题如下 ：          
-对只有两元素的子区间 `[a, a]`， 有 `mid=l, r=l+1`，若以 `[l, mid-1], [mid, r]` 划分子区间，则右子区间将陷入 `[l, l+1]` 的死循环。            
-对划分好的两个子区间递归调用 `merge_sort()`，并认为调用完之后子区间内部已经排好序。        
-给定左子区间起始下标 `i=l`，右子区间起始下标 `j=mid+1`。当两者均未越界，while 循环同时向后逼近，依元素值，谁小谁先存入辅助数组 tmp。while 结束尚未到达边界的子区间按顺序全部存入 tmp。
-             
-此时 tmp 存储的就是 arr 数组 [l, r] 区间的有序排列，将之恢复到 arr[l, r] 区间，完成排序。         
-
-#### 模板         
-
+给出示例代码如下：        
 ```c++
-int arr[N], tmp[N];
+#include<iostream>
 
-void merge_sort(int l, int r){
-    if (l >= r) return;     // 只有一个元素或没有元素          
-    int mid = l+r >> 1;
-    merge_sort(l, mid);
-    merge_sort(mid+1, r);
+using namespace std;
 
-    int i = l, j = mid+1, k = 0;
-    while(i <= mid && j <= r){
-        if (arr[i] < arr[j])    tmp[k++] = arr[i++];
-        else                    tmp[k++] = arr[j++];
-    }
+const int N = 100010;
 
-    while( i <= mid)    tmp[k++] = arr[i++];
-    while( j <= r)      tmp[k++] = arr[j++];
+int idx, e[N], l[N], r[N];
+string ch;
 
-    i = l, k = 0;
-    while(i <= r)   arr[i++] = tmp[k++];
+void insert(int k, int x){
+    e[idx] = x;
+    r[idx] = r[k];
+    l[r[k]] = idx;
+    l[idx] = k;
+    r[k] = idx++;
 }
+
+void remove(int k){
+    r[l[k]] = r[k];
+    l[r[k]] = l[k];
+}
+
+int main(){
+    l[0] = -1, r[N-1] = -1;
+    r[0] = N-1, l[N-1] = 0;
+    idx = 1;
+    
+    int n;  scanf("%d", &n);
+    while(n--){
+        cin >> ch;
+        if ( ch == "L"){
+            int x;  scanf("%d", &x);
+            insert(0, x);
+        }
+        
+        else if ( ch == "R"){
+            int x;  scanf("%d", &x);
+            insert(l[N-1], x);
+        }
+        
+        else if ( ch == "D"){
+            int k;  scanf("%d", &k);
+            remove(k);
+        }
+        
+        else if ( ch == "IL"){
+            int k, x;   scanf("%d%d", &k, &x);
+            insert(l[k], x);
+        }
+        
+        else if ( ch == "IR"){
+            int k, x;   scanf("%d%d", &k, &x);
+            insert(k, x);
+        }
+        
+        else printf("other case: %s\n", ch);
+    
+    }
+    for (int i = r[0]; i != N-1; i = r[i])
+        printf("%d ", e[i]);
+    
+    return 0;          
 ```
-
-### 归并排序思想的应用            
-
-归并基于分治策略和思想，对于如下问题：            
-
-> 给定一个长度为 n 的整数数列，请你计算数列中的逆序对的数量。               
-> 逆序对的定义如下：对于数列的第 i 个和第 j 个元素，如果满足 i<j 且 a[i]>a[j]，则其为一个逆序对；否则不是。            
-
-若暴力搜索，则必然 TLE。于是使用归并思想：               
-先将数组对半分为左右两个子区间，则大数组中逆序对的数量等于 ① 两个子区间内部逆序对的数量加上  ② i 在左子区间、j 在右子区间的逆序对的数量。我们假设调用 `merge_sort(l, r)` 会返回 `[l, r]` 区间内逆序对的数量，则，只需要两个子区间内部有序，第 ② 种情况易得：        
-若 `arr[i] > arr[j]`，则 `[i, mid]` 区间内所有元素大于 `arr[j]`，则逆序对数量 `+= mid+1-i`。                
-
-#### 代码            
-
-如判断逆序对总数量超过了可 Integer 可表示范围， 不妨使用 `typedef long long LL;` 类型变量存储逆序对数量。          
-
-```c++
-int arr[N], tmp[N];
-
-int merge_sort(l, r){
-    if (l <= r) return 0;
-    int mid = l+r >> 1;
-    int count = merge_sort(l, mid) + merge_sort(mid+1, r);
-    int i = l, j = mid+1, k = 0;
-    while(i <= mid && j <= r){
-        if (arr[i] <= arr[j])    tmp[k++] = arr[i++];
-        else {tmp[k++] = arr[j++]; count += mid+1-i;}
-    }
-
-    while(i <= mid)     tmp[k++] = arr[i++];
-    while(j <= r)       tmp[k++] = arr[j++];
-    i=l, k = 0;
-    while(i <= r)       arr[i++] = tmp[k++];
-
-    return count;
-}
-```             
-
-### 二维数组排序                    
-
-需求是按照第二维度只有两个数的二维数组前一个数排序， 和一维情况没什么差别：          
-```c++
-void quick_sort(int l, int r){
-    if (l >= r) return;
-    
-    int idx = (int)( rand() % (r-l+1) + l);
-    int x = partitions[idx][0];
-    
-    int i = l-1, j = r+1;
-    while(i < j){
-        do i++; while ( partitions[i][0] < x);
-        do j--; while ( partitions[j][0] > x);
-        if( i < j) {
-            int tmpl = partitions[i][0], 
-                tmpr = partitions[i][1];
-            partitions[i][0] = partitions[j][0];
-            partitions[i][1] = partitions[j][1];
-            
-            partitions[j][0] = tmpl;
-            partitions[j][1] = tmpr;
-        }
-    }
-    
-    quick_sort(l, j);
-    quick_sort(j+1, r);
-}
-
-void merge_sort(int l, int r){
-    if (l >= r) return;
-    
-    int mid = l+r >> 1;
-    merge_sort(l, mid);
-    merge_sort(mid+1, r);
-    
-    int i = l, j = mid + 1, k = 0;
-    while (i <= mid && j <= r){
-        if (partitions[i][0] < partitions[j][0]){
-            tmp[k][0] = partitions[i][0];
-            tmp[k][1] = partitions[i][1];
-            i ++;
-        }
-        else {
-            tmp[k][0] = partitions[j][0];
-            tmp[k][1] = partitions[j][1];
-            j ++;
-        }
-        k++;
-    }
-    while (i <= mid){
-        tmp[k][0] = partitions[i][0];
-        tmp[k][1] = partitions[i][1];
-        i++, k++;
-    }
-    while (j <= r){
-        tmp[k][0] = partitions[j][0];
-        tmp[k][1] = partitions[j][1];
-        j++, k++;
-    }
-    
-    i = l, k = 0;
-    while(i <= r){
-        partitions[i][0] = tmp[k][0];
-        partitions[i][1] = tmp[k][1];
-        i++, k++;
-    }
-}
-```
-
-
-
-
-
-
-
 
 
 
