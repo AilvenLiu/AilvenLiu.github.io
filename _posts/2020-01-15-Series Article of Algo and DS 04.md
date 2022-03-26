@@ -24,18 +24,15 @@ tags:
 则构造严格递增单调栈，数组元素从左到右遍历，while 栈不空且栈顶元素不小于当前元素，栈顶出栈。直到栈为空或栈顶元素小于当前元素，输出 -1 或栈顶元素，元素入栈。            
 
 ```c++
-#include<iostream>
-#include<stack>
-
 std::stack<int> s;
 
 int main(){
     int n;  scanf("%d", &n);
     for (int i = 0; i < n; i ++){
-        int x;  scanf("%d", &x);
+        int x;              scanf("%d", &x);
         while(!s.empty() && s.top() >= x)   s.pop();
-        if (s.empty())  printf("%d ", -1);
-        else            printf("%d ", s.top());
+        if (s.empty())      printf("%d ", -1);
+        else                printf("%d ", s.top());
         s.push(x);
     }
     return 0;
@@ -63,11 +60,6 @@ while 队列不空且队尾小于等于当前值，队尾出队列直到队列�
 给出题解：           
 
 ```c++
-#include<iostream>
-#include<deque>
-
-using namespace std;
-
 const int N = 1000010;
 int arr[N];
 deque<int> dq;
