@@ -10,7 +10,7 @@ tags:
     - Algorithm      
 --- 
 
-> from ACWing [785. 快速排序](https://www.acwing.com/problem/content/819/)， [787. 归并排序](https://www.acwing.com/problem/content/821/)， [788. 逆序对的数量](https://www.acwing.com/problem/content/790/)， [803. 区间合并](https://www.acwing.com/problem/content/description/805/)。          
+> from ACWing [785. 快速排序](https://www.acwing.com/problem/content/819/)， [787. 归并排序](https://www.acwing.com/problem/content/821/)， [788. 逆序对的数量](https://www.acwing.com/problem/content/790/)， [803. 区间合并](https://www.acwing.com/problem/content/805/)。          
 
 ### 快排基础        
 快排基于分治策略：先保证大区间相对有序，在保证子区间内部有序。         
@@ -194,19 +194,3 @@ void merge_sort(int l, int r){
     }
 }
 ```
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
