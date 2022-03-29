@@ -18,7 +18,37 @@ k 是一个正整数，它的值小于或等于链表的长度。
 如果节点总数不是 k 的整数倍，那么请将最后剩余的节点保持原有顺序。             
 
 ## 思路             
-<div align=center><img src="https://raw.githubusercontent.com/OUCliuxiang/OUCliuxiang.github.io/master/img/leetcode/lc025.png"></div>    
+<div align=center><img src="https://raw.githubusercontent.com/OUCliuxiang/OUCliuxiang.github.io/master/img/leetcode/lc025.png"></div>        
 
-## 直接背过                                        
+**注意**，内部节点翻转，判断是否翻转到尾节点，不能使用 `b != p->next` 进行判断，当 `b = p`, 且使 `b -> next = a`，后者地址会变化。k 个一组翻转节点，可以内部节点操作 k-1 次实现。              
 
+
+## 代码，直接背过，常默写                                        
+```c++
+ListNode* reverseKGroup(ListNode* head, int k){
+    if (!head || !head -> next ) return head;
+    
+    ListNode* dummy = new ListNode(-1);
+    dummy -> next = head;
+    for (ListNode* p = dummy;;){
+        int q = p;
+        for (int i = 0; i < k && q; i++)    q = q -> next;
+        if (!q) break;
+
+        // 内部翻转         
+        ListNode* a = p -> next, b = a -> next;
+        for(int i = 0; i < k-1; i++){
+            ListNode* c = b -> next;
+            b -> next = a;
+            a = b, b = c;
+        }
+
+        // 外部节点                
+        ListNode* c = p -> next;
+        c -> next = b;
+        p -> next = a;
+        p = c;
+    }
+    return dummy -> next;
+}
+```
