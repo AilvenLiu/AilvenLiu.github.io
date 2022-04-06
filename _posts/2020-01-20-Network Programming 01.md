@@ -57,14 +57,15 @@ int socket(int domain,int type,int protocol);
 其中最常用的是 IPv4 Internet 协议族：`PF_INET`（ `AF_INET` ），这两者在定义中的值是相同的，也即具体使用上没有任何差别。           
 
 ### 参数 type            
-参数 `type` 用于设置套接字通信的类型，主要有 `SOCKET_STREAM`（流式套接字）、`SOCK_DGRAM`（数据包套接字）等。`type` 允许的值及含义列表如下：           
+参数 `type` 用于设置套接字通信的类型，主要有 `SOCKET_STREAM`（流式套接字）、`SOCK_DGRAM`（数据包套接字）等。`type` 允许的值及含义列表如下：         
+
 |名称|含义|
-|:--|:--|
-|SOCK_STREAM|Tcp连接，提供序列化的、可靠的、双向连接的字节流。支持带外数据传输|
-|SOCK_DGREAM|支持UDP连接（无连接状态的消息）|
-|SOCK_SQLPACKET|序列化包，提供一个序列化的、可靠的、双向的基本连接的数据传输通道，数据长度定常。每次调用读系统调用时数据需要将全部数据读出|    
-|SOCK_RAW|RAW类型，提供原始网络协议访问|
-|SOCK_RDM|提供可靠的数据报文，不过可能数据会有乱序|
+|:---|:---|
+|SOCK_STREAM|Tcp连接，提供序列化的、可靠的、双向连接的字节流。支持带外数据传输|        
+|SOCK_DGREAM|支持UDP连接（无连接状态的消息）|        
+|SOCK_SQLPACKET|序列化包，提供一个序列化的、可靠的、双向的基本连接的数据传输通道，数据长度定常。每次调用读系统调用时数据需要将全部数据读出|      
+|SOCK_RAW|RAW类型，提供原始网络协议访问|         
+|SOCK_RDM|提供可靠的数据报文，不过可能数据会有乱序|      
 |SOCK_PACKET|一种专用类型，无法在应用程序中使用|      
 
 **注意事项**          
@@ -78,8 +79,9 @@ int socket(int domain,int type,int protocol);
 
 ### 错误码 errno            
 函数 `socket()` 并不总是执行成功，有可能会出现错误，错误的产生有多种原因，可以通过 `errno` 获得：       
-|值|含义|
-|:--|:--|
+
+|值|含义|       
+|:--|:--|        
 |EACCES|没有权限建立指定的 socket |
 |EAFNOSUPPORT|不支持所指定的地址类型|
 |EINVAL|不支持此协议或协议不可用|
