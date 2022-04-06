@@ -46,13 +46,13 @@ int socket(int domain,int type,int protocol);
 
 ### 参数 domain          
 参数 `domain` 用于设置网络通信的域，函数 `socket()` 根据这个参数选择通信协议的族。通信协议族在文件 `sys/socket.h` 中定义。常用的几种协议族包括：         
-|名称|含义|
-|:---|:---|
-|PF_UNIX, PF_LOCAL|本地通信的UNIX协议族|
-|AF_INET, PF_INET|IPv4 Internet 协议族|
-|PF_INET6|IPv6 Internet 协议族|
-|PF_IPX|IPX-Novell协议族|
-|PF_PACKET|底层套接字的协议族|        
+|名称|含义|        
+|:---|:---|         
+|PF_UNIX, PF_LOCAL|本地通信的UNIX协议族|       
+|AF_INET, PF_INET|IPv4 Internet 协议族|        
+|PF_INET6|IPv6 Internet 协议族|           
+|PF_IPX|IPX-Novell协议族|         
+|PF_PACKET|底层套接字的协议族|          
 
 其中最常用的是 IPv4 Internet 协议族：`PF_INET`（ `AF_INET` ），这两者在定义中的值是相同的，也即具体使用上没有任何差别。           
 
