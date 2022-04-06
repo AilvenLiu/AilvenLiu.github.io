@@ -91,6 +91,6 @@ int socket(int domain,int type,int protocol);
 |EINVAL|不支持此协议或协议不可用|
 |EMFILE|进程文件表溢出|   
 |ENFILE|已经达到系统允许打开的文件数量上限，打开文件过多|
-|ENOBUFS/ENOMEM|内存不足|
+|ENOBUFS / ENOMEM|内存不足|
 |EPROTONOSUPPORT|指定的协议在 domain 中不存在|
 
