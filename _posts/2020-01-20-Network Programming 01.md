@@ -29,13 +29,16 @@ socket 就是套接字，套接字就是 socket。`socket()` 函数用于创建�
 一个创建监听 socket 文件描述符的实例如下：          
 ```c++
 #include <sys/socket.h>             
+
 #include <sys/types.h>           
+
 int listenfd = socket(PF_INET, SOCK_STREAM, 0);
 ```      
 
 其中， `socket()` 函数来自于 `sys/socket.h`，参数 PF_INET 和 SOCK_STREAM 来自于 `sys/socket.h`：         
 ```c++
 #include <sys/socket.h>                  
+
 int socket(int domain,int type,int protocol);
 -> 成功时返回文件描述，失败时返回-1(linux)
 ```            
@@ -46,6 +49,7 @@ int socket(int domain,int type,int protocol);
 
 ### 参数 domain          
 参数 `domain` 用于设置网络通信的域，函数 `socket()` 根据这个参数选择通信协议的族。通信协议族在文件 `sys/socket.h` 中定义。常用的几种协议族包括：         
+
 |名称|含义|        
 |:---|:---|         
 |PF_UNIX, PF_LOCAL|本地通信的UNIX协议族|       
