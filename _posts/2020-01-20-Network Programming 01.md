@@ -11,19 +11,31 @@ tags:
     - WebServer
 --- 
 
+<head>
+    <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML" type="text/javascript"></script>
+    <script type="text/x-mathjax-config">
+        MathJax.Hub.Config({
+            tex2jax: {
+            skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+            inlineMath: [['$','$']]
+            }
+        });
+    </script>
+</head>   
+
 ### 函数        
 socket 就是套接字，套接字就是 socket。`socket()` 函数用于创建一个新的socket，也就是向系统申请一个 socket 资源。       
 
 一个创建监听 socket 文件描述符的实例如下：          
 ```c++
-#include <sys/socket.h>
-#include <sys/types.h>
+#include <sys/socket.h>             
+#include <sys/types.h>           
 int listenfd = socket(PF_INET, SOCK_STREAM, 0);
 ```      
 
 其中， `socket()` 函数来自于 `sys/socket.h`，参数 PF_INET 和 SOCK_STREAM 来自于 `sys/socket.h`：         
 ```c++
-#include <sys/socket.h>
+#include <sys/socket.h>                  
 int socket(int domain,int type,int protocol);
 -> 成功时返回文件描述，失败时返回-1(linux)
 ```            
