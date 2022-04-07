@@ -13,6 +13,7 @@ tags:
 --- 
 
 ### strcat      
+
 `strcat()`函数包含于 `stdio.h` 和 `string.h` 头文件。函数原型是 ：       
 ```
 extern char *strcat(char *dest, const char *src);
