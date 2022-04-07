@@ -2,7 +2,7 @@
 layout:     post
 title:      Series Article of Algorithm and Data Structure -- 07 
 subtitle:   理解二分本质及代码    
-date:       2022-03-27
+date:       2022-04-07
 author:     OUC_LiuX
 header-img: img/wallpic02.jpg
 catalog: true
