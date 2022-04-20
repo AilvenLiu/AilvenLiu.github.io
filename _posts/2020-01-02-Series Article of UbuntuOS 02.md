@@ -8,9 +8,6 @@ header-img: img/wallpic02.jpg
 catalog: true
 tags:
     - Ubuntu OS 
-    - Anaconda 
-    - Jupyter 
-    - LaTeX 
 ---
 
 <head>
@@ -25,7 +22,7 @@ tags:
     </script>
 </head>
 
-> Some days ago, I upgraded my linux kernel from 5.0.0 to 5.3.0, as a consequence the desktop was then stucked frequently, at the meanwhile CUDA did not work at all too. Still some days ago, I deleted mistakenly the texlive components, then I was not allowed to write passages with it. More and more, jupyter notebook upon anaconda was dead too... These are not tolerable, thus one day passes but any normal works, all problems were resolved. Methods and operations for resolving these problems are recorded as below, that I hope be helpful for others else and myself after that.  
+> Some days ago, I upgraded my linux kernel from 5.0.0 to 5.3.0, as a consequence the desktop was then stucked frequently, at the meanwhile CUDA did not work at all too. Still some days ago, I deleted mistakenly the texlive components, then I was not allowed to write passages with it. More and more, jupyter notebook upon anaconda was dead ... These are not tolerable, thus one day passes but any normal works, all problems were resolved. Methods and operations for resolving these problems are recorded as below, that I hope be helpful for others else and myself after that.  
 
 ##  NVIDIA-SMI has failed because it couldn't communicate with the NVIDIA driver. Make sure that the latest NVIDIA driver is installed and running
 
