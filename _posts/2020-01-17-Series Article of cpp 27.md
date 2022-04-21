@@ -13,6 +13,8 @@ tags:
 
 由于我的 workflow 是从 github 上面 down 下来，`mkdir build` 后自行 `cmake .. && make` 编译的，既不是通过 apt 安装，也没有执行 `make install`，编译完的源码没有加入到 `/usr/local/include` 等系统路径，于是写自己的 workflow C++ 程序的时候没有办法直接 `#include <workflow/WFxxx.h>` 来引入相关包，只能通过 g++ 参数或 cmake 方法指定头文件和链接文件。      
 
+一份比较简洁清楚的 [cmake讲解](https://zhuanlan.zhihu.com/p/54253350) ：
+
 下面先给出我的 `CMakeLists.txt` 文件，然后逐行解释语法和功能。             
 
 **代码：**             
@@ -135,4 +137,27 @@ endif ()
 set(CMAKE_C_FLAGS   "${CMAKE_C_FLAGS}   -Wall -fPIC -pipe -std=gnu90")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -fPIC -pipe -std=c++11 -fno-exceptions")
 ```
-gcc/g++ 编译时的参数，`-Wall` 表示开启所有警告；
+gcc/g++ 编译时的参数，`-Wall` 表示开启所有警告； `-fPIC` 作用于编译阶段，告诉编译器产生与位置无关代码，也即，项目里使用了动态链接库 .so 文件是需要加入该参数； `-pipe` 表示使用管道代替编译中临时文件，可以加快编译速度； `-std=c++11` 容易理解，使用 `c++11` 标准； `-fno-exceptions` 表示禁用异常机制，不是很理解，不用管了。          
+
+
+```cmake
+set(WORKFLOW_LIB workflow pthread OpenSSL::SSL OpenSSL::Crypto ${LIBRT})
+```
+整合一下库文件和连接文件到一个变量。           
+
+
+```cmake 
+aux_source_directory(. SRC_LISTS)
+add_executable(${PROJECT_NAME} ${SRC_LISTS})
+```
+检索当前路径下所有源文件(.c, .cc, .cpp)，赋值给 SRC_LISTS 变量。        
+使用 SRC_LISTS 中的源文件生成以 PROJECT_NAME 变量 为名的可执行文件。      
+
+
+```cmake 
+target_link_libraries(${PROJECT_NAME} ${WORKFLOW_LIB})
+```       
+可以写在 `add_executable` 后面，为 PROJECT_NAME 可执行文件链接库文件，可以是动态的也可以是静态的。         
+实在不能理解 target_link_libraries, link_directories, include_directories 之间的关系，三者，缺一不可，缺哪一个都无法通过编译。        
+按要求这一句话应当要指定库文件路径，但是加入的 workflow 中却全都是文件夹路径；按道理这里只需要加入库文件路径，但是 workflow 中却包含了头文件路径。         
+当做模板记下吧，毕竟项目的核心问题也不再 cmake，可能多写写代码，多编译几份文件就熟悉和理解了。       
