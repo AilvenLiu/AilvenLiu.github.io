@@ -1,6 +1,6 @@
 ---
 layout:     post
-title:      Series Article of cpp -- 28          
+title:      Series Article of cpp -- 31          
 subtitle:   C++11 中的 lambda 表达式               
 date:       2022-04-30
 author:     OUC_LiuX

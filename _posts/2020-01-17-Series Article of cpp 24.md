@@ -19,12 +19,12 @@ resize 是改变容器的大小，同时创建元素。因此，调用这个函�
 ### 实例        
 ```c++       
 vector<int> myVec;
-myVec.reserve( 100 );     // 新元素还没有构造,
-                          // 此时不能用[]访问元素 
+myVec.reserve( 100 );     // 新元素还没有构造,           
+                          // 此时不能用[]访问元素           
 for (int i = 0; i < 100; i++ ){
-     myVec.push_back( i ); //新元素这时才构造
+     myVec.push_back( i ); //新元素这时才构造             
 }
-myVec.resize( 102 );      // 用元素的默认构造函数构造了两个新的元素
-myVec[100] = 1;           //直接操作新元素
+myVec.resize( 102 );      // 用元素的默认构造函数构造了两个新的元素          
+myVec[100] = 1;           //直接操作新元素             
 myVec[101] = 2;
 ```
