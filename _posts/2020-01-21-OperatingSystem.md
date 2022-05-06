@@ -196,7 +196,6 @@ ethtool -k 网卡名 | grep scatter-gather
 <div align=center><img src="https://raw.githubusercontent.com/OUCliuxiang/OUCliuxiang.github.io/master/img/CSbasis/OS06.jpg"></div>       
 
 
-
 **零拷贝的缺陷**           
 1. 由于数据不经过用户空间，程序无法对数据进行修改。也就是说，零拷贝只适用于将数据不加处理地从硬盘发送到网卡的情况。             
 2. 零拷贝依赖于
@@ -225,4 +224,28 @@ Linux 内核会以页大小（4KB）为单位，将文件划分为多数据块�
 这两个做法，大大提高了读写磁盘的性能。           
 
       
+#### 大文件传输         
+
+上文提到了 page cache，page cache 技术在大多数情况下可以提升 IO 性能。但是在传输大文件的时候，文件整体或文件的某一部分再被访问到的概率很低，这个时候使用 page cache 不仅不再起作用，而且由于多做了一次拷贝，反而会造成性能降低。不止于此，除了大文件传输本身的性能降低之外，由于 pageCache 长期被大文件占据，高频率被访问的热点小文件就无法充分使用 page cache，这样读起来也变慢了。           
+所以，高并发场景下，为了防止 page cache 被大文件占满后不再对小文件起作用，大文件不应该使用 page cache ，进而也不应该使用零拷贝技术：应当使用异步 IO 和直接 IO 替换零拷贝技术。         
+
+调用 `read()` 读取文件时，用户进程在磁盘寻址的过程中是阻塞等待的，阻塞直到数据读取完毕。这就导致进程无法并发地处理其他逻辑。这种请求进程阻塞（程序卡在 `read()` 语句）直到 IO 完成的是同步 IO。          
+<div align=center><img src="https://raw.githubusercontent.com/OUCliuxiang/OUCliuxiang.github.io/master/img/CSbasis/OS07.jpg"></div>       
+
+
+而异步 IO 则不会阻塞进程，用户进程发起 IO 后不等待数据就位立刻返回，进程并发地处理其他非数据逻辑。当内核将磁盘中的数据拷贝到进程缓冲区后，进程将接收到内核的通知，再去处理数据。
+<div align=center><img src="https://raw.githubusercontent.com/OUCliuxiang/OUCliuxiang.github.io/master/img/CSbasis/OS08.jpg"></div>       
+
+由于 page cache 机制和虚拟内存空间耦合太紧，异步 IO 数据从磁盘到用户空间的过程不经过 page cache，称为直接 IO；而经过 page cache 的 IO 称为缓存 IO。对于磁盘，异步 IO 只支持直接 IO。           
+
+服务端大文件传输由异步IO直接IO处理，小文件交由零拷贝处理，是一种更高效的 IO 策略，也是 Nginx 实际使用的的 IO 策略。至于什么是大文件什么是小文件，这个阈值则可以灵活设置。
+
+
+#### 同步IO 和 异步IO          
+
+上文提到了同步 IO 和异步 IO。在 IO 模型章节会详细讲解，此处作简要介绍。         
+* 同步IO：用户进程发起 IO 系统调用后，等待 IO 结束（阻塞或忙等待）。卡在 read() 语句上，在此期间无法执行其他逻辑。                  
+* 异步IO：用户进程发起 IO 系统调用后，不等待 IO 结束，立即返回，处理其他逻辑。IO 结束后由内核将数据拷贝进用户空间。过程不因为请求 IO 而阻塞，但可能是因为等待数据而阻塞（其他逻辑依赖于数据）。         
+
+
 
