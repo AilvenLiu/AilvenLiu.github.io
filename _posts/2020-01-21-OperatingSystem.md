@@ -87,6 +87,7 @@ CAS 的全过程在操作系统中只由一条不可分割的 `cmpxchgl` 硬件�
  
 
 ## Debug 和 Release                
+
 Debug 版本和 Release 版本其实就是 C/C++ 编译器优化级别的不同。gcc/g++ 编译器的有如下几种优化级别：              
 * O0： 默认级别，不开启优化项，方便调试，也就是 BEBUG 模式。           
 * Og： 开启部分不影响调试信息的优化项。        
@@ -101,7 +102,48 @@ DEBUG 模式下，申请内存时会多分配一些内存空间，分布在申�
 
 
 #### Core Dump 是怎么产生的          
+
 上文提到了 core dump 。当程序运行的过程中异常终止或崩溃，操作系统会将程序当时的内存状态记录下来，保存在一个文件中，这种行为就叫做Core Dump。 使用命令 `gdb program core` 来查看 core 文件，其中 program 为可执行程序名，core 为生成的 core 文件名。             
+
+
+#### gcc/g++，cmake，和 make               
+
+上文提到了 gcc/g++，这里简述 linux 下常用于编译 c++ 项目的三者的关系。          
+
+**gcc/g++** 都是用于程序编译的程序，他们只调用编译器，本身并不是编译器。所不同的是面对不同后缀名文件时的动作。比如同样面对一个 后缀为 `.c` 的文件，g++ 认为是 c++ 程序，会调用 `cc1plus` 编译器进行编译，而 gcc 认为其是 C 程序，会调用 `cc1` 编译器进行编译。            
+
+当项目只有一两个程序的时候，尚可以手动执行 gcc/g++ 进行编译。但如果项目中包含很多源文件或库文件，使用 gcc/g++ 手动去编译则很容易混乱，且工作量较大。这种情况下可以使用 make 工具。      
+
+make 是一种智能批处理工具，它本身没有编译和连接功能，而是通过调用 Makefile 文件中用户指定的命令进行编译连接。但是 Makefile 文件的语法相当冗长啰嗦，项目较小的时候上可以手动编写或修改，当工程较大的时候，手写 Makefile 也成了一件麻烦事。而且 make 工具是平台相关的，在一个平台上编写好的 Makefile 一直到另一个平台上，就不能用了，需要重新编写。很麻烦。           
+
+cmake 工具可以解决这个问题。cmake 可以根据 CMakeLists.txt 文件自动生成 MakeFile，CMakeLists.txt 文件的语法相对简洁易懂，其基本使用见[CMake 基本使用](https://www.ouc-liux.cn/2022/04/20/Series-Article-of-cpp-27/)。且 cmake 跨平台，基于不同平台可以生成对应 MakeFile 文件。 
+
+
+## 库文件和头文件，静态库和动态库（共享库）             
+
+C/C++ 程序编译的时候需要连接头文件和库文件，简单介绍。              
+
+**头文件**。稍微大型的面向对象项目中，为了做到高内聚低耦合，项目代码通常被根据功能分成很多部分，而不是将所有代码写到一个源文件里。通常，函数或类的声明和具体实现是分开的，头文件中包含函数的声明，简洁易读，库文件中包含函数的具体实现，可读性较差但实现高效。库文件通过头文件向外暴露接口，编译时链接器就可以根据头文件中的信息找到函数的具体实现并链接到程序的代码段中。         
+
+**库文件**。库文件是函数具体实现的封装，通常以二进制而不是源码形式保存函数的具体实现，通过对应的头文件暴露接口。从而实现对具体实现保密的目的。通常，库文件分为静态库和动态库两种，在 linux 下前者后缀 `.a`，后者后缀 `.so` 。两者的区别在于载入的时刻不同，静态库在编译时就全部被装载进可执行程序中，动态库在编译时仅做引用，在运行时动态载入内存：          
+* 静态库在编译时就被编译进了可执行程序，生成可执行文件后删除库文件，程序仍可运行。         
+* 动态库被编译进可执行程序的只有函数接口，运行时仍然依赖于库。如果删除库文件，将导致程序无法运行。            
+* 静态库由于是静态嵌入，程序运行速度较快，但是程序体积较大，不易更新和维护，升级的话需要重新编译。          
+* 动态库由于是运行时动态加载，因此程序运行速度较慢，体积较小，升级程序不需要重新编译。       
+* 静态库的链接只需要将静态库文件添加到 g++ 后面即可，比如：        
+  ```bash
+  g++ main.cpp build/libtest.a -o helloworld
+  ```           
+  对于引用关系稍微复杂一点的程序来说，静态库简直就是灾难，到处都是错误。           
+* 动态库的链接需要指明头文件的搜索路径（目录一级）和库文件的搜索路径（文件一级）：       
+  ```bash
+  g++ -I /user/local/workflow/include -L /usr/local/workflow/libs/Workflow.so *.cpp -o main
+  ```          
+  上面 `-I` 选项就是指定头文件的搜索路径，精确到目录一级； `-L` 项指明库文件路径，精确到具体文件一级。          
+  **但是**， 当编译连接结束生成可执行文件后，在运行的时候会出现 "Workflow.so not found" 等错误，这是因为 g++ 在连接的时候搜索到了第三方库，但是运行的时候库文件不在程序的第三方库默认搜索路径中。所以需要添加 `-Wl, -rpath=具体目录` 参数将第三方库所在的目录加入到运行时搜索路径中：            
+  ```bash
+  g++ -I /user/local/workflow/include -L /usr/local/workflow/libs/Workflow.so -Wl,-rpath=/usr/local/workflow/libs *.cpp -o main
+  ```          
 
 
 ## 零拷贝            
@@ -143,7 +185,7 @@ DMA 机制是实现零拷贝的的基础之一。零拷贝并不是没有拷贝�
 * 多个虚拟内存地址可以指向同一个物理地址             
 
 `mmap` 正是基于后者而实现。它将**用户空间和内核空间的虚拟地址映射到同一个物理地址**，从而在读数据的时候，只需要 DMA 将磁盘数据拷贝到内核空间即可，而不需要继续从内核空间拷贝到用户空间。通过将用户空间的缓冲区映射到和内核读空间缓冲区相同的物理地址，再次向外部设备写入数据的时候，则直接在内核空间，由内核读缓冲区拷贝到 socket 缓冲区。其具体流程如下：             
-<div align=center><img src="https://raw.githubusercontent.com/OUCliuxiang/OUCliuxiang.github.io/master/img/CSbasis/OS03.jpg"></div>         
+<div align=center><img src="https://raw.githubusercontent.com/OUCliuxiang/OUCliuxiang.github.io/master/img/CSbasis/OS03.jpg"></div>          
 
 * 用户进程通过 mmap 方法箱操作系统内核发起 IO 调用，上下文从**用户态切换到内核态**。         
 * CPU 通过 DMAC 将数据从存储设备拷贝到内核缓冲区。                
@@ -234,7 +276,7 @@ Linux 内核会以页大小（4KB）为单位，将文件划分为多数据块�
 
 
 而异步 IO 则不会阻塞进程，用户进程发起 IO 后不等待数据就位立刻返回，进程并发地处理其他非数据逻辑。当内核将磁盘中的数据拷贝到进程缓冲区后，进程将接收到内核的通知，再去处理数据。
-<div align=center><img src="https://raw.githubusercontent.com/OUCliuxiang/OUCliuxiang.github.io/master/img/CSbasis/OS08.jpg"></div>       
+<div align=center><img src="https://raw.githubusercontent.com/OUCliuxiang/OUCliuxiang.github.io/master/img/CSbasis/OS08.jpg"></div>        
 
 由于 page cache 机制和虚拟内存空间耦合太紧，异步 IO 数据从磁盘到用户空间的过程不经过 page cache，称为直接 IO；而经过 page cache 的 IO 称为缓存 IO。对于磁盘，异步 IO 只支持直接 IO。           
 
