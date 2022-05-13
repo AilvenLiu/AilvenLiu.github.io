@@ -323,34 +323,111 @@ bind(listenfd);
 listen(listenfd);
 while(1){
   connfd = accept(listenfd);
-  n = read(connfd, buf);
+  n = recv(connfd, buf);
   doSomething(buf);
   close(connfd);
 }
 ```             
 
-代码所示的这个过程中，服务端线程阻塞主要发生在 accept 和 read 两个部分，也就是建立连接和接收数据。对于网络 IO 来讲，我们主要关心 read 接收数据这一部分。细究 read 函数的话，又可以分成前文所说的 IO 的两阶段：数据进入内核空间，数据拷贝到用户进程空间。这两个阶段无疑都是阻塞的。所以，如果当前建立连接的客户端一直不发数据，那么服务器线程就会一直阻塞在 read 函数上不返回，自然没有办法接受其他客户端连接。               
+代码所示的这个过程中，服务端线程阻塞主要发生在 accept 和 recv 两个部分，也就是建立连接和接收数据。对于网络 IO 来讲，我们主要关心 recv 接收数据这一部分。细究 read 函数的话，又可以分成前文所说的 IO 的两阶段：数据进入内核空间，数据拷贝到用户进程空间。这两个阶段无疑都是阻塞的。所以，如果当前建立连接的客户端一直不发数据，那么服务器线程就会一直阻塞在 recv 函数上不返回，自然没有办法接受其他客户端连接。               
 这肯定是不行的。            
 
 **非阻塞式 IO**
 
-为了解决上面的问题，其关键在于改造 read 函数。一种方法是，每次 accept 建立一个连接都为该链接创建一个新的线程，每个 IO 独占一个线程。伪代码如：            
+为了解决上面的问题，其关键在于改造 recv 函数（recv 和 read，在下一小节做简要介绍）。一种方法是，每次 accept 建立一个连接都为该链接创建一个新的线程，每个 IO 独占一个线程。伪代码如：            
 ```c++
 while(1){
   connfd = accept(listenfd);
   pthread_create(doWork);
 }
 void doWork(){
-  n = read(connfd, buf);
+  n = recv(connfd, buf);
   doSomething(buf);
   close(connfd);
 }
+```          
+
+这样，当一个连接建立好后，就可以立刻等待新的客户端连接，而不用阻塞在原客户端的 recv 请求上。然而，这种每个IO流独占一个线程的实现，是非常粗暴的，存在很多缺点：            
+- 在任何时刻，都可能有大量的线程处于空闲状态，造成资源浪费。              
+- 线程是占内存的，不太可能建立太多的工作线程。            
+- 线程的上限文切换也会带来不小的开销。           
+
+这并不是像真正的非阻塞，因为我们不过是使用多线程的手段使主线程没有卡在 recv 函数上，recv 这个系统调用踹然是阻塞的。要实现真正的非阻塞 IO，需要操作系统提供非阻塞的 recv 调用。        
+Linux 中，无论是 socket 还是本地读文件，默认都是阻塞的。Linux/C++ socket 编程中，在建立 socket 之后我们可以使用 `fcntl()` 或 `ioctl()` 给创建的 socket 增加 O_NONBLOCK 标识将 socket 设置为非阻塞模式：         
+```c++
+int clientfd = socket(AF_INET, SOCK_STREAM, 0);
+... ... 
+int oldSocketFlag = fcntl(clientfd, G_GETFL, 0);
+int newSocketFlag = oldSocketFlag | O_NONBLOCK;
+if (fcntl(clientfd, F_SETFL, newSocketFlag) == -1) {
+  close(clientfd);
+  perror("set error\n");
+  return -1;
+}
 ```
+
+此时接收 socket 数据就变成了非阻塞，也即 recv 立刻返回，有数据则带回数据，没有则带回错误。当错误码 `errno == EWOULDBLOCK || errno == EAGAIN`，代表错误数据未就绪，等待下一轮循环继续 recv；实际上，EWORLDBLOCK 和 EAGAIN 这**两个错误码是一样**的，值都是 11，没差别；如果是 `errno == EINTR` 代表着信号被中断，原因暂不细究，也是等待下一轮循环继续 recv。        
+
+Linux 下 socket 可以在创建套接字的时候给　type 增加一个标志位将其设置为非阻塞模式：      
+```c++
+int s = socket(AF_INET, SOCK_STREAM | O_NONBLOCK, 0);
+```
+
+当然，对 open 打开，read 读取的本地文件，也可以在 open 的时候增加一个非阻塞标志位是文件变为非阻塞：          
+```c++
+// int open(const char* pathname, int flag, mdoe_t mode);               
+int fd = open(filename, O_NONBLOCK, "w+");
+```          
+
+此时，如果文件不能打开，则返回一个错误码，而不是阻塞 open()。当文件打开成功，后续的 IO 操作也是非阻塞的，也即 read/write 立即返回，有数据则带回数据，没有数据就带回错误。        
+
+具体怎么做才能并发的监测很多文件呢？ 一个直接的实现是，每 accept 一个客户端，将这个文件描述符（connfd）放到一个数组里，然后用一个主线程轮询这个数据。也即非阻塞配合循环使用，就可以实现并发IO了：          
+```c++
+while(true){
+
+  char buf[32] = {0};
+  int ret1 = recv(fd1, buf, sizeof(buf), 0);
+  if (ret1 < 0){
+    if (errno == EINTR)
+      perror("Interruption\n");
+    else if(errno == EAGAIN || errno == EWULDBLOCK)
+      perror("No data available\n");
+    else
+      // 真的出错了，那该怎么办呢？                
+  }else if (ret1 == 0)// 对端关闭了连接               
+    break;
+  else // 接收到了数据             
+    doSomething();
+
+  int ret2 = recv(fd2, buf, sizeof(buf), 0);// 第二个IO            
+  if (ret2 < 0){
+    if (errno == EINTR)
+      perror("Interruption\n");
+    else if(errno == EAGAIN || errno == EWULDBLOCK)
+      perror("No data available\n");
+    else
+      // 真的出错了，那该怎么办呢？                
+  }else if (ret1 == 0)// 对端关闭了连接               
+    break;
+  else // 接收到了数据             
+    doSomething();
+
+  int ret3 ... ...; 
+
+  nanosleep(sleep_interval, nullptr); // 下轮检测前睡眠片刻                   
+}
+```          
+
+上面这种实现缺点很明显：          
+- 循环的频次太低，会导致 IO 相应延迟；            
+- 循环的频次太高，每次都要循环 recv 检测所有文件;但是 recv 是个系统调用，对每个文件都要返回一次，当需要并发处理的文件很多时，整体性能会变得很差。             
+
+实际上，上述的这种实现已经非常接近 select 这种 IO 多路复用了，只是要在用户层手写 while 轮询对每个文件单独的使用 recv 这种系统调用，整体效率不太划算。那么，更好的选择当然是使用操作系统提供的内核级别的实现。            
 
 
 ## IO 多路复用技术，select, poll, epoll
 
-上文提到 IO 多路复用模型。         
+     
 
 
 ## 事件触发模式，ET 和 LT          
