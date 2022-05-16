@@ -462,6 +462,8 @@ select 的原理和我们上文介绍的 非阻塞 IO + 轮询 在用户层面�
 调用 select 后进程阻塞直到有就绪事件发生或者超时，函数返回。当 select 返回，遍历 fd_set 找到就绪的文件描述符进行相应的处理。            
 
 ```c++
+#include <sys/select.h>
+
 int select( int nfds, 
             fd_set *readfds, 
             fd_set *writefds, 
@@ -529,7 +531,7 @@ select 的劣势：
 
 #### select + tcp demo       
 给出一段 tcp 服务端使用 select 的 demo：           
-```c++
+```cpp
 #include <iostream>              
 
 #include <stdio.h>           
@@ -546,6 +548,8 @@ select 的劣势：
 
 #include <sys/wait.h>                
 
+#include <sys/select.h>
+
 #include <arps/inet.h>              
 
 #include <errno.h>               
@@ -561,10 +565,10 @@ select 的劣势：
 
 using namespace std;
 
-void sys_err(const char *str){
-  fprintf(stderr, "%s\n", str); // equal to perror(str);             
-  exit(1);
-}
+typedef struct {
+  int fd;
+  struct sockaddr_in addr;
+} CLIENT;
 
 int main(int argc, char **argv){
   int lfd, cfd; // listenfd, connfd             
@@ -587,12 +591,25 @@ int main(int argc, char **argv){
   FD_SET(lfd, &allset);
   
   char buf[1024];
-  vector<int> flag;
+  CLIENT client[1024];
+  for (int i = 0; i < 1024; i++)  
+    client[i].fd = -1, client[i].addr = nullptr;
 
   for (;;){
     rset = allset；
-    int nready = select(maxfd+1, &rset, nullptr, nullptr, nullptr);      
-    if (nready < 0) sys_err("select.");
+    struct timeval timeout;
+    timeout.tv_sec = 2;
+    timeout.tv_usec= 0;
+
+    int nready = select(maxfd+1, &rset, nullptr, nullptr, &timeout);      
+    if (nready < 0) {
+      perror("select error.\n");
+      exit(1);
+    }
+    if (nready == 0) {
+      perror("timeout.\n");
+      continue;
+    }
 
     if (FD_ISSET(lfd, &rset)){// listenfd is ready, new connection arrived.         
       clt_addr_len = sizeof(clt_addr);
@@ -602,23 +619,35 @@ int main(int argc, char **argv){
         inet_ntop(AF_INET, &clt_addr.sin_addr.s_addr, buf, 1024), 
         ntohs(clt_addr.sin_port));
       FD_SET(cfd, &allsets);
-      flag.push_back(cfd);
+      for (int i = 0; i < 1024; i++){
+        if (client[i].fd == -1){
+          client[i].fd == cfd;
+          client[i].addr = clt_addr;
+        }
+        break;
+      }
 
       maxfd = max(cfd, maxfd); 
       if (-- nready == 0) continue; // only lintenfd, no client connfd           
     } 
 
-    for (int i = 0; i < flag.size(); i++){ // scan & check all fds in flag            
-      if (FD_ISSET(flag[i], &rset)){  // read connfd flag[i] is ready          
+    for (int i = 0; i < 1024; i++){ // scan & check all fds in flag            
+      int clientfd;
+      if (clientfd = client[i].fd < 0) continue; 
+
+      if (FD_ISSET(clientfd, &rset)){  // read connfd flag[i] is ready          
         memset(buf, 0, 1024);
         int ret = recv(flag[i], buf, sizeof(buf), 0); 
         //block, equal to read()             
-        if (ret == -1) continue;  // error, skip it.              
+        if (ret == -1) {
+          perror("recv error.\n");
+          continue;  // error, skip it.              
+        }
         if (ret == 0) { // client closed.             
           close(flag[i]);
           fprintf(stdout, "client %s:%d closed.\n", 
-            inet_ntop(AF_INET, &clt_addr.sin_addr.s_addr, buf, sizeof(buf)), 
-            ntohs(clt_addr.sin_port));
+            inet_ntop(AF_INET, &client[i].fd.sin_addr.s_addr, buf, sizeof(buf)), 
+            ntohs(cient[i].fd.sin_port));
           FD_CLR(flag[i], &allset);
           continue;
         }
@@ -626,6 +655,7 @@ int main(int argc, char **argv){
         send(flag[i], buf, ret, 0); // block, equal to write()          
         write(STDOUT_FILENO, buf, ret); 
         // write into standard output, STDOUT_FILENO = 1             
+        if (-- nready == 0) break;
       }
     }
   }            
@@ -638,6 +668,48 @@ int main(int argc, char **argv){
 <div align=center><img src="https://raw.githubusercontent.com/OUCliuxiang/OUCliuxiang.github.io/master/img/CSbasis/OS11.png"></div>        
 
 
+#### poll         
+poll 也是系统提供的系统调用。和 select 没有本质的区别，依然是将一组文件描述符拷贝到内核空间轮询，直到有事件就绪或者超时返回到用户空间。依然是返回 0 或者就绪事件的数量，依然要在返回后由用户进程再次遍历寻找就绪文件描述符进行处理。所不同的是， poll 可以检测更多类型的事件；poll 存储文件描述符的长度没有限制。          
+
+```c++
+#include <poll.h>
+
+int poll(struct pollfd *__fds, unsigned long __nfds, int __timeout);
+```
+功能：接收存有文件描述符的**结构体**数组，监测文件描述符状态变化，直到超时或有就绪的文件描述符。       
+select 区别：可以监控的事件类型更多，可以监控的文件描述符无限制，数组长度由用户规定而不是内核写死。      
+参数：           
+- __fds：指向一个结构体数组的指针，每个数组元素都是一个 pollfd 结构，数组长度有用户定义，无限制。      
+- __nfds：需要监听的文件描述符的个数。         
+- __timeout：超时时间（毫秒数），0 表示不阻塞直接返回，-1 为永远等待直到返回。       
+
+返回值：>0 为就绪描述符的数量，=0 超时，<0 出错。          
+
+仔细看一看 `struct pollfd` 结构：           
+```c++
+struct pollfd {
+  int fd; // 文件描述符         
+  short int events; // 要监控的事件，值有对应宏             
+  short int revents; // 返回时系统通过这个值告诉用户发生了什么，值有对应宏          
+}
+```
+
+对于 events/revents 这两个变量，常见的类型和 select 所能监控的一样，可读可写和错误异常：          
+```cpp
+#define POLLRDNORM  0x040;
+#define POLLWRNORM  0x100;
+#define POLLERR     0x008;
+```
+可以并列出现比如：`POLLRDNORM|POLLWRNORM`。              
+
+poll 的优势劣势和 select 没有本质差别，除了可以监控更多的文件描述符和不可跨平台。       
+
+poll 的优势：        
+- poll 同样做到了一个线程处理多个客户端连接的情况下，减少系统调用的开销（多个文件描述符只有一次 poll 系统调用 + n 次就绪状态的文件描述符的 recv 系统调用）。         
+
+poll 的劣势：        
+- 每次调用 poll 都需要把 pollfds 集合从用户态拷贝到内核态，这个开销在 fd 很多时会很大；同时每次调用 poll 都需要在内核遍历传递进来的所有 fd，这个开销在 fd 很多时也会很大。      
+- poll 不是跨平台的，只在 Linux 平台支持。        
 
 
 
