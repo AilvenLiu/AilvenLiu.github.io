@@ -531,19 +531,33 @@ select 的劣势：
 给出一段 tcp 服务端使用 select 的 demo：           
 ```c++
 #include <iostream>              
+
 #include <stdio.h>           
+
 #include <stdlib.h>                      
+
 #include <string.h>             
+
 #include <unistd.h>               
+
 #include <sys/stat.h>                
+
 #include <sys/types.h>                
+
 #include <sys/wait.h>                
+
 #include <arps/inet.h>              
+
 #include <errno.h>               
+
 #include <pthread.h>               
+
 #include <signal.h>              
+
 #include <ctype.h>             
+
 #include <vector>             
+
 
 using namespace std;
 
