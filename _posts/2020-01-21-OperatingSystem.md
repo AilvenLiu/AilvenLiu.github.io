@@ -525,7 +525,7 @@ select 的优势：
 - select 是跨平台的，几乎所有平台都有其实现。          
 
 select 的劣势：        
-- 每次调用 select 都需要把 fd_set 集合从用户态拷贝到内核态，这个开销在 fd 很多时会很大；同时每次调用 select 都需要在内核遍历传递进来的所有 fd，这个开销在 fd 很多事也会很大。      
+- 每次调用 select 都需要把 fd_set 集合从用户态拷贝到内核态，然后再拷贝回用户空间，这个开销在 fd 很多时会很大；select 使用轮询的方法在内核遍历传递进来的所有 fd，而且只返回就绪文件描述符的数量，需要用户态再遍历一遍所有文件描述符以确定哪个文件描述符是就绪的，这个开销在 fd 很多时也会很大。      
 - **单个进程** 能监视的文件描述符的数量存在最大限制，Linux 一般为 1024。这是系统写死的，要改变这一限制需要改变 fd_set 的定义，然后重新编译内核。但是由于上一条，该值越大，效率也就越低。       
 
 
@@ -632,10 +632,10 @@ int main(int argc, char **argv){
     } 
 
     for (int i = 0; i < 1024; i++){ // scan & check all fds in flag            
-      int clientfd;
-      if (clientfd = client[i].fd < 0) continue; 
+      if (cfd = client[i].fd < 0) continue; 
 
       if (FD_ISSET(clientfd, &rset)){  // read connfd flag[i] is ready          
+        -- nready;
         memset(buf, 0, 1024);
         int ret = recv(flag[i], buf, sizeof(buf), 0); 
         //block, equal to read()             
@@ -643,7 +643,7 @@ int main(int argc, char **argv){
           perror("recv error.\n");
           continue;  // error, skip it.              
         }
-        if (ret == 0) { // client closed.             
+        else if (ret == 0) { // client closed.             
           close(flag[i]);
           fprintf(stdout, "client %s:%d closed.\n", 
             inet_ntop(AF_INET, &client[i].fd.sin_addr.s_addr, buf, sizeof(buf)), 
@@ -655,7 +655,7 @@ int main(int argc, char **argv){
         send(flag[i], buf, ret, 0); // block, equal to write()          
         write(STDOUT_FILENO, buf, ret); 
         // write into standard output, STDOUT_FILENO = 1             
-        if (-- nready == 0) break;
+        if (nready == 0) break;
       }
     }
   }            
@@ -680,7 +680,7 @@ int poll(struct pollfd *__fds, unsigned long __nfds, int __timeout);
 select 区别：可以监控的事件类型更多，可以监控的文件描述符无限制，数组长度由用户规定而不是内核写死。      
 参数：           
 - __fds：指向一个结构体数组的指针，每个数组元素都是一个 pollfd 结构，数组长度有用户定义，无限制。      
-- __nfds：需要监听的文件描述符的个数。         
+- __nfds：**上面数组中有效元素的个数**。         
 - __timeout：超时时间（毫秒数），0 表示不阻塞直接返回，-1 为永远等待直到返回。       
 
 返回值：>0 为就绪描述符的数量，=0 超时，<0 出错。          
@@ -708,10 +708,143 @@ poll 的优势：
 - poll 同样做到了一个线程处理多个客户端连接的情况下，减少系统调用的开销（多个文件描述符只有一次 poll 系统调用 + n 次就绪状态的文件描述符的 recv 系统调用）。         
 
 poll 的劣势：        
-- 每次调用 poll 都需要把 pollfds 集合从用户态拷贝到内核态，这个开销在 fd 很多时会很大；同时每次调用 poll 都需要在内核遍历传递进来的所有 fd，这个开销在 fd 很多时也会很大。      
-- poll 不是跨平台的，只在 Linux 平台支持。        
+- 每次调用 poll 都需要把 pollfds 集合从用户态拷贝到内核态，然后再拷贝回用户空间，这个开销在 fd 很多时会很大；poll 使用轮训的方法在内核遍历传递进来的所有 fd，而且只返回就绪文件描述符的数量，需要用户态再遍历一遍查找那个事件是就绪的，这个开销在 fd 很多时也会很大。        
+- poll 不是跨平台的，只在 Linux 平台支持（存疑，没有绝对性证据支持，自己瞎猜）。        
 
 
+#### poll+tcp demo         
+```cpp
+#include <stdio.h>         
+
+#include <stdlib.h>         
+
+#include <string.h>       
+
+#include <unistd.h>          
+
+#include <poll.h>          
+
+#include <arpa/inet.h>       
+
+#define BACKLOG       5           
+
+#define BUFF_SIZE     200           
+
+#define DEFAULT_PORT  8848         
+
+#define OPEN_MAX      1024 // 可监控文件描述符最大数量，自定义，可以非常大。              
+
+
+using namespace std;       
+
+int main(int argc, char **argv) {
+  if (argc > 2){
+    perror("USAGE: %s <port>\n", argv[0]);
+    exit(1);
+  }
+  int serv_port = DEFAULT_PORT;
+  if (argc == 2)  serv_port = atoi(argv[1]);
+
+  int lfd, cfd;
+  char buf[BUFF_SIZE]；
+  struct sockaddr_in serv_addr, clt_addr;
+  socklen_t addr_len;
+
+  if (lfd = socket(AF_INET, SOCK_STREAM, 0) < 0){
+    perror("socket error.\n");
+    exit(1);
+  }
+
+  int opt = 1;
+  if (setsockopt(lfd, SOL_SOCKET, SO_REUSEADDR, &opt, sizeof(opt)) < 0){
+    perror("setsockopt error.\n");
+    exit(1);
+  }
+
+  bzero(&serv_addr, sizeof(serv_addr));
+  serv_addr.sin_family = AF_INET;
+  serv_addr.sin_port = htons(serv_port);
+  serv_addr.sin_addr.s_addr = htonl(INADDR_ANY);
+
+
+  if (bind(lfd, (struct sockaddr *) &serv_addr, sizeof(serv_addr)) < 0){
+    perror("bind error.\n");
+    exit(1);
+  }
+
+  if (listen(lfd, BACKLOG) < 0){
+    perror("listen error.\n");
+    exit(1);
+  }
+
+  struct pollfd client[OPEN_MAX];
+  client[0].fd = lfd;
+  client[0].events = POLLRDNORM;
+  for (int i = 1; i < OPEN_MAX; i++) client[i].fd = -1;
+  int maxi = 0;
+
+  for (;;){
+    int nready = poll(client, maxi+1, -1); // 超时-1， 恒阻塞         
+    if (nready < 0){
+      perror("poll errpr.\n");
+      exit(1);
+    }
+
+    if (client[0].revents & POLLRDNORM){ // 来了一条新连接           
+      addr_len = sizeof(clt_addr);
+      if (cfd = accept(lfd, (struct sockaddr*) &clt_addr, &addr_len) < 0){
+        perror("accept error.\n");
+        exit(1);
+      }
+
+      int i;
+      for (i = 1; i < OPEN_MAX; i++){
+        if (client[i].fd == -1){
+          client[i].fd = cfd;
+          client[i].events = POLLRDNORM;
+          break;
+        }
+      }
+      maxi = max(maxi, i);
+
+      if (--nready == 0)  continue;
+    }
+
+    for (int i = 1; i < max_i; i++){
+      if (cfd = client[i].fd == -1) continue;
+
+      if (client[i].revents & (POLLRDNORN | POLLERR)){
+        -- nready;
+        memset(buf, 0, BUFF_SIZE);
+        ssize_t ret = recv(cfd, buf, BUFF_SIZE, 0);
+        if (ret < 0){
+          perror("recv error.\n");
+          continue;
+        }
+        else if (ret == 0){
+          printf("client[%d]: fd=%d closed.\n", i, cfd);
+          close(cfd);
+          client[i].fd = -1;
+          continue;
+        }
+        for (int j = -; j < ret; j ++)  buf[j] = toupper(buf[j]);
+        send(cfd, buf, ret, 0);
+        write(STDOUT_FILENO, buf, ret);
+        
+        if (nready == 0) break;
+      } 
+    }
+  }
+
+  close(lfd);
+  return 0;
+}
+```
+
+显然可以发现，除了 API 调用和部分参数细节上与 select 存在些许差别外，poll 整体的使用流程和 select 相差无几。      
+
+
+#### epoll        
 
 ## 事件触发模式，ET 和 LT          
 
