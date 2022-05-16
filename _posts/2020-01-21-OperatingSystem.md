@@ -145,6 +145,11 @@ C/C++ 程序编译的时候需要连接头文件和库文件，简单介绍。
   g++ -I /user/local/workflow/include -L /usr/local/workflow/libs/Workflow.so -Wl,-rpath=/usr/local/workflow/libs *.cpp -o main
   ```          
 
+## Linux 的文件分类、文件权限、文件时间          
+
+
+## 软连接和硬连接        
+
 
 ## 零拷贝            
 
@@ -437,11 +442,11 @@ int send(int sockfd, void *buf, int len, int flags);
 flags 参数可以是 0 或者下面诸项的组合：           
 |flags|description|            
 |:---|:---|          
-|MSG_DONTROUTE(仅 send)|不查路由表，通常用于本局域网段内部发送消息|          
-|MSG_PEEK(仅 recv)|只查看，并不从系统缓冲区移走数据|           
+|MSG_DONTROUTE (仅 send)|不查路由表，通常用于本局域网段内部发送消息|          
+|MSG_PEEK (仅 recv)|只查看，并不从系统缓冲区移走数据|           
 |MSG_OOB|接受或发送带外数据（啥意思？？）|           
 |MSG_DONTWAIT|**临时将本次读写操作设置为非阻塞**|           
-|MSG_WAITALL(仅 recv)|直到读到请求的数据字节数，才返回。（**临时阻塞？**）|         
+|MSG_WAITALL (仅 recv)|直到读到请求的数据字节数，才返回。（**临时阻塞？**）|         
 
 当 flags 设置为 0 时，recv/send 和 read/write 完全一致；当 flags 参数为 MAG_DONTWAIT 时，代表本次读写操作为非阻塞，也即无论当前打开的文件描述符被设置为阻塞还是非阻塞，本次调用后都不等待，立刻返回。             
 
@@ -462,9 +467,97 @@ int select( int nfds,
             fd_set *exceptfds, 
             struct timeval *timeout);
 ```
-功能：轮询监视并等待多个文件描述符的属性变化（**可读，可写，或错误异常**）
+- 功能：接收文件描述符数组，**轮询** 监视并等待多个文件描述符的属性变化（**可读，可写，或错误异常**），将就绪的文件描述符标记为就绪（可读/可写/异常等）。            
+- 参数：       
+  - nfds：要监视的文件描述符的范围。             
+  - readfds：受监视的可读文件描述符位图。          
+  - writefds：受监视的可写文件描述符位图。           
+  - exceptfds：受监视的异常文件描述符位图。        
+  - timeout：超时时间。        
+
+- 返回值：成功则返回就绪描述符的数目，超时返回 0， 出错返回 -1。            
+
+
+更详细的解释：       
+
+**nfds**           
+一般取监视的描述符的最大值加一。比如需要监视的文件描述符的最大值为 23，由于文件描述符总是从 0 开始，所以轮询检测到 23 号描述符之前，其前面的 0, 1, 2, ..., 22 号都需要先被轮询监测，所以监视范围就应该是 23+1 = 24。           
+而且，虽然内核规定 select 可见时的最大范围是 1024 个文件件描述符，但实际网络通信中最大可监视数量理想情况应该是 1020，这是由于 0, 1, 2 这三个文件描述符 linux 自己要用，3 这个文件描述符一般是用来监听的套接字 socket，真正建立的连接的文件描述符理想情况下应该从 4 开始。如下图：        
+<div align=center><img src="https://raw.githubusercontent.com/OUCliuxiang/OUCliuxiang.github.io/master/img/CSbasis/OS10.jpg"></div>        
+
+**fd_set**            
+fd_set 可以看作是一个存储文件操作符的集合，实际它存储的是文件操作符的句柄而不是操作符本身。fd_set 的大小只有 1024，这是由于其被定义为由 32 个 `unsigned long` 类型表示，每个 unsigned long 长度为 4 字节共 32 bits。这是系统写死的，要改变这个大小限制，需要改变这个定义，然后重新编译内核。          
+被 select 监控的文件描述符可以加入到不同的 fd_set 中，每个 fd_set 只会筛选出相应 IO 就绪的文件描述符。比如，connfd1 同时保存在 readfds 和 writefds ，但是其可读状态只会被 readfds 记录，其可写状态只会被 writefds 记录。             
+linux 下的 **fd_set 是个1024 位的位图**，当调用 select 的时候，内核根据 IO 状态修改 fd_set 的内容。**位图是什么？** 可以理解为一张 32*32 的表格，表格中的值非 0 即 1。位图中某位置元素值为 1，则代表该位置对应的文件描述符就绪。如下图：            
+<div align=center><img src="https://raw.githubusercontent.com/OUCliuxiang/OUCliuxiang.github.io/master/img/CSbasis/OS09.jpg"></div>        
+
+依照该位图，第 32*0+3=3, 32*1+2=34, 和 32*2+1=65 号元素所对应的文件描述符就绪。        
+文件描述符本身和位图之间，可以使用下面四个宏产生关联：            
+```c++
+void FD_ZERO(fd_set *fdset);  // 清空集合 fdset          
+void FD_SET(int fd, fd_set *fdset); // 将文件描述符 fd 加入到集合 fdset 中        
+void FD_CLR(int fd, fd_set *fdset); // 将文件描述符 fd 从集合 fdset 中移除         
+void FD_ISSET(int fd, fd_set *fdset); // 检查文件描述符 fd 是否可读/可写/异常        
+```
+
+**timeout**          
+
+
+select 的优势：        
+- 相比于用户进程实现的非阻塞IO+轮询并发，select 既做到了一个线程处理多个客户端连接，又减少了系统调用的开销（多个文件描述符只有一次 select 系统调用 + n 次就绪状态的文件描述符的 recv 系统调用）。         
+- select 是跨平台的，几乎所有平台都有其实现。          
+
+select 的劣势：        
+- 每次调用 select 都需要把 fd_set 集合从用户态拷贝到内核态，这个开销在 fd 很多时会很大；同时每次调用 select 都需要在内核遍历传递进来的所有 fd，这个开销在 fd 很多事也会很大。      
+- **单个进程** 能监视的文件描述符的数量存在最大限制，Linux 一般为 1024。这是系统写死的，要改变这一限制需要改变 fd_set 的定义，然后重新编译内核。但是由于上一条，该值越大，效率也就越低。       
+
+
+#### select + tcp demo       
+给出一段 tcp 服务端使用 select 的 demo：           
+```c++
+#include <iostream>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <unistd.h>
+#include <sys/stat.h>
+#include <sys/types.h>
+#include <sys/wait.h>
+#include <arps/inet.h>
+#include <errno.h>
+#include <pthread.h>
+#include <signal.h>
+#include <ctype.h>
+#include <vector>
+
+using namespace std;
+
+void sys_err(const char *str){
+  fprintf(stderr, "%s\n", str); // equal to perror(str);             
+  exit(1);
+}
+
+int main(int argc, char **argv){
+  int lfd, cfd; // listenfd, connfd             
+  socklen_t clt_addr_len; // for client socket           
+  struct sockaddr_in serv_addr, clt_addr;              
+  memset(&serv_addr, 0, sizeof(serv_addr)); // equal to bzero(&serv_addr, 0);        
+  serv_addr.sin_family = AF_INET;
+  serv_addr.sin_port = htons(8848);
+  serv_addr.sin_addr.s_addr = htonl(INADDR_ANY);
+
+  int opt = 1;
+  setsocket()           
+}
+```
+
+
+
+
+
+
 
 ## 事件触发模式，ET 和 LT          
 
 
-## 
+## fork(), vfork(), clone(), 和 exec()
