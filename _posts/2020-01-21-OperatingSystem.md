@@ -459,6 +459,7 @@ IO 多路复用技术可以解决进程或线程阻塞到某个 IO 系统调用�
 #### select           
 select 是操作系统提供的系统调用，它是 **跨平台** 的。通过它，我们可以一次性把一批文件描述符（文件描述符数组）发送给操作系统，让操作系统去遍历，确定那个文件描述符可用，然后我们去处理。       
 select 的原理和我们上文介绍的 非阻塞 IO + 轮询 在用户层面模拟 IO 多路复用的实现有些相似，但是整个轮询过程完全放入了内核空间，避免了每个文件操作符都要执行一次单独的系统调用的这个过程，这样一来必然减少了系统开销，提高了效率。            
+调用 select 后进程阻塞直到有就绪事件发生或者超时，函数返回。当 select 返回，遍历 fd_set 找到就绪的文件描述符进行相应的处理。            
 
 ```c++
 int select( int nfds, 
@@ -483,13 +484,13 @@ int select( int nfds,
 **nfds**           
 一般取监视的描述符的最大值加一。比如需要监视的文件描述符的最大值为 23，由于文件描述符总是从 0 开始，所以轮询检测到 23 号描述符之前，其前面的 0, 1, 2, ..., 22 号都需要先被轮询监测，所以监视范围就应该是 23+1 = 24。           
 而且，虽然内核规定 select 可见时的最大范围是 1024 个文件件描述符，但实际网络通信中最大可监视数量理想情况应该是 1020，这是由于 0, 1, 2 这三个文件描述符 linux 自己要用，3 这个文件描述符一般是用来监听的套接字 socket，真正建立的连接的文件描述符理想情况下应该从 4 开始。如下图：        
-<div align=center><img src="https://raw.githubusercontent.com/OUCliuxiang/OUCliuxiang.github.io/master/img/CSbasis/OS10.jpg"></div>        
+<div align=center><img src="https://raw.githubusercontent.com/OUCliuxiang/OUCliuxiang.github.io/master/img/CSbasis/OS10.jpg"></div>         
 
 **fd_set**            
 fd_set 可以看作是一个存储文件操作符的集合，实际它存储的是文件操作符的句柄而不是操作符本身。fd_set 的大小只有 1024，这是由于其被定义为由 32 个 `unsigned long` 类型表示，每个 unsigned long 长度为 4 字节共 32 bits。这是系统写死的，要改变这个大小限制，需要改变这个定义，然后重新编译内核。          
 被 select 监控的文件描述符可以加入到不同的 fd_set 中，每个 fd_set 只会筛选出相应 IO 就绪的文件描述符。比如，connfd1 同时保存在 readfds 和 writefds ，但是其可读状态只会被 readfds 记录，其可写状态只会被 writefds 记录。             
 linux 下的 **fd_set 是个1024 位的位图**，当调用 select 的时候，内核根据 IO 状态修改 fd_set 的内容。**位图是什么？** 可以理解为一张 32*32 的表格，表格中的值非 0 即 1。位图中某位置元素值为 1，则代表该位置对应的文件描述符就绪。如下图：            
-<div align=center><img src="https://raw.githubusercontent.com/OUCliuxiang/OUCliuxiang.github.io/master/img/CSbasis/OS09.jpg"></div>        
+<div align=center><img src="https://raw.githubusercontent.com/OUCliuxiang/OUCliuxiang.github.io/master/img/CSbasis/OS09.jpg"></div>         
 
 依照该位图，第 32*0+3=3, 32*1+2=34, 和 32*2+1=65 号元素所对应的文件描述符就绪。        
 文件描述符本身和位图之间，可以使用下面四个宏产生关联：            
@@ -501,6 +502,20 @@ void FD_ISSET(int fd, fd_set *fdset); // 检查文件描述符 fd 是否可读/�
 ```
 
 **timeout**          
+一个结构体参数，定义位于 `<sys/time.h>`：          
+```c++
+/*          
+#include <sys/time.h>          
+*/           
+struct timeval {
+  long  tv_sec;   // seconds              
+  long  tv_usec;  // microseconds           
+}
+```        
+该参数用来指定 select 阻塞的最长时间，可以设置为：        
+1. nullptr： 一直阻塞，直到有文件描述符就绪。             
+2. 0：也就是结构体内部两个值都是 0，非阻塞，立刻返回。有就绪返回数量，没有返回 0。           
+3. 固定值：等待固定时间，这段时间内有文件描述符就绪则返回其数量，否则返回 0。
 
 
 select 的优势：        
@@ -515,20 +530,20 @@ select 的劣势：
 #### select + tcp demo       
 给出一段 tcp 服务端使用 select 的 demo：           
 ```c++
-#include <iostream>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <unistd.h>
-#include <sys/stat.h>
-#include <sys/types.h>
-#include <sys/wait.h>
-#include <arps/inet.h>
-#include <errno.h>
-#include <pthread.h>
-#include <signal.h>
-#include <ctype.h>
-#include <vector>
+#include <iostream>              
+#include <stdio.h>           
+#include <stdlib.h>                      
+#include <string.h>             
+#include <unistd.h>               
+#include <sys/stat.h>                
+#include <sys/types.h>                
+#include <sys/wait.h>                
+#include <arps/inet.h>              
+#include <errno.h>               
+#include <pthread.h>               
+#include <signal.h>              
+#include <ctype.h>             
+#include <vector>             
 
 using namespace std;
 
@@ -547,11 +562,66 @@ int main(int argc, char **argv){
   serv_addr.sin_addr.s_addr = htonl(INADDR_ANY);
 
   int opt = 1;
-  setsocket()           
+  setsocket(lfd, SOL_SOCKET, SO_REUSEADDR, &opt, sizeof(opt));
+  lfd = socket(AF_INET, SOCK_STREAM, 0);
+  bind(lfd, (struct sockaddr*)serv_addr, sizeof(serv_addr));
+  listen(lfd, 128);
+
+  fd_set rset, allset; // read fd_set, all fd_set            
+  int maxfd = lfd;
+  FD_ZERO(&allset);
+  FD_SET(lfd, &allset);
+  
+  char buf[1024];
+  vector<int> flag;
+
+  for (;;){
+    rset = allset；
+    int nready = select(maxfd+1, &rset, nullptr, nullptr, nullptr);      
+    if (nready < 0) sys_err("select.");
+
+    if (FD_ISSET(lfd, &rset)){// listenfd is ready, new connection arrived.         
+      clt_addr_len = sizeof(clt_addr);
+      cfd = accept(lfd, (struct sockaddr*) &clt_addr, &clt_addr_len);       
+      memset(buf, 0, 1024);
+      fprintf(stdout, "client connection: %s:%d\n", 
+        inet_ntop(AF_INET, &clt_addr.sin_addr.s_addr, buf, 1024), 
+        ntohs(clt_addr.sin_port));
+      FD_SET(cfd, &allsets);
+      flag.push_back(cfd);
+
+      maxfd = max(cfd, maxfd); 
+      if (-- nready == 0) continue; // only lintenfd, no client connfd           
+    } 
+
+    for (int i = 0; i < flag.size(); i++){ // scan & check all fds in flag            
+      if (FD_ISSET(flag[i], &rset)){  // read connfd flag[i] is ready          
+        memset(buf, 0, 1024);
+        int ret = recv(flag[i], buf, sizeof(buf), 0); 
+        //block, equal to read()             
+        if (ret == -1) continue;  // error, skip it.              
+        if (ret == 0) { // client closed.             
+          close(flag[i]);
+          fprintf(stdout, "client %s:%d closed.\n", 
+            inet_ntop(AF_INET, &clt_addr.sin_addr.s_addr, buf, sizeof(buf)), 
+            ntohs(clt_addr.sin_port));
+          FD_CLR(flag[i], &allset);
+          continue;
+        }
+        for (int j = 0; j < ret; j++) buf[j] = toupper(buf[j]);
+        send(flag[i], buf, ret, 0); // block, equal to write()          
+        write(STDOUT_FILENO, buf, ret); 
+        // write into standard output, STDOUT_FILENO = 1             
+      }
+    }
+  }            
+  close(lfd);
+  return 0;
 }
 ```
 
-
+根据以上介绍和代码，select 的执行流程如下图：            
+<div align=center><img src="https://raw.githubusercontent.com/OUCliuxiang/OUCliuxiang.github.io/master/img/CSbasis/OS11.png"></div>        
 
 
 
