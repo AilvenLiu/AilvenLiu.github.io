@@ -948,7 +948,15 @@ struct epitem {
 
 调用 epoll_wait 执行监测时，则只需要观察 eventpoll 对象包含的就绪链表 rdlist 中是否有 epitem 即可。有数据就返回，没有数据就 sleep 直到 timeout 。返回，指的是将 rdlist 链表中的事件复制到用户空间，并返回事件数量。              
 
-**总结**          
+**总结**               
+0. 一颗红黑树，一个就绪事件链表，少量的内核 cache，高效解决高并发问题。                 
+1. epoll_create()：建立 eventpoll 对象，开辟内核高速 cache 区，cache 中创建红黑树和就绪链表。          
+2. epoll_ctl()：如果增加 socket 句柄，则检查位于内核 cache 区的红黑树中是否存在对应 epitem，存在立刻返回，不存在则加入树中，并向内核注册回调函数，用于当中断事件来临时向就绪链表添加数据。         
+3. epoll_wait()：检查就绪链表 rdlist，有数据立刻返回，没有数据等待直到 timeout。              
+
+<div align=center><img src="https://raw.githubusercontent.com/OUCliuxiang/OUCliuxiang.github.io/master/img/CSbasis/OS12.jpg"></div>        
+
+<div align=center><img src="https://raw.githubusercontent.com/OUCliuxiang/OUCliuxiang.github.io/master/img/CSbasis/OS13.png"></div>        
 
 
 
