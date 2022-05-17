@@ -988,6 +988,8 @@ int main(int argc, char **arvg){
 	
 	int lfd, cfd;
 	int epollfd;
+	int ret;
+	cahr buffer[1024];
 	socklen_t addr_len;
 	struct sockaddr_in serv_addr, clt_addr;
 	struct epoll_event ev, ready_events[MAX_EVENTS]; 
@@ -1051,9 +1053,21 @@ int main(int argc, char **arvg){
 					perror("epoll_ctl error.\n");
 					exit(1);
 				}
+			}else{
+				cfd = ready_events[i].data.fd;
+				memset(buffer, 0, sizeof buffer); // bzero(buffer, sizeof buffer);             
+				if (ret = recv(cfd, buffer, sizeof buffer, 0) < 0){
+					perror("recv error.\n");
+					exit(1);
+				}
+				else if (ret == 0){ // 对端正常关闭             
+					fprintf(stdout, "\nDisconnect fd[%d]\n", cfd);
+					close(cfd); // epoll 会自动移除该文件描述符，如果不放心还可以跟一步           
+					epoll_ctl(epollfd, EPOLL_CTL_DEL, cfd, nullptr);
+				}else{
+					
+				}
 			}
-			
-			
 		}
 	} 
 	
