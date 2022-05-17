@@ -440,6 +440,7 @@ int send(int sockfd, void *buf, int len, int flags);
 
 返回值大于零代表读到了部分或全部数据，其值代表实际读到了数据的字节数；若返回值为 0 表示已经读到文件结束；返回值小于 0 表示出现错误，调用带回错误码如 `EWOULDBLOCK`, `EINTR` 等等说明错误原因。             
 flags 参数可以是 0 或者下面诸项的组合：           
+
 |flags|description|            
 |:---|:---|          
 |MSG_DONTROUTE (仅 send)|不查路由表，通常用于本局域网段内部发送消息|          
@@ -596,7 +597,7 @@ int main(int argc, char **argv){
     client[i].fd = -1, client[i].addr = nullptr;
 
   for (;;){
-    rset = allset；
+    rset = allset;
     struct timeval timeout;
     timeout.tv_sec = 2;
     timeout.tv_usec= 0;
@@ -696,8 +697,10 @@ struct pollfd {
 
 对于 events/revents 这两个变量，常见的类型和 select 所能监控的一样，可读可写和错误异常：          
 ```cpp
-#define POLLRDNORM  0x040;
-#define POLLWRNORM  0x100;
+#define POLLRDNORM  0x040;             
+
+#define POLLWRNORM  0x100;            
+
 #define POLLERR     0x008;
 ```
 可以并列出现比如：`POLLRDNORM|POLLWRNORM`。              
@@ -712,7 +715,7 @@ poll 的劣势：
 - poll 不是跨平台的，只在 Linux 平台支持（存疑，没有绝对性证据支持，自己瞎猜）。        
 
 
-#### poll+tcp demo         
+#### tcp + poll demo         
 ```cpp
 #include <stdio.h>         
 
@@ -841,10 +844,42 @@ int main(int argc, char **argv) {
 }
 ```
 
-显然可以发现，除了 API 调用和部分参数细节上与 select 存在些许差别外，poll 整体的使用流程和 select 相差无几。      
+显然，除了 API 调用和部分参数细节上与 select 存在些许差别外，poll 整体的使用流程和 select 相差无几。      
 
 
 #### epoll        
+
+poll 虽然解决了 select 的描述符数量限制，但是其实现机制仍然是把用户态的描述符数组打包拷贝到内核态，在内核完成轮询后全部吐出来，再由用户手动遍历查询一遍。在性能上并没有提升。且随着描述符数量增长，其性能也会大幅下降。epoll 机制从根本上解决了上述问题。          
+epoll 是 event poll 的简称，是 Linux 提供特有的事件驱动的 IO 多路复用机制。epoll 不是一个单独的调用，而是一组系统调用的统称，包括：         
+- **epoll_create**           
+  ```c++
+  int epoll_create(int __sizex);
+  int epoll_create1(int __flags);
+  ```          
+  创建一个新的 epoll 实例，并返回该实例的描述符（句柄）。此两者功能相同，在 linux2-6 版本内核之后，epoll_create(int __size) 的 size 参数不再具有意义，只要大于零，效果都一样。实际上，前者在具体实现上是调用了后者 epoll_create1(int __flags) ，后者的 flag 参数可以设置为 0 或 `EPOLL_CLOEXEC`，这个选项的作用是，当父进程 fork 出一个子进程的时候，子进程不会包含 epoll 的文件描述符。           
+
+- **epoll_ctl**              
+  ```c++
+  int epoll_ctl(int __epfd, int _op, int __fd, struct epoll_event *__event);
+  ```
+  向 epoll_fd 添加、修改或删除事件，成功返回 0，失败返回 -1 并带回错误码 errno。       
+  **参数：**            
+  - epfd： epoll_create() 返回的句柄。           
+  - op： 具体操作。             
+    `EPOLL_CTL_ADD` 注册新的 fd 到 epfd 中          
+    `EPOLL_CTL_MOD` 修改已注册的 fd            
+    `EPOLL_CTL_DEL` 从 epfd 中删除一个 fd           
+  - fd： 被操作文件描述符。        
+  - event：高速告知内核需要监听什么类型事件的结构体。定义如下：         
+    ```c++
+    struct epoll_event{
+      __uint32_t events;   
+      epoll_data_t data;
+    }
+    ```
+    其中 events 指明了感兴趣的事件类型，包含：            
+    |value|description|            
+    |:---|:---|         
 
 ## 事件触发模式，ET 和 LT          
 
