@@ -870,7 +870,7 @@ epoll 是 event poll 的简称，是 Linux 提供特有的事件驱动的 IO 多
     `EPOLL_CTL_MOD` 修改已注册的 fd            
     `EPOLL_CTL_DEL` 从 epfd 中删除一个 fd           
   - fd： 被操作文件描述符。        
-  - event：高速告知内核需要监听什么类型事件的结构体。定义如下：         
+  - event：高速告知内核需要监听什么类型事件的结构体（给地址）。定义如下：         
     ```c++
     struct epoll_event{
       __uint32_t events;   
@@ -957,6 +957,109 @@ struct epitem {
 <div align=center><img src="https://raw.githubusercontent.com/OUCliuxiang/OUCliuxiang.github.io/master/img/CSbasis/OS12.jpg"></div>        
 
 <div align=center><img src="https://raw.githubusercontent.com/OUCliuxiang/OUCliuxiang.github.io/master/img/CSbasis/OS13.png"></div>        
+
+
+#### epoll + tcp demo                  
+
+```c++
+#include <stdio.h>           
+
+#include <stdlib.h>         
+
+#include <string.h>
+
+#include <unistd.h>
+
+#include <arpa/inet.h>
+
+#include <sys/epoll.h>
+
+#define MAX_EVENTS	1024	// 自定义最大可接受连接数，可以很大，无限制             
+
+
+int main(int argc, char **arvg){
+	
+	if (argc > 2){
+		perror("USAGE: %s <port>\n", argv[0]);
+		exit(1);
+	}
+	int port  = 8848;
+	if (argc == 2)	port = satoi(argv[1]);
+	
+	int lfd, cfd;
+	int epollfd;
+	socklen_t addr_len;
+	struct sockaddr_in serv_addr, clt_addr;
+	struct epoll_event ev, ready_events[MAX_EVENTS]; 
+	
+	if (lfd = socket(AF_INET, SOCK_STREAM, 0) < 0){
+		perror("socket error.\n");
+		exit(1);
+	}
+	
+	int opt = 1;
+	if (setsockopt(lfd, SOL_SOCKET, SO_REUSEADDR, &opt, sizeof(opt)) < 0){
+		perror("setsockopt error.\n");
+		exit(1);
+	}
+	
+	bzero(&serv_addr, sizeof serv_addr);
+	serv_addr.sin_family = AF_INET;
+	serv_addr.sin_port = htons(port);
+	serv_addr.sin_addr.s_addr = htonl(INADDR_ANY);
+	
+	if (bind(lfd, (struct sockaddr *) &serv_addr, sizeof serv_addr) < 0){
+		perror("bind error.\n");
+		exit(1);
+	}
+	
+	if (listen(lfd, 128) < 0){
+		perror("listen error.\n");
+		exit(1);
+	}
+	
+	if (epollfd = epoll_create1(0) < 0){
+		perror("epoll_create error.\n");
+		exit(1);
+	}
+	
+	ev.events = EPOLLIN;
+	ev.data.fd = lfd;
+	if (epoll_ctl(epollfd, EPOLL_CTL_ADD, lfd, &ev) < 0){
+		perror("epoll_ctl error.\n");
+		exit(1);
+	}
+	
+	for (;;){
+		int nready;
+		if (nready = epoll_wait(epollfd, ready_events, MAX_EVENTS, -1) < 0){
+			perror("epoll_wait error.\n");
+			exit(1);
+		}
+		
+		for (int i = 0;  i < nready; i++){
+			if (ready_events[i].data.fd == lfd){
+				if (cfd = accept(lfd, (struct sockaddr*) &clt_addr, &addr_len) < 0){
+					perror("accept error.\n");
+					exit(1);
+				}
+				fprintf(stdout, "\nNew client connections client[%d] %s:d\n", 
+						cfd, inet_ntoa(clt_addr.sin_addr), ntohs(clt_addr.sin_port));
+				ev.events = EPOLLIN | EPOLLET;
+				ev.data.fd = cfd;
+				if (epoll_ctl(epollfd, EPOLL_CLT_ADD, cfd, &ev) < 0){
+					perror("epoll_ctl error.\n");
+					exit(1);
+				}
+			}
+			
+			
+		}
+	} 
+	
+}
+```
+
 
 
 
