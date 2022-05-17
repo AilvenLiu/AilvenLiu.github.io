@@ -877,7 +877,7 @@ epoll 是 event poll 的简称，是 Linux 提供特有的事件驱动的 IO 多
       epoll_data_t data;
     }
     ```
-    其中 events 指明了感兴趣的事件类型，包含：            
+    其中 `__uint32_t events` 指明了感兴趣的事件类型，包含：            
 
     |value|description|            
     |:---|:---|         
@@ -889,9 +889,74 @@ epoll 是 event poll 的简称，是 Linux 提供特有的事件驱动的 IO 多
     |EPOLLET|将 epoll 设置为边缘触发模式|          
     |EPOLLONESHOT|只监听一次，完成本次监听后如需要继续监听该 fd，需要再次添加 |   
     
+    `epoll_data data` 是个指明了具体事件（地址，或描述符等）的联合体，定义为：        
+    ```c++
+    typedef union epoll_data{
+      void *ptr;
+      int fd;
+      uint32_t u32;
+      uint64_t u64;
+    }epoll_data_t;
+    ```         
+    应该和具体的使用方式有关。       
+
+- **epoll_wait**            
+  ```c++        
+  int epoll_wait(int __epfd, struct epoll_event *__events, int __max_events, int __timeout); 
+  ```
+  监听 epfd 中的 IO 事件，没有就绪则阻塞线程，直到超时或者有 IO 就绪，返回就绪事件 IO 的数量，或者 0（无就绪），或者 -1 （发生错误）并带回错误码。        
+  参数：      
+  - epfd： epoll 句柄。         
+  - events： 就绪事件结构体数组。epoll 会将本次监听发生的就绪事件结构体拷贝到该数组中。**events 不可以试是空指针内核只负责把数据复制到这个 events 数组中，不负责在用户态分配内存，这样效率很高。**       
+  - max_events：本次可以返回的最大事件数目，通常和预先分配的 events 数组大小一致。        
+  - timeout： 超时时间，毫秒。       
 
 
-## 事件触发模式，ET 和 LT          
+**epoll 原理：**             
+
+epoll 在初始化时会注册一个单独的文件系统 eventpoll，同时在内核空间开辟一个**单独的、专用的**高速 cache 区：连续的物理内存页，并在这个高速 cache 区建立**红黑树和就绪链表**。被监控文件描述符存放于该红黑树，就绪事件描述符则加入到就绪链表。          
+
+eventpoll 是一个结构体，定义如下：       
+```c++
+struct eventpoll {
+  spin_lock_t       lock;
+  struct mutex      mtx;
+  wait_queue_head_t     wq;
+  wait_queue_head_t   poll_wait;
+  struct list_head    rdllist;   //就绪链表             
+  struct rb_root      rbr;      //红黑树根节点           
+  struct epitem      *ovflist;
+}
+```
+
+使用 epoll_ctl 向 epollfd 添加一个新的文件描述符时，实际是将该文件描述符挂载到内核高速缓存区的红黑上。这样新到的文件描述符 fd 就已经在内核态了，那么我们调用 epoll _wairt 的时候就不需要进行一次额外的用户态向内核态的拷贝了。               
+所有添加到 epoll 中的事件都会与设备（如网卡）驱动程序建立**回调关系**，也就是相应事件发生时会调用这里的回调方法：ep_poll_callback ，该回调方法就会把事件加入到就绪链表中。              
+epoll 对每个事件都会建立一个 epitem 结构体，存储着加入 epoll 的事件的信息：            
+```c++
+struct epitem {
+  struct rb_node  rbn;	// 红黑树节点                    
+  struct list_head  rdllink; // 就绪链表（双向）节点               
+  struct epitem  *next;
+  struct epoll_filefd  ffd;		// 事件句柄信息            
+  int  nwait;
+  struct list_head  pwqlist;
+  struct eventpoll  *ep;	// 指向其所属的 eventpoll 对象          
+  struct list_head  fllink;
+  struct epoll_event  event;	// 感兴趣的事件类型               
+}
+```
+
+调用 epoll_wait 执行监测时，则只需要观察 eventpoll 对象包含的就绪链表 rdlist 中是否有 epitem 即可。有数据就返回，没有数据就 sleep 直到 timeout 。返回，指的是将 rdlist 链表中的事件复制到用户空间，并返回事件数量。              
+
+**总结**          
+
+
+
+####  事件触发模式，ET 和 LT          
+
+
+#### epoll 和 poll/select 的对比               
+
 
 
 ## fork(), vfork(), clone(), 和 exec()
