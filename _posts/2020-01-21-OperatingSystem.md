@@ -878,8 +878,18 @@ epoll 是 event poll 的简称，是 Linux 提供特有的事件驱动的 IO 多
     }
     ```
     其中 events 指明了感兴趣的事件类型，包含：            
+
     |value|description|            
     |:---|:---|         
+    |EPOLLIN|可读（包括对端正常关闭）|          
+    |EPOLLOUT|可写|        
+    |EPOLLPRI|紧急可读（外带数据？什么意思？）|          
+    |EPOLLERR|发生错误|          
+    |EPOLLHUP|对应 fd 被挂起|          
+    |EPOLLET|将 epoll 设置为边缘触发模式|          
+    |EPOLLONESHOT|只监听一次，完成本次监听后如需要继续监听该 fd，需要再次添加 |   
+    
+
 
 ## 事件触发模式，ET 和 LT          
 
