@@ -1053,7 +1053,7 @@ int main(int argc, char **arvg){
 					perror("epoll_ctl error.\n");
 					exit(1);
 				}
-			}else{
+			}else if (ready_events[i].events & EPOLLIN){
 				cfd = ready_events[i].data.fd;
 				memset(buffer, 0, sizeof buffer); // bzero(buffer, sizeof buffer);             
 				if (ret = recv(cfd, buffer, sizeof buffer, 0) < 0){
@@ -1065,19 +1065,61 @@ int main(int argc, char **arvg){
 					close(cfd); // epoll 会自动移除该文件描述符，如果不放心还可以跟一步           
 					epoll_ctl(epollfd, EPOLL_CTL_DEL, cfd, nullptr);
 				}else{
-					
+					for (int i = 0; i < ret; i ++) buffer[i] = toupper(buffer[i]);
+					if (send(cfd, buffer, ret, , 0) < 0){
+						perror("send error.\n");
+						exit(1);
+					}
+					if ( write(STDOUT_FILENO, buffer, ret) < 0){
+						perror("write error.\n");
+						exit(1);
+					}
 				}
-			}
+			}else continue;
 		}
 	} 
-	
+	close(lfd);
+	return 0;
 }
 ```
 
 
-
-
 ####  事件触发模式，ET 和 LT          
+
+ET (Edge Triggered，边缘触发) 和 LT (Level Triggered，水平触发) 是两种事件触发模式，区别在于触发时机不同。            
+
+**ET：** 仅当内核缓冲区有 **正向变化** 或事件类型发生变化的时候，返回就绪事件。形象一点说：         
+对于读操作，当          
+* 读缓冲区由不可读变为可读，即缓冲区由空变为不空。          
+* 有新数据到达，即缓冲区内数据变多。            
+* 读缓冲区内有数据可读，且应用进程将对应文件描述符修改为 EPOLLIN 。          
+
+的时候，返回对应的读就绪事件。而一种典型的情况，缓存区有数据但是本次未读出或者未完全读出，此时虽然缓存区仍留有数据，但 ET 不会触发，不会返回读就绪。                     
+
+对于写操作，当               
+* 写缓冲区由不可写变为可写，也即缓冲区由满变为不满。         
+* 旧数据被写出，即缓存区的内容变少、可写空间变多。            
+* 写缓冲区有空间可写，且应用进程将对应文件描述符修改为 EPOLLOUT。          
+
+的时候，返回对应的写就绪事件。一种典型的情况，缓存区有空间可写，但是数据没有写出或数据有增多但未满，此时虽然缓存区仍留有空间，但 ET 不会触发，不会返回写就绪。             
+
+**LT：** 简单粗暴，只要缓存区有数据，一直返回读就绪；只要缓存区有空间，一只返回写就绪。         
+
+
+select, poll, epoll 三种多路复用机制都支持 LT 模式，而 ET 模式只有 epoll 支持。                
+LT 也是 epoll 机制的缺省事件触发模式，这可能是由于 LT 同时支持阻塞和非阻塞，且实现起来更加简洁的原因。         
+
+
+**LT 和 ET 在实现上的区别**           
+已知，对于 epoll 而言，就绪事件加入到就绪事件链表是通过和驱动绑定的回调函数实现的，驱动上有事件发生时会告知 epoll 将相应文件描述符添加到就绪事件链表；epoll_wait 调用会使用 `__poll` 方法检查就绪事件链表是否有数据以及每个描述符上是否有真的有事件。                
+LT 和 ET 的区别就在于 epoll_wait() 函数调用的过程上，如果事件是 ET 模式，则 epoll_wait() 在检查完该事件后会将改事件移除就绪链表；如果是 LT 模式，则会将其留在就绪事件链表，等到下一轮检查如果缓存区被读完或者被写满，也即描述符中没有可读可写事件，则该描述符也会被移除就绪链表，并且不作为就绪事件返回。              
+
+
+**为什么 ET 一定要工作在非阻塞模式**           
+使用 ET 模式一定要使用非阻塞 IO， 这是因为：             
+已知，ET 模式下我们需要一次性处理完就绪文件描述符上的全部数据，比如使用 recv/read 或者 send/write 直到返回 EAGAIN，若将文件描述符设置为阻塞，那么程序一定会在最后一次 write/send 或 read/recv 阻塞朱，这样程序就不能在 epoll_wait 阻塞了，那么就会导致其他文件描述符的饥饿问题，也即，读不到写不出。因此，一定要在 ET 模式下使用非阻塞 IO。               
+
+
 
 
 #### epoll 和 poll/select 的对比               
