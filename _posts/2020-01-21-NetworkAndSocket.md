@@ -332,7 +332,14 @@ Http 2.0 允许一条 TCP 链接包含多个双向的流，流承载着消息拆
 
 HPACK 对 String 类型内容提供静态 `Huffman Coding` 霍夫曼编码。霍夫曼码是基于霍夫曼树形成的编码方式。霍夫曼树是最小带权二叉树，权值越大的节点越靠近根节点，依照从根节点开始向左为 0，向右为 1 的方式进行编码。静态霍夫曼编码就是，实现统计出 http 头部个字符出现的频率，频率越大即权值越大，由此构造一棵霍夫曼树，得到每个字符的固定的霍夫曼码。从而将占8 bits 的 char 类型进行压缩，比如字符 `h` 以 char 类型存储占 8bits，但其 huffman 编码为 100111 ，只需 6bits 即可表示。        
 
-#### HTTPS 与 HTTPS 的工作过程        
+#### HTTPS 与 HTTPS 的握手过程        
+
+HTTPS 就是 HTTP over TSL (Transport Layer Security，传输层安全协议)，也即在传输层 TCP 协议和应用层 HTTP 协议之间添加了一层 TSL 用作数据加密，HTTP 数据经过这个加密层加密后再送入 TCP 传输，从而解决 HTTP 无加密明文传输数据的安全隐患。进一步的，不像 HTTP 在 TCP 连接建立之后即可明文通信，HTTPS 在 TCP 连接建立完成后还需要进行四次握手（不含 TCP 三次握手），每次握手可能发送多条消息给对方，用来交换和产生秘钥以建立连接。       
+1. 第一次握手 client -> server
+2. 第二次握手 server -> client
+3. 第三次握手 client -> server
+4. 第四次握手 server -> client
+   
 
 #### HTTP 和 HTTPS 的区别
 
@@ -340,4 +347,5 @@ HPACK 对 String 类型内容提供静态 `Huffman Coding` 霍夫曼编码。霍
 
 #### 什么是数字证书       
 
-#### 什么是对称加密和非对称加密
+#### 什么是对称加密和非对称加密     
+
