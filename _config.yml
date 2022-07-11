@@ -100,9 +100,6 @@ friends: [
         title: "Github",
         href: "http://github.com/OUCliuxiang"
     },{
-        title: "Twitter",
-        href: "https://twitter.com/LiuxOux"
-    },{
         title: "OUCML Lab",
         href: "https://github.com/OUCMachineLearning/OUCML"
     }
