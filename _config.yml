@@ -102,5 +102,9 @@ friends: [
     },{
         title: "OUCML Lab",
         href: "https://github.com/OUCMachineLearning/OUCML"
+    },{
+        title: "(Intelligent Data Analysis and System Research Group"
+        href: "http://124.222.33.212/"
     }
+
 ]
