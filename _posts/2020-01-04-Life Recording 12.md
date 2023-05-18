@@ -194,8 +194,6 @@ ___
 > 可别介，你不需要对我有什么用，因为我也不想对你有用。                 
 > 我不想依靠你，我想自己完成所有事情。        
 
-<div align=center><img src="https://raw.githubusercontent.com/OUCliuxiang/OUCliuxiang.github.io/master/img/life/mygirl02.png"></div>  
-
 
 
 她开始频繁和闹矛盾，并数次决定分手，她开始反反复复全网拉黑、切断与我的一切社交联系。每一次我都反思自己的每一处不足，然后我很认真地问她，希望我们两个是怎样的相处模式呢、或者希望我是什么样子呢？每一次，她都会说，现在就挺好。于是开始重蹈覆辙。   
@@ -206,26 +204,15 @@ ___
 
 她说跟我在一起的过去的时光很浪漫，但她忽然不想要了。   
 
-<div align=center><img src="https://raw.githubusercontent.com/OUCliuxiang/OUCliuxiang.github.io/master/img/life/mygirl03.png"></div>  
 
 
 她总说不是要非得分一个谁对谁错，但是每一次争执又总是要明确是谁的责任：要么是我做错了，那和我分开合情合理；要么是她做错了，便会反问我那不正好应该和她分开......
 
-<div align=center><img src="https://raw.githubusercontent.com/OUCliuxiang/OUCliuxiang.github.io/master/img/life/mygirl04.png"></div>  
-
-<div align=center><img src="https://raw.githubusercontent.com/OUCliuxiang/OUCliuxiang.github.io/master/img/life/mygirl05.png"></div>    
-
 
 她开始频繁地向我阐述我的可替代性，我可以带给她的，她所有朋友都可以做到。但随后又总是矢口否认。
 
-<div align=center><img src="https://raw.githubusercontent.com/OUCliuxiang/OUCliuxiang.github.io/master/img/life/mygirl06.png"></div>  
-
-<div align=center><img src="https://raw.githubusercontent.com/OUCliuxiang/OUCliuxiang.github.io/master/img/life/mygirl07.png"></div>  
-
 
 她开始变得人间清醒，总是告诉我没有什么是时间抚平不了的。她总是告诉我她和每一个男孩子、我和每一个女孩子都可以经理这样一段感情。她总是说分手没什么大不了，谁对谁错时间会检验一切。道理确实是这样的道理，虽然我不知道自己想的对不对，但我总觉得不能抱着这样的心态去对待一份感情，每一个人都是独一无二的。尤其是，这些道理任谁都可以对她讲、对我讲，唯独情侣双方，不应该和对方说这些话。
-
-<div align=center><img src="https://raw.githubusercontent.com/OUCliuxiang/OUCliuxiang.github.io/master/img/life/mygirl08.png"></div>  
 
 
 我深深认同罗翔老师的一句话：我们要爱具体的人，而不是抽象的人。不是说一个人具有什么什么样我喜欢的点我能接受的点，就去喜欢她；我们要爱的，是一个实实在在的、看得见摸得着的、活生生的人。
@@ -234,9 +221,7 @@ ___
 
 
 
-在那个契机到来之前，她说，我们相处了这么长时间吵过这么多次架，从来没有互相指责过对方变了这样的话，说明我们在底子上就是最适合对方的那一个人，一定能走到最后。在那个契机来临之后，她直言，现在的她跟以前不一样了。
-
-<div align=center><img src="https://raw.githubusercontent.com/OUCliuxiang/OUCliuxiang.github.io/master/img/life/mygirl09.png"></div>  
+在那个契机到来之前，她说，我们相处了这么长时间吵过这么多次架，从来没有互相指责过对方变了这样的话，说明我们在底子上就是最适合对方的那一个人，一定能走到最后。在那个契机来临之后，她直言，现在的她跟以前不一样了。以前她喜欢我，我的存在之于她就是意义。现在她不喜欢我了，可以和我分开了。
 
 ___
 
