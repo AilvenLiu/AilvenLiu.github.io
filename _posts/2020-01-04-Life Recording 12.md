@@ -60,6 +60,8 @@ ___
 
 故人是爱过的。或真或不真，但我总不能去否定过去，毕竟
 
+> 他在生命的每个阶段都说了他相信的东西，那你要他怎样？
+
 <div align=center><img src="https://raw.githubusercontent.com/OUCliuxiang/OUCliuxiang.github.io/master/img/life/mygirl10.jpg"></div>   
 
 ___      
