@@ -60,7 +60,7 @@ ___
 
 故人是爱过的。或真或不真，但我总不能去否定过去，毕竟
 
-<div align=center><img src="https://raw.githubusercontent.com/OUCliuxiang/OUCliuxiang.github.io/master/img/mygirl10.jpg"></div>   
+<div align=center><img src="https://raw.githubusercontent.com/OUCliuxiang/OUCliuxiang.github.io/master/img/life/mygirl10.jpg"></div>   
 
 ___      
 
