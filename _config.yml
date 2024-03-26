@@ -11,7 +11,7 @@ github_repo: "https://github.com/OUCliuxiang/OUCliuxiang.github.io.git" # you co
 
 # Sidebar settings
 sidebar: true                           # whether or not using Sidebar.
-sidebar-about-description: "From Innovative Center, Ocean University of China"
+sidebar-about-description: "Autonomous Driving Engineer of NIO"
 sidebar-avatar: img/childhood-01.jpg      # use absolute URL, seeing it's used in both `/` and `/about/`
 
 
@@ -19,8 +19,8 @@ sidebar-avatar: img/childhood-01.jpg      # use absolute URL, seeing it's used i
 # SNS settings
 RSS: false
 # weibo_username:     qiubaiying
-zhihu_username:     liu-xiang-17-72
-github_username:    OUCliuxiang
+# zhihu_username:     liu-xiang-17-72
+# github_username:    OUCliuxiang
 # twitter_username:   OUC_LiuX
 
 
@@ -76,7 +76,7 @@ gitalk:
 
 # Google Analytics
 # ga_track_id: 'UA-90855596-1'            # Format: UA-xxxxxx-xx
-ga_domain: auto               # 默认的是 auto, 这里我是自定义了的域名，你如果没有自己的域名，需要改成auto
+ga_domain: www.ailven.cn               # 默认的是 auto, 这里我是自定义了的域名，你如果没有自己的域名，需要改成auto
 
 
 
@@ -97,17 +97,16 @@ service-worker: true
 # Friends
 friends: [
     {
-        title: "Github",
-        href: "http://github.com/OUCliuxiang"
-    },{
-        title: "OUCML Lab",
-        href: "https://github.com/OUCMachineLearning/OUCML"
-    },{
-        title: "IDAS Group",
-        href: "http://124.222.33.212/"
-    },{
         title: "AI @ OUC",
         href: "http://ouc.ai/zhenghaiyong/"
+    },{
+        title: "AI Institute of OUC",
+        href: "http://ai-ouc.cn"
+    },{
+        title: "Innovation Center of OUC",
+        href: "http://innovation.ouc.edu.cn"
+    },{
+        title: "NIO",
+        href: "https://nio.com"
     }
-
 ]
